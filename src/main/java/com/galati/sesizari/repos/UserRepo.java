@@ -1,4 +1,15 @@
 package com.galati.sesizari.repos;
 
-public interface UserRepo {
+ import com.galati.sesizari.clase.User;
+import com.galati.sesizari.enums.Rol;
+import org.springframework.data.jpa.repository.JpaRepository;
+ import org.springframework.stereotype.Repository;
+ import java.util.List;
+ @Repository
+public interface UserRepo extends JpaRepository<User,Integer> {
+
+    boolean existsByEmail(String email);
+    User findByUsernameAndPassword(String username, String password);
+    List<User> findByRol(Rol rol);
+    List<User> findByInstitutie_Id(Long institutieId);
 }

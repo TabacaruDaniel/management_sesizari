@@ -26,7 +26,6 @@ public class Sesizari {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Atasament> dovezi;
-
     @OneToMany(mappedBy = "sesizare", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<IstoricStatusSez> istoricStatus;
 

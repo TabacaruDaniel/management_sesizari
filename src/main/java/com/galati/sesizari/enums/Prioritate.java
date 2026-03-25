@@ -1,4 +1,4 @@
-package com.galati.sesizari;
+package com.galati.sesizari.enums;
 
 public enum Prioritate {
     SCAZUTA,

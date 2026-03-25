@@ -1,5 +1,6 @@
-package com.galati.sesizari;
+package com.galati.sesizari.clase;
 
+import com.galati.sesizari.enums.Rol;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,5 +17,6 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Rol rol;
+
 
 }

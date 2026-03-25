@@ -1,13 +1,14 @@
-package com.galati.sesizari;
+package com.galati.sesizari.clase;
 
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
 
 @Embeddable
 public class Adresa {
     private String nume;
     private String numar;
     private String zona;
+    private double latitudine;
+    private double longitudine;
 
     public Adresa() {}
     public Adresa(String nume, String numar, String zona) {
@@ -15,11 +16,15 @@ public class Adresa {
         this.numar = numar;
         this.zona = zona;
     }
+    public Adresa(Adresa a){
+        this.nume = a.getNume();
+        this.numar = a.getNumar();
+        this.zona = a.getZona();
+    }
 
     public String getNume() {
         return nume;
     }
-
     public void setNume(String nume) {
         this.nume = nume;
     }
@@ -27,7 +32,6 @@ public class Adresa {
     public String getNumar() {
         return numar;
     }
-
     public void setNumar(String numar) {
         this.numar = numar;
     }
@@ -35,7 +39,6 @@ public class Adresa {
     public String getZona() {
         return zona;
     }
-
     public void setZona(String zona) {
         this.zona = zona;
     }

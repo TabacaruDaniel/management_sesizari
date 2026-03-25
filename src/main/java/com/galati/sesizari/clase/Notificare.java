@@ -1,13 +1,13 @@
-package com.galati.sesizari;
+package com.galati.sesizari.clase;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
+@Entity
 public class Notificare {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     private String mesaj;

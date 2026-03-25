@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autentificare - Sesizări Galați</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="galati-page">
+
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" href="/">Sesizări Galați</a>
+        <a class="btn btn-outline-light btn-back" href="/">Înapoi</a>
+    </div>
+</nav>
+
+<main class="hero-form d-flex align-items-center" style="min-height: 80vh;">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-xl-5 col-lg-6 col-md-8">
+
+                <div class="form-shell">
+                    <div class="text-center mb-4">
+                        <span class="form-kicker">Acces Cetățeni & Administrație</span>
+                        <h1 class="form-title">Autentificare</h1>
+                        <p class="form-subtitle">
+                            Introdu datele tale pentru a gestiona sesizările sau pentru a vedea statusul acestora.
+                        </p>
+                    </div>
+
+                    <form th:action="@{/login}" method="post" id="loginForm">
+
+                        <div class="mb-4">
+                            <label for="username" class="form-label custom-label">Email sau Utilizator</label>
+                            <input type="text" name="username" class="form-control custom-input" id="username"
+                                   placeholder="nume@exemplu.ro" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label custom-label">Parolă</label>
+                            <input type="password" name="password" class="form-control custom-input" id="password"
+                                   placeholder="••••••••" required>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <label class="form-check-label text-white-50" for="rememberMe" style="font-size: 0.9rem;">
+                                    Ține-mă minte
+                                </label>
+                            </div>
+                            <a href="#" class="text-decoration-none" style="font-size: 0.9rem; color: #00d2ff;">Ai uitat parola?</a>
+                        </div>
+
+                        <div class="text-center pt-2">
+                            <button type="button" onclick="redirectLaSesizari()" class="btn submit-btn w-100 py-2">
+                                Intră în cont
+                            </button>
+                        </div>
+
+                    <div class="text-center mt-4">
+                        <p class="form-hint">
+                            Nu ai un cont? <a href="/register" class="fw-bold text-white text-decoration-none" style="border-bottom: 1px solid #00d2ff;">Înregistrează-te acum</a>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class Notificare {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private int notif_id;
 
     private String mesaj;
     private Boolean isRead; //daca notificarea a fost citita

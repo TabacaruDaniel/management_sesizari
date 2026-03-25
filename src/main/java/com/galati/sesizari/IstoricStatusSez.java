@@ -1,13 +1,14 @@
 package com.galati.sesizari;
 
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.time.LocalDate;
 
 public class IstoricStatusSez {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private int nrReclamatie;
     private Status statusVechi;

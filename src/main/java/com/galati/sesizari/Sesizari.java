@@ -10,24 +10,39 @@ public class Sesizari {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int nrReclamatie; //cheie primara in sql
 
+    private String titlu;
     private String descriere; //descrierea evenimentului
     @Embedded
     private Adresa adresa; //adresa la care are loc evenimentul raportat
     @ManyToOne
     @JoinColumn(name="user_id")
-    private User user;
+    private User user_id;
     @ManyToOne
     @JoinColumn(name="cat_id")
-    private Categorie categorie;
+    private Institutie institutie_id;
     private LocalDate dataDepunerii;
+    private LocalDate dataRezultat;
+
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
+
+    @Enumerated(EnumType.STRING)
+    private Prioritate prioritate;
 
     public int getNrReclamatie() {
-
         return nrReclamatie;
     }
 
     public void setNrReclamatie(int nrReclamatie) {
         this.nrReclamatie = nrReclamatie;
+    }
+
+    public String getTitlu() {
+        return titlu;
+    }
+
+    public void setTitlu(String titlu) {
+        this.titlu = titlu;
     }
 
     public String getDescriere() {
@@ -46,20 +61,20 @@ public class Sesizari {
         this.adresa = adresa;
     }
 
-    public User getUser() {
-        return user;
+    public User getUser_id() {
+        return user_id;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser_id(User user_id) {
+        this.user_id = user_id;
     }
 
-    public Categorie getCategorie() {
-        return categorie;
+    public Institutie getCategorie_id() {
+        return institutie_id;
     }
 
-    public void setCategorie(Categorie categorie) {
-        this.categorie = categorie;
+    public void setCategorie_id(Institutie institutie_id) {
+        this.institutie_id = institutie_id;
     }
 
     public LocalDate getDataDepunerii() {
@@ -69,4 +84,29 @@ public class Sesizari {
     public void setDataDepunerii(LocalDate dataDepunerii) {
         this.dataDepunerii = dataDepunerii;
     }
+
+    public LocalDate getDataRezultat() {
+        return dataRezultat;
+    }
+
+    public void setDataRezultat(LocalDate dataRezultat) {
+        this.dataRezultat = dataRezultat;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+    public Prioritate getPrioritate() {
+        return prioritate;
+    }
+
+    public void setPrioritate(Prioritate prioritate) {
+        this.prioritate = prioritate;
+    }
+
 }

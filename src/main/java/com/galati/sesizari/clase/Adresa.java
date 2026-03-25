@@ -7,8 +7,8 @@ public class Adresa {
     private String nume;
     private String numar;
     private String zona;
-    private double latitudine;
-    private double longitudine;
+    //private double latitudine;
+    //private double longitudine;
 
     public Adresa() {}
     public Adresa(String nume, String numar, String zona) {

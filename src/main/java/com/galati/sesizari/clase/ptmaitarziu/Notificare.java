@@ -1,5 +1,7 @@
-package com.galati.sesizari.clase;
+package com.galati.sesizari.clase.ptmaitarziu;
 
+import com.galati.sesizari.clase.Sesizari;
+import com.galati.sesizari.clase.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

@@ -1,5 +1,6 @@
-package com.galati.sesizari.clase;
+package com.galati.sesizari.clase.ptmaitarziu;
 
+import com.galati.sesizari.clase.Sesizari;
 import jakarta.persistence.*;
 
 @Entity

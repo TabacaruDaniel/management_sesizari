@@ -24,7 +24,6 @@
     <div class="container">
         <div class="row g-4 align-items-stretch">
 
-            <!-- STÂNGA: FORMULAR -->
             <div class="col-lg-7">
                 <div class="form-shell h-100">
                     <div class="text-center mb-4">
@@ -93,8 +92,8 @@
                             </div>
                         </div>
 
-                        <input type="hidden" id="latitudine",name="latitudine">
-                        <input type="hidden" id="longitudine",name="longitudine">
+                        <input type="hidden" id="latitudine">
+                        <input type="hidden" id="longitudine">
 
                         <div class="mb-4">
                             <label for="poza" class="form-label custom-label">Încarcă o fotografie</label>
@@ -125,7 +124,6 @@
                 </div>
             </div>
 
-            <!-- DREAPTA: HARTA -->
             <div class="col-lg-5">
                 <div class="form-shell h-100 d-flex flex-column">
                     <div class="mb-3">
@@ -243,11 +241,11 @@
             prioritate: document.getElementById("prioritate").value,
             institutie: document.getElementById("institutie").value,
             adresa:{
-                strada: document.getElementById("strada").value,
-                numar: document.getElementById("numar").value,
-                zona: document.getElementById("zona").value,
-                latitudine: parseFloat(document.getElementById("latitudine").value || "0"),
-                longitudine: parseFloat(document.getElementById("longitudine").value || "0")
+            strada: document.getElementById("strada").value,
+            numar: document.getElementById("numar").value,
+            zona: document.getElementById("zona").value,
+            latitudine: parseFloat(document.getElementById("latitudine").value || "0"),
+            longitudine: parseFloat(document.getElementById("longitudine").value || "0")
             },
             institutie: null
         };

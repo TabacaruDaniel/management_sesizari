@@ -84,13 +84,6 @@ public class UserController {
         userService.registerUser(user);
         return "redirect:/login";
     }
-    @GetMapping("/sesizare/noua")
-    public String formular(HttpSession session) {
-        if (session.getAttribute("utilizatorLogat") == null) {
-            return "redirect:/login";
-        }
-        return "form-sesizare";
-    }
     @GetMapping("/logout")
     public String logout(HttpSession session, HttpServletResponse response) {
         session.invalidate();

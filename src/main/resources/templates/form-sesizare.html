@@ -189,7 +189,6 @@
             .addTo(map);
 
         try {
-            // Am adăugat parametrul 'types' pentru a forța Mapbox să caute și cartiere
             const response = await fetch(
                 `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}&language=ro&types=address,poi,neighborhood,locality,place`
             );
@@ -224,7 +223,6 @@
                     }
                 }
 
-                // Varianta B: Dacă nu e în context, căutăm în lista principală de rezultate
                 if (!gasitCartier) {
                     const featureCartier = data.features.find(f => f.place_type.includes('neighborhood') || f.place_type.includes('locality'));
                     if (featureCartier) {
@@ -232,8 +230,6 @@
                         gasitCartier = true;
                     }
                 }
-
-                // Varianta C: Doar dacă eșuează tot, punem numele orașului
                 if (!gasitCartier) {
                     const oras = data.features.find(f => f.place_type.includes('place'));
                     if (oras) {
@@ -245,37 +241,6 @@
             console.error("Eroare la extragerea datelor Mapbox:", error);
         }
     });
-
-    function trimiteSesizare() {
-        const sesizare = {
-            titlu: document.getElementById("titlu").value,
-            descriere: document.getElementById("descriere").value,
-            prioritate: document.getElementById("prioritate").value,
-            institutie: document.getElementById("institutie").value,
-            adresa: {
-                nume: document.getElementById("strada").value,
-                numar: document.getElementById("numar").value,
-                zona: document.getElementById("zona").value,
-                latitudine: parseFloat(document.getElementById("latitudine").value || "0"),
-                longitudine: parseFloat(document.getElementById("longitudine").value || "0")
-            }
-        };
-
-        console.log("Sesizare trimisă:", sesizare);
-
-        const boatContainer = document.getElementById("boatContainer");
-        boatContainer.classList.add("animate-boat");
-
-        const buton = document.querySelector(".submit-btn");
-        buton.disabled = true;
-        buton.innerText = "Se trimite...";
-
-        setTimeout(() => {
-            boatContainer.classList.remove("animate-boat");
-            document.getElementById("sesizareForm").style.display = "none";
-            document.getElementById("successAnim").style.display = "block";
-        }, 2500);
-    }
 </script>
 
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>

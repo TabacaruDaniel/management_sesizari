@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface SesizariRepo extends JpaRepository<Sesizari,Integer> {
+public interface SesizariRepo extends JpaRepository<Sesizari,Long> {
 
     List <Sesizari> findByUser_Username(String username);
     List<Sesizari> findAllByInstitutie(Integer institutie_id); //dupa tipul problemei

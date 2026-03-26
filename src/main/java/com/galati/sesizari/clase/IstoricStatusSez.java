@@ -1,5 +1,6 @@
 package com.galati.sesizari.clase;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.galati.sesizari.enums.Status;
 import jakarta.persistence.*;
 
@@ -13,6 +14,7 @@ public class IstoricStatusSez {
 
     @ManyToOne
     @JoinColumn(name = "sesizare_id")
+    @JsonIgnore
     private Sesizari sesizare;
 
     @Enumerated(EnumType.STRING) // Important ca să salveze text (ex: "REZOLVAT") nu cifre (0,1,2)

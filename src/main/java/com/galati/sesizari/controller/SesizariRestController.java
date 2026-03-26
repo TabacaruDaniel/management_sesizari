@@ -8,12 +8,10 @@ import com.galati.sesizari.service.EmailService; // Importă serviciul de email
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/sesizari")
@@ -24,6 +22,11 @@ public class SesizariRestController {
 
     @Autowired
     private EmailService emailService; // 1. Injectăm serviciul de email aici
+
+    @GetMapping("/toate")
+    public List<Sesizari> getToateSesizarile() {
+        return sesizariService.findAll(); // Sau cum se numește metoda ta de extragere totală
+    }
 
     @PostMapping("/salveaza")
     public ResponseEntity<String> salveazaJson(@RequestBody Sesizari sesizare, HttpSession session) {
@@ -38,7 +41,6 @@ public class SesizariRestController {
             sesizare.setUser(userLogat);
             sesizare.setDataDepunerii(LocalDate.now());
             sesizare.setStatus(Status.NOU);
-
             // 2. SALVĂM ÎN BAZA DE DATE
             sesizariService.salveazaSesizare(sesizare);
 

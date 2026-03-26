@@ -1,5 +1,6 @@
 package com.galati.sesizari.clase;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.galati.sesizari.enums.Prioritate;
 import com.galati.sesizari.enums.Status;
 import jakarta.persistence.*;
@@ -28,8 +29,10 @@ public class Sesizari {
     private Institutie institutie; //cheie straina institutie, determina categoria de care apartine plangerea
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Atasament> dovezi;
     @OneToMany(mappedBy = "sesizare", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<IstoricStatusSez> istoricStatus;
 
     @Column(updatable = false,name="data_sesizarii")

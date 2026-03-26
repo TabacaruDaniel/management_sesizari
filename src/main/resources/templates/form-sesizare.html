@@ -65,14 +65,18 @@
 
                         <div class="mb-4">
                             <label for="institutie" class="form-label custom-label">Instituție responsabilă</label>
-                            <select class="form-select custom-input" id="institutie">
+                            <select class="form-select custom-input" id="institutie" name="institutie">
                                 <option selected disabled>Alege instituția</option>
-                                <option>Primăria Galați</option>
-                                <option>Serviciul Drumuri</option>
-                                <option>Serviciul Iluminat Public</option>
-                                <option>Serviciul Salubritate</option>
-                                <option>Poliția Locală</option>
+                                <option value="Primaria">Primăria Galați</option>
+                                <option value="Drumuri">Serviciul Drumuri</option>
+                                <option value="Iluminat">Serviciul Iluminat Public</option>
+                                <option value="Salubritate">Serviciul Salubritate</option>
+                                <option value="Politia">Poliția Locală</option>
                             </select>
+
+                            <div class="form-text mt-2" style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; font-style: italic;">
+                                * Dacă nu sunteți sigur cui i se adresează problema, selectați <strong>Primăria Galați</strong>, iar noi o vom direcționa către serviciul competent.
+                            </div>
                         </div>
 
                         <div class="mb-4">

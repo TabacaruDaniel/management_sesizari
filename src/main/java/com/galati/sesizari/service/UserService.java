@@ -36,4 +36,5 @@ public class UserService {
         User userGasit=userRepo.findByUsername(username);
         return userGasit;
     }
+
 }

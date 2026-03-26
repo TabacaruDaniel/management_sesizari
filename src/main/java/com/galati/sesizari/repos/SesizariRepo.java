@@ -12,9 +12,11 @@ import java.util.List;
 public interface SesizariRepo extends JpaRepository<Sesizari,Long> {
 
     List <Sesizari> findByUser_Username(String username);
-    List<Sesizari> findAllByInstitutie(Integer institutie_id); //dupa tipul problemei
+    List<Sesizari> findAllByInstitutie(Long institutie_id); //dupa tipul problemei
     List<Sesizari> findByPrioritate(Prioritate prioritate);
     List<Sesizari> findByAdresa_Zona(String zona);
      Sesizari findByTitlu(String titlu);
+
+
 
 }

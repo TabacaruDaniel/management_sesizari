@@ -46,7 +46,7 @@
 <nav class="navbar navbar-expand-lg navbar-custom mb-4">
     <div class="container">
         <a class="navbar-brand text-white fw-bold" href="#">
-            Galați <span class="fw-light">Sesizări</span>
+            📍 Galați <span class="fw-light">Sesizări</span>
         </a>
         <div class="ms-auto d-flex align-items-center">
             <span class="me-3 text-white-50">Logat ca: <strong class="text-white" th:text="${numeInstitutie}">Instituție</strong></span>
@@ -104,12 +104,11 @@
                     <td>
                         <form th:action="@{/sesizari/actualizeaza-status}" method="post" class="d-flex gap-2 justify-content-center">
                             <input type="hidden" name="idSesizare" th:value="${sesizare.nrReclamatie}" />
-
-                            <select class="form-select custom-input" id="institutie">
-                                <option value="" selected disabled>Alege instituția</option>
-                                <option th:each="inst : ${institutii}"
-                                        th:value="${inst.institutie_id}"
-                                        th:text="${inst.numeInstitutie}">
+                            <select name="noulStatus" class="form-select form-select-sm" style="width: 140px;">
+                                <option th:each="st : ${T(com.galati.sesizari.enums.Status).values()}"
+                                        th:value="${st}"
+                                        th:text="${st}"
+                                        th:selected="${st == sesizare.status}">
                                 </option>
                             </select>
                             <button type="submit" class="btn btn-sm btn-success">Salvează</button>

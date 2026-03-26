@@ -17,7 +17,7 @@ public class EmailService {
 
         mesaj.setTo(catre); // Adresa pe care a scris-o userul în formular
         mesaj.setSubject("Confirmare Sesizare: " + titluSesizare);
-        mesaj.setText("Bună ziua,\n\nAm primit sesizarea dumneavoastră și am înregistrat-o în baza noastră de date Cloud.\n\nO zi bună!");
+        mesaj.setText("Bună ziua,\n\nAm primit sesizarea dumneavoastră și am înregistrat-o în baza noastră de date Cloud\n\tUn reprezentant va va prelua sesizarea si va va trimite un raspuns in decurs de 30 de zile.\n\nO zi bună!");
 
         // Trimitem efectiv mailul
         mailSender.send(mesaj);

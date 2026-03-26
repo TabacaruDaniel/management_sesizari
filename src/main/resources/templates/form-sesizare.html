@@ -24,7 +24,6 @@
     <div class="container">
         <div class="row g-4 align-items-stretch">
 
-            <!-- STÂNGA: FORMULAR -->
             <div class="col-lg-7">
                 <div class="form-shell h-100">
                     <div class="text-center mb-4">
@@ -125,7 +124,6 @@
                 </div>
             </div>
 
-            <!-- DREAPTA: HARTA -->
             <div class="col-lg-5">
                 <div class="form-shell h-100 d-flex flex-column">
                     <div class="mb-3">
@@ -194,14 +192,11 @@
             );
             const data = await response.json();
 
-            // Resetăm câmpurile ca să fie curate la fiecare click nou
             document.getElementById("strada").value = "";
             document.getElementById("numar").value = "";
             document.getElementById("zona").value = "";
 
             if (data.features && data.features.length > 0) {
-
-                // 1. STRADA ȘI NUMĂRUL
                 const adresaExacta = data.features.find(f => f.place_type.includes('address'));
                 if (adresaExacta) {
                     document.getElementById("strada").value = adresaExacta.text || "";
@@ -211,10 +206,7 @@
                     if (stradaSimpla) document.getElementById("strada").value = stradaSimpla.text || "";
                 }
 
-                // 2. VÂNĂTOAREA DE CARTIERE (Zona)
                 let gasitCartier = false;
-
-                // Varianta A: Căutăm cartierul ascuns în "contextul" adresei exacte (aici îl ține Mapbox de obicei)
                 if (adresaExacta && adresaExacta.context) {
                     const contextCartier = adresaExacta.context.find(c => c.id.includes('neighborhood') || c.id.includes('locality'));
                     if (contextCartier) {
@@ -222,7 +214,6 @@
                         gasitCartier = true;
                     }
                 }
-
                 if (!gasitCartier) {
                     const featureCartier = data.features.find(f => f.place_type.includes('neighborhood') || f.place_type.includes('locality'));
                     if (featureCartier) {
@@ -241,6 +232,53 @@
             console.error("Eroare la extragerea datelor Mapbox:", error);
         }
     });
+
+    // --- FUNCȚIA DE SALVARE ADAUGATĂ AICI ---
+    async function trimiteSesizare() {
+        const sesizareData = {
+            titlu: document.getElementById("titlu").value,
+            descriere: document.getElementById("descriere").value,
+            prioritate: document.getElementById("prioritate").value,
+            institutie: document.getElementById("institutie").value,
+            adresa:{
+            strada: document.getElementById("strada").value,
+            numar: document.getElementById("numar").value,
+            zona: document.getElementById("zona").value,
+            latitudine: parseFloat(document.getElementById("latitudine").value || "0"),
+            longitudine: parseFloat(document.getElementById("longitudine").value || "0")
+            },
+            institutie: null
+        };
+        const boatContainer = document.getElementById("boatContainer");
+        boatContainer.classList.add("animate-boat");
+        const buton = document.querySelector(".submit-btn");
+        buton.disabled = true;
+
+        try {
+            const response = await fetch('/api/sesizari/salveaza', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(sesizareData)
+            });
+
+            if (response.ok) {
+                setTimeout(() => {
+                    boatContainer.classList.remove("animate-boat");
+                    document.getElementById("sesizareForm").style.display = "none";
+                    document.getElementById("successAnim").style.display = "block";
+                }, 2500);
+            } else {
+                alert("Eroare la salvare! Verifică dacă ești logat.");
+                buton.disabled = false;
+                boatContainer.classList.remove("animate-boat");
+            }
+        } catch (error) {
+            console.error("Eroare rețea:", error);
+            alert("Serverul nu răspunde.");
+            buton.disabled = false;
+            boatContainer.classList.remove("animate-boat");
+        }
+    }
 </script>
 
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>

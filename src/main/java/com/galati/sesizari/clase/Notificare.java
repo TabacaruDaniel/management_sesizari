@@ -1,4 +1,4 @@
-package com.galati.sesizari.entity;
+package com.galati.sesizari.clase;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;

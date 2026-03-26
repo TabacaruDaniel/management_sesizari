@@ -7,6 +7,9 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
 </head>
 <body class="galati-page">
 
@@ -17,18 +20,18 @@
     </div>
 </nav>
 
-<main class="hero-form d-flex align-items-center">
-    <div class="container py-5">
-        <div class="row justify-content-center">
+<main class="hero-form py-5">
+    <div class="container">
+        <div class="row g-4 align-items-stretch">
 
-            <div class="col-xl-8 col-lg-9">
-
-                <div class="form-shell">
+            <!-- STÂNGA: FORMULAR -->
+            <div class="col-lg-7">
+                <div class="form-shell h-100">
                     <div class="text-center mb-4">
                         <span class="form-kicker">Platformă civică locală</span>
                         <h1 class="form-title">Trimite o sesizare</h1>
                         <p class="form-subtitle">
-                            Raportează rapid o problemă din municipiul Galați, iar statusul sesizării va putea fi urmărit ulterior.
+                            Selectează locația direct pe hartă sau completează manual câmpurile.
                         </p>
                     </div>
 
@@ -64,6 +67,7 @@
                                        placeholder="Ex. Micro 19">
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-4">
                                 <label for="prioritate" class="form-label custom-label">Prioritate</label>
@@ -89,6 +93,9 @@
                             </div>
                         </div>
 
+                        <input type="hidden" id="latitudine">
+                        <input type="hidden" id="longitudine">
+
                         <div class="mb-4">
                             <label for="poza" class="form-label custom-label">Încarcă o fotografie</label>
                             <input class="form-control custom-file" type="file" id="poza">
@@ -98,7 +105,7 @@
                         </div>
 
                         <div class="text-center pt-2">
-                            <button type="button" onclick="trimiteSesizare()" class="btn submit-btn px-5">
+                            <button type="button" onclick="trimiteSesizare()" class="submit-btn px-5">
                                 Trimite sesizarea
                             </button>
                         </div>
@@ -116,8 +123,22 @@
                         <p class="success-text">Mulțumim pentru implicare. Sesizarea a fost înregistrată.</p>
                     </div>
                 </div>
-
             </div>
+
+            <!-- DREAPTA: HARTA -->
+            <div class="col-lg-5">
+                <div class="form-shell h-100 d-flex flex-column">
+                    <div class="mb-3">
+                        <h3 class="form-map-title">Alege locația pe hartă</h3>
+                        <p class="form-hint">
+                            Apasă pe hartă pentru a plasa pin-ul. Câmpurile de adresă se vor completa automat.
+                        </p>
+                    </div>
+
+                    <div id="map" class="rounded-4 flex-grow-1" style="min-height: 520px;"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 </main>
@@ -137,6 +158,94 @@
 </div>
 
 <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZ2l1bGlhMTAxMTEiLCJhIjoiY21uNmh0b3F3MDVrdDJycGRtdGJmNmxybCJ9.sl_motBiHwZYyZiOTv5SHQ';
+
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/standard',
+        center: [28.04, 45.43],
+        zoom: 12
+    });
+
+    map.addControl(new mapboxgl.NavigationControl());
+
+    let marker = null;
+
+    map.on('click', async (e) => {
+        const lng = e.lngLat.lng;
+        const lat = e.lngLat.lat;
+
+        document.getElementById("latitudine").value = lat;
+        document.getElementById("longitudine").value = lng;
+
+        if (marker) {
+            marker.remove();
+        }
+
+        marker = new mapboxgl.Marker({
+            color: "#b8946b"
+        })
+            .setLngLat([lng, lat])
+            .addTo(map);
+
+        try {
+            // Am adăugat parametrul 'types' pentru a forța Mapbox să caute și cartiere
+            const response = await fetch(
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}&language=ro&types=address,poi,neighborhood,locality,place`
+            );
+            const data = await response.json();
+
+            // Resetăm câmpurile ca să fie curate la fiecare click nou
+            document.getElementById("strada").value = "";
+            document.getElementById("numar").value = "";
+            document.getElementById("zona").value = "";
+
+            if (data.features && data.features.length > 0) {
+
+                // 1. STRADA ȘI NUMĂRUL
+                const adresaExacta = data.features.find(f => f.place_type.includes('address'));
+                if (adresaExacta) {
+                    document.getElementById("strada").value = adresaExacta.text || "";
+                    document.getElementById("numar").value = adresaExacta.address || "";
+                } else {
+                    const stradaSimpla = data.features.find(f => f.place_type.includes('street') || f.place_type.includes('poi'));
+                    if (stradaSimpla) document.getElementById("strada").value = stradaSimpla.text || "";
+                }
+
+                // 2. VÂNĂTOAREA DE CARTIERE (Zona)
+                let gasitCartier = false;
+
+                // Varianta A: Căutăm cartierul ascuns în "contextul" adresei exacte (aici îl ține Mapbox de obicei)
+                if (adresaExacta && adresaExacta.context) {
+                    const contextCartier = adresaExacta.context.find(c => c.id.includes('neighborhood') || c.id.includes('locality'));
+                    if (contextCartier) {
+                        document.getElementById("zona").value = contextCartier.text;
+                        gasitCartier = true;
+                    }
+                }
+
+                // Varianta B: Dacă nu e în context, căutăm în lista principală de rezultate
+                if (!gasitCartier) {
+                    const featureCartier = data.features.find(f => f.place_type.includes('neighborhood') || f.place_type.includes('locality'));
+                    if (featureCartier) {
+                        document.getElementById("zona").value = featureCartier.text;
+                        gasitCartier = true;
+                    }
+                }
+
+                // Varianta C: Doar dacă eșuează tot, punem numele orașului
+                if (!gasitCartier) {
+                    const oras = data.features.find(f => f.place_type.includes('place'));
+                    if (oras) {
+                        document.getElementById("zona").value = oras.text;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Eroare la extragerea datelor Mapbox:", error);
+        }
+    });
+
     function trimiteSesizare() {
         const sesizare = {
             titlu: document.getElementById("titlu").value,
@@ -146,31 +255,26 @@
             adresa: {
                 nume: document.getElementById("strada").value,
                 numar: document.getElementById("numar").value,
-                zona: document.getElementById("zona").value
+                zona: document.getElementById("zona").value,
+                latitudine: parseFloat(document.getElementById("latitudine").value || "0"),
+                longitudine: parseFloat(document.getElementById("longitudine").value || "0")
             }
         };
 
         console.log("Sesizare trimisă:", sesizare);
 
-        // 1. Găsim barca și îi punem clasa de animație din CSS
         const boatContainer = document.getElementById("boatContainer");
         boatContainer.classList.add("animate-boat");
 
-        // (Opțional) Dezactivăm butonul ca să nu dea click de 2 ori
         const buton = document.querySelector(".submit-btn");
         buton.disabled = true;
         buton.innerText = "Se trimite...";
 
-        // 2. Așteptăm 2.5 secunde (cât durează zborul bărcii)
         setTimeout(() => {
-            // Scoatem clasa bărcii ca să revină la poziția inițială
             boatContainer.classList.remove("animate-boat");
-
-            // 3. Ascundem formularul și arătăm mesajul tău de succes cu Lottie
             document.getElementById("sesizareForm").style.display = "none";
             document.getElementById("successAnim").style.display = "block";
-
-        }, 2500); // 2500ms = 2.5 secunde
+        }, 2500);
     }
 </script>
 

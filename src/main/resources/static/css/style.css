@@ -226,3 +226,24 @@ textarea.custom-input {
         opacity: 0;
     }
 }
+/* ===== HARTA DIN FORMULAR ===== */
+#map {
+    width: 100%;
+    border: 1px solid #e2d8c9;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+/* Titlu hartă */
+.form-map-title {
+    color: #4a4033;
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* Text mic explicativ */
+.form-hint {
+    font-size: 0.9rem;
+    color: #8b7b65;
+}

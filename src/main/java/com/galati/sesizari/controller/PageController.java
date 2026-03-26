@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PageController {
 
-    @GetMapping("/sesizare/noua")
-    public String formSesizare() {
-        return "form-sesizare";
-    }
+    // Am lăsat doar harta, formularul se mută exclusiv la SesizariController
     @GetMapping("/sesizari/harta")
     public String hartaSesizari() {
         return "harta-sesizari";

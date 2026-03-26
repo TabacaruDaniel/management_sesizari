@@ -7,8 +7,8 @@ public class Adresa {
     private String nume;
     private String numar;
     private String zona;
-    //private double latitudine;
-    //private double longitudine;
+    private double latitudine;
+    private double longitudine;
 
     public Adresa() {}
     public Adresa(String nume, String numar, String zona) {
@@ -41,5 +41,21 @@ public class Adresa {
     }
     public void setZona(String zona) {
         this.zona = zona;
+    }
+
+    public void setLatitudine(double latitudine) {
+        this.latitudine = latitudine;
+    }
+
+    public void setLongitudine(double longitudine) {
+        this.longitudine = longitudine;
+    }
+
+    public double getLatitudine() {
+        return latitudine;
+    }
+
+    public double getLongitudine() {
+        return longitudine;
     }
 }

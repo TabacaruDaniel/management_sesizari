@@ -31,12 +31,17 @@
                         </p>
                     </div>
 
-                    <form th:action="@{/login}" method="post" id="loginForm">
+                    <form th:action="@{/login}" method="post">
+
+                        <div th:if="${error}" class="alert alert-danger text-center"
+                             style="background: rgba(220, 53, 69, 0.2); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; margin-bottom: 20px;">
+                            <span th:text="${error}">Mesaj eroare</span>
+                        </div>
 
                         <div class="mb-4">
-                            <label for="username" class="form-label custom-label">Email sau Utilizator</label>
+                            <label for="username" class="form-label custom-label">Nume utilizator</label>
                             <input type="text" name="username" class="form-control custom-input" id="username"
-                                   placeholder="nume@exemplu.ro" required>
+                                   placeholder="Utilizator123" required>
                         </div>
 
                         <div class="mb-4">
@@ -56,10 +61,11 @@
                         </div>
 
                         <div class="text-center pt-2">
-                            <button type="button" onclick="redirectLaSesizari()" class="btn submit-btn w-100 py-2">
+                            <button type="submit" class="btn submit-btn w-100 py-2">
                                 Intră în cont
                             </button>
                         </div>
+                    </form>
 
                     <div class="text-center mt-4">
                         <p class="form-hint">

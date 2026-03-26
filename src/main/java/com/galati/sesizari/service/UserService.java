@@ -11,6 +11,17 @@ public class UserService {
     @Autowired
     private UserRepo userRepo;
 
+    public Boolean verificaUsername(String username) {
+        return userRepo.existsByUsername(username);
+    }
+    public Boolean verificaEmail(String email) {
+        return userRepo.existsByEmail(email);
+    }
+    public Boolean verificaPassword(String password) {
+        return userRepo.existsByPassword(password);
+    }
+
+
     public void registerUser(User user) {
         userRepo.save(user);
     }

@@ -9,6 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepo extends JpaRepository<User,Integer> {
 
     boolean existsByEmail(String email);
+
     User findByUsernameAndPassword(String username, String password);
+    boolean existsByUsername(String username);
+    boolean existsByPassword(String password);
+
     List<User> findByRol(Rol rol);
 }

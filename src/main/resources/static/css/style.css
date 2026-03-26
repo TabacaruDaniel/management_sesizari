@@ -153,3 +153,46 @@ textarea.custom-input {
         font-size: 2rem;
     }
 }
+/* ========================================== */
+/* ANIMAȚIE ZBOR BARCĂ GALAȚI                 */
+/* ========================================== */
+
+.boat-container {
+    position: fixed;
+    bottom: -150px;  /* Ascunsă sub ecran inițial */
+    left: 10%;       /* Pornește din stânga-jos */
+    width: 150px;    /* Dimensiunea bărcii (o poți face mai mică/mare de aici) */
+    height: 150px;
+    opacity: 0;      /* Invizibilă până dai click */
+    z-index: 9999;   /* Să treacă deasupra formularului tău alb */
+    pointer-events: none; /* Să nu blocheze click-urile pe pagină */
+}
+
+/* Clasa adăugată de JavaScript la click */
+.animate-boat {
+    animation: flyBoatGalati 2.5s ease-in-out forwards;
+}
+
+/* Traseul de zbor */
+@keyframes flyBoatGalati {
+    0% {
+        transform: translate(0, 0) rotate(0deg) scale(0.5);
+        opacity: 0;
+    }
+    15% {
+        opacity: 1;
+        transform: translate(15vw, -15vh) rotate(-10deg) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(50vw, -55vh) rotate(-15deg);
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        /* Iese prin colțul din dreapta-sus */
+        transform: translate(100vw, -100vh) rotate(-25deg) scale(0.7);
+        opacity: 0;
+    }
+}

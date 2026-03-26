@@ -6,14 +6,14 @@ import jakarta.persistence.*;
 @Entity
 public class Feedback {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int feedback_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long feedback_id;
 
     private int rating; //1-5
     private String comentariu;
 
     public Feedback() {}
-    public Feedback(int id, int rating, String comentariu) {
+    public Feedback(Long id, int rating, String comentariu) {
         this.feedback_id = id;
         this.rating = rating;
         this.comentariu = comentariu;

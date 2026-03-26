@@ -28,7 +28,9 @@ public class SesizariRestController {
             return ResponseEntity.status(401).body("Trebuie să fii logat!");
         }
 
-        try {
+        try
+
+        {
             sesizare.setUser(userLogat);
             sesizare.setDataDepunerii(LocalDate.now());
             sesizare.setStatus(Status.NOU);

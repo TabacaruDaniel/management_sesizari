@@ -21,5 +21,10 @@ public class SesizariController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping("/harta-sesizarilor")
+    public String hartaSesizari(){
+        return "harta-sesizari";
+    }
 }
 

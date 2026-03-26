@@ -35,6 +35,7 @@ public class SesizariRestController {
         }
         try
         {
+            sesizare.setNr_aprecieri(0);
             sesizare.setUser(userLogat);
             sesizare.setDataDepunerii(LocalDate.now());
             sesizare.setStatus(Status.NOU);
@@ -42,6 +43,7 @@ public class SesizariRestController {
             emailService.trimiteConfirmare(userLogat.getEmail(), sesizare.getTitlu());
             return ResponseEntity.ok("Sesizare salvată cu succes!");
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Eroare la baza de date: " + e.getMessage());
         }
     }

@@ -16,6 +16,8 @@ public class Sesizari {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+    @Column(nullable = false)
+    private int nr_aprecieri = 0;
     private String titlu;
     private String descriere; //descrierea evenimentului
     @Embedded
@@ -24,8 +26,9 @@ public class Sesizari {
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user; //cheie straina user_id
-    @Column(name="institutie_id")
-    private Long institutie; //cheie straina institutie, determina categoria de care apartine plangerea
+    @ManyToOne
+    @JoinColumn(name="institutie_id")
+    private Institutie institutie; //cheie straina institutie, determina categoria de care apartine plangerea
 
 
     @OneToMany(mappedBy = "sesizare", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -45,7 +48,7 @@ public class Sesizari {
     @Enumerated(EnumType.STRING)
     private Prioritate prioritate;
 
-    public Sesizari(Long nrReclamatie, String titlu, String descriere, Adresa adresa, User user_id, Long institutie_id, LocalDate dataDepunerii, LocalDate dataRezolvarii, Prioritate prioritate, Status status) {
+    public Sesizari(Long nrReclamatie, String titlu, String descriere, Adresa adresa, User user_id, Institutie institutie_id, LocalDate dataDepunerii, LocalDate dataRezolvarii, Prioritate prioritate, Status status) {
         this.nrReclamatie = nrReclamatie;
         this.titlu = titlu;
         this.descriere = descriere;
@@ -109,11 +112,11 @@ public class Sesizari {
         this.user = user;
     }
 
-    public Long getInstitutie() {
+    public Institutie getInstitutie() {
         return institutie;
     }
 
-    public void setInstitutie(Long institutie) {
+    public void setInstitutie(Institutie institutie) {
         this.institutie = institutie;
     }
 
@@ -144,6 +147,14 @@ public class Sesizari {
 
     public Prioritate getPrioritate() {
         return prioritate;
+    }
+
+    public void setNr_aprecieri(int nr_aprecieri) {
+        this.nr_aprecieri = nr_aprecieri;
+    }
+
+    public int getNr_aprecieri() {
+        return nr_aprecieri;
     }
 
     public void setPrioritate(Prioritate prioritate) {

@@ -42,7 +42,6 @@ public class UserController {
         }
         return "login";
     }
-
     @PostMapping("/login")
     public String proceseazaLogin(@ModelAttribute User user,
                                   @RequestParam(value="rememberMe", required = false) String rememberMe,
@@ -52,28 +51,22 @@ public class UserController {
         User userLogat = userService.loginUser(user);
 
         if (userLogat != null) {
+            session.setAttribute("utilizatorLogat", userLogat);
+
+            // Creează cookie dacă utilizatorul a bifat rememberMe
+            if (rememberMe != null) {
+                Cookie cookie = new Cookie("rememberedUser", userLogat.getUsername());
+                cookie.setMaxAge(60 * 60 * 24 * 7); // 7 zile
+                cookie.setPath("/");
+                response.addCookie(cookie);
+            }
+
+            // Redirecționare în funcție de rol
             if (userLogat.getRol() == Rol.USER) {
-                session.setAttribute("utilizatorLogat", userLogat);
-
-                if (rememberMe != null) {
-                    Cookie cookie = new Cookie("rememberedUser", userLogat.getUsername());
-                    cookie.setMaxAge(60 * 60 * 24 * 7);
-                    cookie.setPath("/");
-                    response.addCookie(cookie);
-                }
-                return "redirect:/sesizare/noua";}
-                else if (userLogat.getRol() == Rol.INSTITUTIE) {
-                    session.setAttribute("utilizatorLogat", userLogat);
-
-                    if (rememberMe != null) {
-                        Cookie cookie = new Cookie("rememberedUser", userLogat.getUsername());
-                        cookie.setMaxAge(60 * 60 * 24 * 7);
-                        cookie.setPath("/");
-                        response.addCookie(cookie);
-                    }
-                    return "redirect:/institutie/dashboard";}
-
-                else {
+                return "redirect:/sesizare/noua";
+            } else if (userLogat.getRol() == Rol.INSTITUTIE) {
+                return "redirect:/institutie/dashboard";
+            } else {
                 model.addAttribute("error", "Acces interzis!");
                 return "login";
             }

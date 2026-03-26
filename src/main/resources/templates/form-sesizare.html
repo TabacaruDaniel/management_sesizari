@@ -253,7 +253,6 @@
             case 'Poliția Locală': idinsti = 5; break;
             default: idinsti = null;
         }
-        console.log("ID Instituție:", idinsti);
 
         // 3. Verificăm dacă avem ID-ul înainte de a merge mai departe
         if (idinsti === null) {
@@ -266,7 +265,9 @@
             titlu: document.getElementById("titlu").value,
             descriere: document.getElementById("descriere").value,
             prioritate: document.getElementById("prioritate").value,
-            institutie: idinsti,
+            institutie: {
+                institutie_id: 1
+            },
             adresa: {
                 nume: document.getElementById("strada").value, // Schimbă în 'strada' dacă în Java ai 'strada'
                 numar: document.getElementById("numar").value,
@@ -275,7 +276,6 @@
                 longitudine: parseFloat(document.getElementById("longitudine").value || "0")
             }
         };
-        console.log("JSON trimis:", sesizareData);
 
         // LOG pentru depanare - acum va merge pentru că sesizareData e definită deasupra
 
@@ -292,6 +292,7 @@
             const response = await fetch('/api/sesizari/salveaza', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify(sesizareData)
             });
 
@@ -303,7 +304,7 @@
                 }, 2500);
             } else {
                 // Dacă ajungi aici, verifică consola browserului (F12 -> Network -> Click pe 'salveaza' -> Response)
-                alert("Eroare la salvare! Serverul a respins datele.", sesizareData);
+                alert("Eroare la salvare! Serverul a respins datele.");
                 if (buton) buton.disabled = false;
                 if (boatContainer) boatContainer.classList.remove("animate-boat");
             }

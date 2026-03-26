@@ -13,8 +13,6 @@ import java.time.LocalDate;
 
 @Controller
 public class SesizariController {
-
-    // 1. Injectăm Repository-ul (sau Service-ul dacă ai unul)
     @Autowired
     private UserRepo userRepo;
 
@@ -29,16 +27,11 @@ public class SesizariController {
 
     @PostMapping("/register")
     public String proceseazaRegister(@ModelAttribute User user) {
-        // 2. Setăm rolul implicit (pentru a evita erori de tip null în DB)
-        user.setRol(Rol.USER);
+            user.setRol(Rol.USER);
+            userRepo.save(user);
+            return "redirect:/login";
 
-        // 3. Salvăm obiectul în baza de date
-        userRepo.save(user);
-
-        // 4. Redirecționăm către login după succes
-        return "redirect:/login";
     }
-
     @GetMapping("/sesizare/noua")
     public String formular() { return "form-sesizare"; }
 }

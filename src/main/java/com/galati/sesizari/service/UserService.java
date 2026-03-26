@@ -12,15 +12,13 @@ public class UserService {
     private UserRepo userRepo;
 
     public void registerUser(User user) {
-        user.setRol(Rol.USER);
         userRepo.save(user);
-        if(user.getUsername().equals("admin") && user.getPassword().equals("miaunel123")) {
-            User newUser = new User();
-            newUser.setRol(Rol.ADMIN);
-        }
-        if(user.getUsername().equals("Institutie") && user.getPassword().equals("miaunel123**")) {
-            User newUser = new User();
-            newUser.setRol(Rol.INSTITUTIE);
-        }
+    }
+    public User loginUser(User user){
+        User userGasit=userRepo.findByUsernameAndPassword(user.getUsername(), user.getPassword());
+        if(userGasit!=null){
+            return userGasit;
+       }
+        else return null;
     }
 }

@@ -7,27 +7,31 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
 </head>
 <body class="galati-page">
 
-<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+<nav class="navbar navbar-expand-lg custom-navbar">
     <div class="container">
         <a class="navbar-brand fw-semibold" href="/">Sesizări Galați</a>
-        <a class="btn btn-outline-light btn-back" href="/">Înapoi acasă</a>
+        <a class="btn btn-back" href="/">Înapoi acasă</a>
     </div>
 </nav>
 
-<main class="hero-form d-flex align-items-center">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-xl-8 col-lg-9">
+<main class="hero-form py-5">
+    <div class="container">
+        <div class="row g-4 align-items-stretch">
 
-                <div class="form-shell">
+            <!-- STÂNGA: FORMULAR -->
+            <div class="col-lg-7">
+                <div class="form-shell h-100">
                     <div class="text-center mb-4">
                         <span class="form-kicker">Platformă civică locală</span>
                         <h1 class="form-title">Trimite o sesizare</h1>
                         <p class="form-subtitle">
-                            Raportează rapid o problemă din municipiul Galați, iar statusul sesizării va putea fi urmărit ulterior.
+                            Selectează locația direct pe hartă sau completează manual câmpurile.
                         </p>
                     </div>
 
@@ -46,38 +50,51 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-4">
-                                <label for="adresa" class="form-label custom-label">Adresă / locație</label>
-                                <input type="text" class="form-control custom-input" id="adresa"
-                                       placeholder="Ex. Strada Brăilei nr. 10">
+                                <label for="strada" class="form-label custom-label">Stradă</label>
+                                <input type="text" class="form-control custom-input" id="strada"
+                                       placeholder="Ex. Strada Brăilei">
                             </div>
 
+                            <div class="col-md-3 mb-4">
+                                <label for="numar" class="form-label custom-label">Număr</label>
+                                <input type="text" class="form-control custom-input" id="numar"
+                                       placeholder="Ex. 12A">
+                            </div>
+
+                            <div class="col-md-3 mb-4">
+                                <label for="zona" class="form-label custom-label">Zonă</label>
+                                <input type="text" class="form-control custom-input" id="zona"
+                                       placeholder="Ex. Micro 19">
+                            </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-md-6 mb-4">
                                 <label for="prioritate" class="form-label custom-label">Prioritate</label>
                                 <select class="form-select custom-input" id="prioritate">
-                                    <option selected disabled>Alege prioritatea</option>
-                                    <option>Scăzută</option>
-                                    <option>Medie</option>
-                                    <option>Ridicată</option>
-                                    <option>Urgentă</option>
+                                    <option value="" selected disabled>Alege prioritatea</option>
+                                    <option value="SCAZUTA">Scăzută</option>
+                                    <option value="MEDIE">Medie</option>
+                                    <option value="INALTA">Ridicată</option>
+                                    <option value="URGENTA">Urgentă</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="institutie" class="form-label custom-label">Instituție responsabilă</label>
+                                <select class="form-select custom-input" id="institutie">
+                                    <option value="" selected disabled>Alege instituția</option>
+                                    <option value="Primăria Galați">Primăria Galați</option>
+                                    <option value="Serviciul Drumuri">Serviciul Drumuri</option>
+                                    <option value="Serviciul Iluminat Public">Serviciul Iluminat Public</option>
+                                    <option value="Serviciul Salubritate">Serviciul Salubritate</option>
+                                    <option value="Poliția Locală">Poliția Locală</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label for="institutie" class="form-label custom-label">Instituție responsabilă</label>
-                            <select class="form-select custom-input" id="institutie" name="institutie">
-                                <option selected disabled>Alege instituția</option>
-                                <option value="Primaria">Primăria Galați</option>
-                                <option value="Drumuri">Serviciul Drumuri</option>
-                                <option value="Iluminat">Serviciul Iluminat Public</option>
-                                <option value="Salubritate">Serviciul Salubritate</option>
-                                <option value="Politia">Poliția Locală</option>
-                            </select>
-
-                            <div class="form-text mt-2" style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; font-style: italic;">
-                                * Dacă nu sunteți sigur cui i se adresează problema, selectați <strong>Primăria Galați</strong>, iar noi o vom direcționa către serviciul competent.
-                            </div>
-                        </div>
+                        <input type="hidden" id="latitudine">
+                        <input type="hidden" id="longitudine">
 
                         <div class="mb-4">
                             <label for="poza" class="form-label custom-label">Încarcă o fotografie</label>
@@ -88,7 +105,7 @@
                         </div>
 
                         <div class="text-center pt-2">
-                            <button type="button" onclick="showSuccess()" class="btn submit-btn px-5">
+                            <button type="button" onclick="trimiteSesizare()" class="submit-btn px-5">
                                 Trimite sesizarea
                             </button>
                         </div>
@@ -106,17 +123,124 @@
                         <p class="success-text">Mulțumim pentru implicare. Sesizarea a fost înregistrată.</p>
                     </div>
                 </div>
-
             </div>
+
+            <!-- DREAPTA: HARTA -->
+            <div class="col-lg-5">
+                <div class="form-shell h-100 d-flex flex-column">
+                    <div class="mb-3">
+                        <h3 class="form-map-title">Alege locația pe hartă</h3>
+                        <p class="form-hint">
+                            Apasă pe hartă pentru a plasa pin-ul. Câmpurile de adresă se vor completa automat.
+                        </p>
+                    </div>
+
+                    <div id="map" class="rounded-4 flex-grow-1" style="min-height: 520px;"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 </main>
 
+<div id="boatContainer" class="boat-container">
+    <svg fill="#5a4e3c" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+         viewBox="0 0 519 519" style="width: 100%; height: 100%;">
+        <g>
+            <path d="M517.845,235.501c-1.374-2.18-3.77-3.501-6.345-3.501H399.265c-21.692,0-42.364,6.631-59.706,18.929l-14.034-46.78 C320.474,187.313,305.27,176,287.691,176H239v-17h32.5c8.547,0,15.5-6.953,15.5-15.5v-16c0-8.547-6.953-15.5-15.5-15.5H239V95.5 c0-4.142-3.358-7.5-7.5-7.5s-7.5,3.358-7.5,7.5V112h-32.5c-8.547,0-15.5,6.953-15.5,15.5v16c0,8.547,6.953,15.5,15.5,15.5H224v17 h-80.5c-12.958,0-23.5,10.542-23.5,23.5V296H7.5c-2.33,0-4.528,1.083-5.947,2.931c-1.42,1.848-1.9,4.25-1.299,6.502L22.752,389.8 C29.22,414.058,51.273,431,76.377,431H393.25c21.248,0,40.901-12.386,50.068-31.554l74.948-156.71 C519.378,240.412,519.218,237.681,517.845,235.501z M191,143.5v-16c0-0.276,0.224-0.5,0.5-0.5h80c0.276,0,0.5,0.224,0.5,0.5v16 c0,0.276-0.224,0.5-0.5,0.5h-80C191.224,144,191,143.776,191,143.5z M325.42,256H287.5c-13.509,0-24.5-10.991-24.5-24.5v-8 c0-0.276,0.224-0.5,0.5-0.5h52.02L325.42,256z M215.5,223c0.276,0,0.5,0.224,0.5,0.5v32c0,0.276-0.224,0.5-0.5,0.5H183v-33H215.5z M168,256h-33v-33h33V256z M135,271h80.5c8.547,0,15.5-6.953,15.5-15.5v-32c0-8.547-6.953-15.5-15.5-15.5H135v-8.5 c0-4.687,3.813-8.5,8.5-8.5h144.191c10.742,0,20.055,6.812,23.324,17H263.5c-8.547,0-15.5,6.953-15.5,15.5v8 c0,21.78,17.72,39.5,39.5,39.5h29.894l-25,25H135V271z M429.786,392.974C423.096,406.962,408.755,416,393.25,416H76.377 c-18.32,0-34.412-12.363-39.133-30.065L17.262,311H295.5c1.989,0,3.897-0.79,5.303-2.197l35.882-35.882 C353.401,256.206,375.626,247,399.265,247H499.6L429.786,392.974z"/>
+            <path d="M127.5,336c-12.958,0-23.5,10.542-23.5,23.5s10.542,23.5,23.5,23.5s23.5-10.542,23.5-23.5S140.458,336,127.5,336z M127.5,368c-4.687,0-8.5-3.813-8.5-8.5s3.813-8.5,8.5-8.5s8.5,3.813,8.5,8.5S132.187,368,127.5,368z"/>
+            <path d="M271.5,336c-12.958,0-23.5,10.542-23.5,23.5s10.542,23.5,23.5,23.5s23.5-10.542,23.5-23.5S284.458,336,271.5,336z M271.5,368c-4.687,0-8.5-3.813-8.5-8.5s3.813-8.5,8.5-8.5s8.5,3.813,8.5,8.5S276.187,368,271.5,368z"/>
+            <path d="M199.5,336c-12.958,0-23.5,10.542-23.5,23.5s10.542,23.5,23.5,23.5s23.5-10.542,23.5-23.5S212.458,336,199.5,336z M199.5,368c-4.687,0-8.5-3.813-8.5-8.5s3.813-8.5,8.5-8.5s8.5,3.813,8.5,8.5S204.187,368,199.5,368z"/>
+            <path d="M404.448,389.169c1.044,0.499,2.146,0.736,3.23,0.736c2.798,0,5.483-1.573,6.771-4.266l31.817-66.526 c1.787-3.737,0.207-8.215-3.53-10.002c-3.736-1.786-8.215-0.207-10.002,3.53l-31.817,66.526 C399.13,382.904,400.711,387.382,404.448,389.169z"/>
+            <path d="M449.836,294.267c1.044,0.499,2.146,0.736,3.23,0.736c2.798,0,5.483-1.573,6.771-4.266l7.652-16 c1.787-3.737,0.207-8.215-3.53-10.002c-3.736-1.787-8.215-0.207-10.002,3.53l-7.652,16 C444.519,288.001,446.099,292.48,449.836,294.267z"/>
+        </g>
+    </svg>
+</div>
+
 <script>
-    function showSuccess() {
-        document.getElementById("sesizareForm").style.display = "none";
-        document.getElementById("successAnim").style.display = "block";
-    }
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZ2l1bGlhMTAxMTEiLCJhIjoiY21uNmh0b3F3MDVrdDJycGRtdGJmNmxybCJ9.sl_motBiHwZYyZiOTv5SHQ';
+
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/standard',
+        center: [28.04, 45.43],
+        zoom: 12
+    });
+
+    map.addControl(new mapboxgl.NavigationControl());
+
+    let marker = null;
+
+    map.on('click', async (e) => {
+        const lng = e.lngLat.lng;
+        const lat = e.lngLat.lat;
+
+        document.getElementById("latitudine").value = lat;
+        document.getElementById("longitudine").value = lng;
+
+        if (marker) {
+            marker.remove();
+        }
+
+        marker = new mapboxgl.Marker({
+            color: "#b8946b"
+        })
+            .setLngLat([lng, lat])
+            .addTo(map);
+
+        try {
+            const response = await fetch(
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}&language=ro&types=address,poi,neighborhood,locality,place`
+            );
+            const data = await response.json();
+
+            // Resetăm câmpurile ca să fie curate la fiecare click nou
+            document.getElementById("strada").value = "";
+            document.getElementById("numar").value = "";
+            document.getElementById("zona").value = "";
+
+            if (data.features && data.features.length > 0) {
+
+                // 1. STRADA ȘI NUMĂRUL
+                const adresaExacta = data.features.find(f => f.place_type.includes('address'));
+                if (adresaExacta) {
+                    document.getElementById("strada").value = adresaExacta.text || "";
+                    document.getElementById("numar").value = adresaExacta.address || "";
+                } else {
+                    const stradaSimpla = data.features.find(f => f.place_type.includes('street') || f.place_type.includes('poi'));
+                    if (stradaSimpla) document.getElementById("strada").value = stradaSimpla.text || "";
+                }
+
+                // 2. VÂNĂTOAREA DE CARTIERE (Zona)
+                let gasitCartier = false;
+
+                // Varianta A: Căutăm cartierul ascuns în "contextul" adresei exacte (aici îl ține Mapbox de obicei)
+                if (adresaExacta && adresaExacta.context) {
+                    const contextCartier = adresaExacta.context.find(c => c.id.includes('neighborhood') || c.id.includes('locality'));
+                    if (contextCartier) {
+                        document.getElementById("zona").value = contextCartier.text;
+                        gasitCartier = true;
+                    }
+                }
+
+                if (!gasitCartier) {
+                    const featureCartier = data.features.find(f => f.place_type.includes('neighborhood') || f.place_type.includes('locality'));
+                    if (featureCartier) {
+                        document.getElementById("zona").value = featureCartier.text;
+                        gasitCartier = true;
+                    }
+                }
+                if (!gasitCartier) {
+                    const oras = data.features.find(f => f.place_type.includes('place'));
+                    if (oras) {
+                        document.getElementById("zona").value = oras.text;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Eroare la extragerea datelor Mapbox:", error);
+        }
+    });
 </script>
 
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>

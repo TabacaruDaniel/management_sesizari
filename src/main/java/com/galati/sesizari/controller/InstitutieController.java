@@ -1,4 +1,5 @@
 package com.galati.sesizari.controller;
+import com.galati.sesizari.enums.InstitutieTip;
 
 import com.galati.sesizari.clase.Sesizari;
 import com.galati.sesizari.service.SesizareService;
@@ -20,7 +21,7 @@ public class InstitutieController {
     @GetMapping("/institutie/dashboard")
     public String afiseazaDashboard(Model model) {
         // 1. Simulăm numele instituției logate (ulterior îl vei lua din Spring Security)
-        String numeInstitutieLogata = "Serviciul Salubritate";
+        Long numeInstitutieLogata = 1l;
 
         // 2. Luăm lista de sesizări din baza de date pentru această instituție
         List<Sesizari> listaSesizari = sesizareService.gasesteDupaInstitutie(numeInstitutieLogata);

@@ -24,13 +24,10 @@ public class Sesizari {
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user; //cheie straina user_id
-    @ManyToOne
-    @JoinColumn(name="institutie_id")
-    private Institutie institutie; //cheie straina institutie, determina categoria de care apartine plangerea
+    @Column(name="institutie_id")
+    private Long institutie; //cheie straina institutie, determina categoria de care apartine plangerea
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Atasament> dovezi;
+
     @OneToMany(mappedBy = "sesizare", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<IstoricStatusSez> istoricStatus;
@@ -48,14 +45,13 @@ public class Sesizari {
     @Enumerated(EnumType.STRING)
     private Prioritate prioritate;
 
-    public Sesizari(Long nrReclamatie, String titlu, String descriere, Adresa adresa, User user_id, Institutie institutie_id, List<Atasament> dovezi, LocalDate dataDepunerii, LocalDate dataRezolvarii, Prioritate prioritate, Status status) {
+    public Sesizari(Long nrReclamatie, String titlu, String descriere, Adresa adresa, User user_id, Long institutie_id, LocalDate dataDepunerii, LocalDate dataRezolvarii, Prioritate prioritate, Status status) {
         this.nrReclamatie = nrReclamatie;
         this.titlu = titlu;
         this.descriere = descriere;
         this.adresa = adresa;
         this.user = user_id;
         this.institutie = institutie_id;
-        this.dovezi = dovezi;
         this.dataDepunerii = dataDepunerii;
         this.dataRezolvarii = dataRezolvarii;
         this.prioritate = prioritate;
@@ -113,21 +109,14 @@ public class Sesizari {
         this.user = user;
     }
 
-    public Institutie getInstitutie() {
+    public Long getInstitutie() {
         return institutie;
     }
 
-    public void setInstitutie(Institutie institutie) {
+    public void setInstitutie(Long institutie) {
         this.institutie = institutie;
     }
 
-    public List<Atasament> getDovezi() {
-        return dovezi;
-    }
-
-    public void setDovezi(List<Atasament> dovezi) {
-        this.dovezi = dovezi;
-    }
 
     public List<IstoricStatusSez> getIstoricStatus() {
         return istoricStatus;

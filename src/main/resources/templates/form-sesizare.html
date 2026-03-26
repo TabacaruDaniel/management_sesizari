@@ -235,24 +235,58 @@
 
     // --- FUNCȚIA DE SALVARE ADAUGATĂ AICI ---
     async function trimiteSesizare() {
+        // 1. Preluăm numele din select/input
+        const numeElement = document.getElementById("institutie");
+        if (!numeElement) {
+            console.error("Nu am găsit elementul cu id='institutie'");
+            return;
+        }
+        const nume = numeElement.value;
+        let idinsti = null;
+
+        // 2. Mapăm numele pe ID-ul numeric
+        switch (nume) {
+            case 'Primăria Galați': idinsti = 1; break;
+            case 'Serviciul Drumuri': idinsti = 2; break;
+            case 'Serviciul Iluminat Public': idinsti = 3; break;
+            case 'Serviciul Salubritate': idinsti = 4; break;
+            case 'Poliția Locală': idinsti = 5; break;
+            default: idinsti = null;
+        }
+        console.log("ID Instituție:", idinsti);
+
+        // 3. Verificăm dacă avem ID-ul înainte de a merge mai departe
+        if (idinsti === null) {
+            alert("Te rugăm să selectezi o instituție validă!");
+            return;
+        }
+
+        // 4. Construim obiectul (trebuie să fie ÎN INTERIORUL funcției)
         const sesizareData = {
             titlu: document.getElementById("titlu").value,
             descriere: document.getElementById("descriere").value,
             prioritate: document.getElementById("prioritate").value,
-            institutie: document.getElementById("institutie").value,
-            adresa:{
-            strada: document.getElementById("strada").value,
-            numar: document.getElementById("numar").value,
-            zona: document.getElementById("zona").value,
-            latitudine: parseFloat(document.getElementById("latitudine").value || "0"),
-            longitudine: parseFloat(document.getElementById("longitudine").value || "0")
-            },
-            institutie: null
+            institutie: idinsti,
+            adresa: {
+                nume: document.getElementById("strada").value, // Schimbă în 'strada' dacă în Java ai 'strada'
+                numar: document.getElementById("numar").value,
+                zona: document.getElementById("zona").value,
+                latitudine: parseFloat(document.getElementById("latitudine").value || "0"),
+                longitudine: parseFloat(document.getElementById("longitudine").value || "0")
+            }
         };
+        console.log("JSON trimis:", sesizareData);
+
+        // LOG pentru depanare - acum va merge pentru că sesizareData e definită deasupra
+
+
+
+        // 5. Partea de animație și trimitere
         const boatContainer = document.getElementById("boatContainer");
-        boatContainer.classList.add("animate-boat");
         const buton = document.querySelector(".submit-btn");
-        buton.disabled = true;
+
+        if (boatContainer) boatContainer.classList.add("animate-boat");
+        if (buton) buton.disabled = true;
 
         try {
             const response = await fetch('/api/sesizari/salveaza', {
@@ -263,22 +297,23 @@
 
             if (response.ok) {
                 setTimeout(() => {
-                    boatContainer.classList.remove("animate-boat");
+                    if (boatContainer) boatContainer.classList.remove("animate-boat");
                     document.getElementById("sesizareForm").style.display = "none";
                     document.getElementById("successAnim").style.display = "block";
                 }, 2500);
             } else {
-                alert("Eroare la salvare! Verifică dacă ești logat.");
-                buton.disabled = false;
-                boatContainer.classList.remove("animate-boat");
+                // Dacă ajungi aici, verifică consola browserului (F12 -> Network -> Click pe 'salveaza' -> Response)
+                alert("Eroare la salvare! Serverul a respins datele.", sesizareData);
+                if (buton) buton.disabled = false;
+                if (boatContainer) boatContainer.classList.remove("animate-boat");
             }
         } catch (error) {
             console.error("Eroare rețea:", error);
             alert("Serverul nu răspunde.");
-            buton.disabled = false;
-            boatContainer.classList.remove("animate-boat");
+            if (buton) buton.disabled = false;
+            if (boatContainer) boatContainer.classList.remove("animate-boat");
         }
-    }
+    } // Aici se închide funcția, la final de tot!
 </script>
 
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>

@@ -61,8 +61,19 @@ public class UserController {
                     cookie.setPath("/");
                     response.addCookie(cookie);
                 }
-                return "redirect:/sesizare/noua";
-            } else {
+                return "redirect:/sesizare/noua";}
+                else if (userLogat.getRol() == Rol.INSTITUTIE) {
+                    session.setAttribute("utilizatorLogat", userLogat);
+
+                    if (rememberMe != null) {
+                        Cookie cookie = new Cookie("rememberedUser", userLogat.getUsername());
+                        cookie.setMaxAge(60 * 60 * 24 * 7);
+                        cookie.setPath("/");
+                        response.addCookie(cookie);
+                    }
+                    return "redirect:/institutie/dashboard";}
+
+                else {
                 model.addAttribute("error", "Acces interzis!");
                 return "login";
             }

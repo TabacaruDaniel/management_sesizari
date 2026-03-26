@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trimite sesizare</title>
-
+    <title>Trimite sesizare - Galați</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
 </head>
@@ -23,235 +21,112 @@
 <main class="hero-form py-5">
     <div class="container">
         <div class="row g-4 align-items-stretch">
-
-            <!-- STÂNGA: FORMULAR -->
             <div class="col-lg-7">
                 <div class="form-shell h-100">
                     <div class="text-center mb-4">
                         <span class="form-kicker">Platformă civică locală</span>
                         <h1 class="form-title">Trimite o sesizare</h1>
-                        <p class="form-subtitle">
-                            Selectează locația direct pe hartă sau completează manual câmpurile.
-                        </p>
                     </div>
 
                     <form id="sesizareForm">
                         <div class="mb-4">
                             <label for="titlu" class="form-label custom-label">Titlu sesizare</label>
-                            <input type="text" class="form-control custom-input" id="titlu"
-                                   placeholder="Ex. Groapă pe carosabil în zona Falezei">
+                            <input type="text" class="form-control custom-input" id="titlu" placeholder="Ex. Groapă pe carosabil">
                         </div>
-
                         <div class="mb-4">
                             <label for="descriere" class="form-label custom-label">Descriere</label>
-                            <textarea class="form-control custom-input" id="descriere" rows="5"
-                                      placeholder="Descrie problema cât mai clar: locație, impact, detalii utile."></textarea>
+                            <textarea class="form-control custom-input" id="descriere" rows="5"></textarea>
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label for="strada" class="form-label custom-label">Stradă</label>
-                                <input type="text" class="form-control custom-input" id="strada"
-                                       placeholder="Ex. Strada Brăilei">
-                            </div>
-
-                            <div class="col-md-3 mb-4">
-                                <label for="numar" class="form-label custom-label">Număr</label>
-                                <input type="text" class="form-control custom-input" id="numar"
-                                       placeholder="Ex. 12A">
-                            </div>
-
-                            <div class="col-md-3 mb-4">
-                                <label for="zona" class="form-label custom-label">Zonă</label>
-                                <input type="text" class="form-control custom-input" id="zona"
-                                       placeholder="Ex. Micro 19">
-                            </div>
+                            <div class="col-md-6 mb-4"><label for="strada" class="form-label custom-label">Stradă</label><input type="text" class="form-control custom-input" id="strada"></div>
+                            <div class="col-md-3 mb-4"><label for="numar" class="form-label custom-label">Număr</label><input type="text" class="form-control custom-input" id="numar"></div>
+                            <div class="col-md-3 mb-4"><label for="zona" class="form-label custom-label">Zonă</label><input type="text" class="form-control custom-input" id="zona"></div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-4">
                                 <label for="prioritate" class="form-label custom-label">Prioritate</label>
                                 <select class="form-select custom-input" id="prioritate">
-                                    <option value="" selected disabled>Alege prioritatea</option>
                                     <option value="SCAZUTA">Scăzută</option>
-                                    <option value="MEDIE">Medie</option>
+                                    <option value="MEDIE" selected>Medie</option>
                                     <option value="INALTA">Ridicată</option>
                                     <option value="URGENTA">Urgentă</option>
                                 </select>
                             </div>
-
                             <div class="col-md-6 mb-4">
                                 <label for="institutie" class="form-label custom-label">Instituție responsabilă</label>
                                 <select class="form-select custom-input" id="institutie">
                                     <option value="" selected disabled>Alege instituția</option>
-                                    <option value="Primăria Galați">Primăria Galați</option>
-                                    <option value="Serviciul Drumuri">Serviciul Drumuri</option>
-                                    <option value="Serviciul Iluminat Public">Serviciul Iluminat Public</option>
-                                    <option value="Serviciul Salubritate">Serviciul Salubritate</option>
-                                    <option value="Poliția Locală">Poliția Locală</option>
+                                    <option th:each="inst : ${institutii}"
+                                            th:value="${inst.numeInstitutie}"
+                                            th:text="${inst.numeInstitutie}"></option>
                                 </select>
                             </div>
                         </div>
 
-                        <input type="hidden" id="latitudine">
-                        <input type="hidden" id="longitudine">
-
-                        <div class="mb-4">
-                            <label for="poza" class="form-label custom-label">Încarcă o fotografie</label>
-                            <input class="form-control custom-file" type="file" id="poza">
-                            <div class="form-hint mt-2">
-                                Poza este opțională, dar poate ajuta la identificarea rapidă a problemei.
-                            </div>
-                        </div>
-
-                        <div class="text-center pt-2">
-                            <button type="button" onclick="trimiteSesizare()" class="submit-btn px-5">
-                                Trimite sesizarea
-                            </button>
-                        </div>
+                        <input type="hidden" id="latitudine"><input type="hidden" id="longitudine">
+                        <div class="text-center pt-2"><button type="button" onclick="trimiteSesizare()" class="submit-btn px-5">Trimite sesizarea</button></div>
                     </form>
 
                     <div id="successAnim" class="text-center mt-4" style="display:none;">
-                        <lottie-player
-                                src="https://assets2.lottiefiles.com/packages/lf20_jbrw3hcz.json"
-                                background="transparent"
-                                speed="1"
-                                style="width: 220px; height: 220px; margin:auto;"
-                                autoplay>
-                        </lottie-player>
+                        <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_jbrw3hcz.json" background="transparent" speed="1" style="width: 220px; height: 220px; margin:auto;" autoplay></lottie-player>
                         <h4 class="mt-2 success-title">Sesizarea a fost trimisă</h4>
-                        <p class="success-text">Mulțumim pentru implicare. Sesizarea a fost înregistrată.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- DREAPTA: HARTA -->
             <div class="col-lg-5">
-                <div class="form-shell h-100 d-flex flex-column">
-                    <div class="mb-3">
-                        <h3 class="form-map-title">Alege locația pe hartă</h3>
-                        <p class="form-hint">
-                            Apasă pe hartă pentru a plasa pin-ul. Câmpurile de adresă se vor completa automat.
-                        </p>
-                    </div>
-
-                    <div id="map" class="rounded-4 flex-grow-1" style="min-height: 520px;"></div>
-                </div>
+                <div class="form-shell h-100"><div id="map" class="rounded-4 flex-grow-1" style="min-height: 520px;"></div></div>
             </div>
-
         </div>
     </div>
 </main>
 
 <div id="boatContainer" class="boat-container">
-    <svg fill="#5a4e3c" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-         viewBox="0 0 519 519" style="width: 100%; height: 100%;">
-        <g>
-            <path d="M517.845,235.501c-1.374-2.18-3.77-3.501-6.345-3.501H399.265c-21.692,0-42.364,6.631-59.706,18.929l-14.034-46.78 C320.474,187.313,305.27,176,287.691,176H239v-17h32.5c8.547,0,15.5-6.953,15.5-15.5v-16c0-8.547-6.953-15.5-15.5-15.5H239V95.5 c0-4.142-3.358-7.5-7.5-7.5s-7.5,3.358-7.5,7.5V112h-32.5c-8.547,0-15.5,6.953-15.5,15.5v16c0,8.547,6.953,15.5,15.5,15.5H224v17 h-80.5c-12.958,0-23.5,10.542-23.5,23.5V296H7.5c-2.33,0-4.528,1.083-5.947,2.931c-1.42,1.848-1.9,4.25-1.299,6.502L22.752,389.8 C29.22,414.058,51.273,431,76.377,431H393.25c21.248,0,40.901-12.386,50.068-31.554l74.948-156.71 C519.378,240.412,519.218,237.681,517.845,235.501z M191,143.5v-16c0-0.276,0.224-0.5,0.5-0.5h80c0.276,0,0.5,0.224,0.5,0.5v16 c0,0.276-0.224,0.5-0.5,0.5h-80C191.224,144,191,143.776,191,143.5z M325.42,256H287.5c-13.509,0-24.5-10.991-24.5-24.5v-8 c0-0.276,0.224-0.5,0.5-0.5h52.02L325.42,256z M215.5,223c0.276,0,0.5,0.224,0.5,0.5v32c0,0.276-0.224,0.5-0.5,0.5H183v-33H215.5z M168,256h-33v-33h33V256z M135,271h80.5c8.547,0,15.5-6.953,15.5-15.5v-32c0-8.547-6.953-15.5-15.5-15.5H135v-8.5 c0-4.687,3.813-8.5,8.5-8.5h144.191c10.742,0,20.055,6.812,23.324,17H263.5c-8.547,0-15.5,6.953-15.5,15.5v8 c0,21.78,17.72,39.5,39.5,39.5h29.894l-25,25H135V271z M429.786,392.974C423.096,406.962,408.755,416,393.25,416H76.377 c-18.32,0-34.412-12.363-39.133-30.065L17.262,311H295.5c1.989,0,3.897-0.79,5.303-2.197l35.882-35.882 C353.401,256.206,375.626,247,399.265,247H499.6L429.786,392.974z"/>
-            <path d="M127.5,336c-12.958,0-23.5,10.542-23.5,23.5s10.542,23.5,23.5,23.5s23.5-10.542,23.5-23.5S140.458,336,127.5,336z M127.5,368c-4.687,0-8.5-3.813-8.5-8.5s3.813-8.5,8.5-8.5s8.5,3.813,8.5,8.5S132.187,368,127.5,368z"/>
-            <path d="M271.5,336c-12.958,0-23.5,10.542-23.5,23.5s10.542,23.5,23.5,23.5s23.5-10.542,23.5-23.5S284.458,336,271.5,336z M271.5,368c-4.687,0-8.5-3.813-8.5-8.5s3.813-8.5,8.5-8.5s8.5,3.813,8.5,8.5S276.187,368,271.5,368z"/>
-            <path d="M199.5,336c-12.958,0-23.5,10.542-23.5,23.5s10.542,23.5,23.5,23.5s23.5-10.542,23.5-23.5S212.458,336,199.5,336z M199.5,368c-4.687,0-8.5-3.813-8.5-8.5s3.813-8.5,8.5-8.5s8.5,3.813,8.5,8.5S204.187,368,199.5,368z"/>
-            <path d="M404.448,389.169c1.044,0.499,2.146,0.736,3.23,0.736c2.798,0,5.483-1.573,6.771-4.266l31.817-66.526 c1.787-3.737,0.207-8.215-3.53-10.002c-3.736-1.786-8.215-0.207-10.002,3.53l-31.817,66.526 C399.13,382.904,400.711,387.382,404.448,389.169z"/>
-            <path d="M449.836,294.267c1.044,0.499,2.146,0.736,3.23,0.736c2.798,0,5.483-1.573,6.771-4.266l7.652-16 c1.787-3.737,0.207-8.215-3.53-10.002c-3.736-1.787-8.215-0.207-10.002,3.53l-7.652,16 C444.519,288.001,446.099,292.48,449.836,294.267z"/>
-        </g>
+    <svg fill="#5a4e3c" viewBox="0 0 519 519" style="width: 100px; height: 100px;">
+        <path d="M517.845,235.501c-1.374-2.18-3.77-3.501-6.345-3.501H399.265c-21.692,0-42.364,6.631-59.706,18.929l-14.034-46.78 C320.474,187.313,305.27,176,287.691,176H239v-17h32.5c8.547,0,15.5-6.953,15.5-15.5v-16c0-8.547-6.953-15.5-15.5-15.5H239V95.5 c0-4.142-3.358-7.5-7.5-7.5s-7.5,3.358-7.5,7.5V112h-32.5c-8.547,0-15.5,6.953-15.5,15.5v16c0,8.547,6.953,15.5,15.5,15.5H224v17 h-80.5c-12.958,0-23.5,10.542-23.5,23.5V296H7.5c-2.33,0-4.528,1.083-5.947,2.931c-1.42,1.848-1.9,4.25-1.299,6.502L22.752,389.8 C29.22,414.058,51.273,431,76.377,431H393.25c21.248,0,40.901-12.386,50.068-31.554l74.948-156.71 C519.378,240.412,519.218,237.681,517.845,235.501z M191,143.5v-16c0-0.276,0.224-0.5,0.5-0.5h80c0.276,0,0.5,0.224,0.5,0.5v16 c0,0.276-0.224,0.5-0.5,0.5h-80C191.224,144,191,143.776,191,143.5z"/>
     </svg>
 </div>
 
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiZ2l1bGlhMTAxMTEiLCJhIjoiY21uNmh0b3F3MDVrdDJycGRtdGJmNmxybCJ9.sl_motBiHwZYyZiOTv5SHQ';
-
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/standard',
-        center: [28.04, 45.43],
-        zoom: 12
-    });
-
-    map.addControl(new mapboxgl.NavigationControl());
-
+    const map = new mapboxgl.Map({ container: 'map', style: 'mapbox://styles/mapbox/standard', center: [28.04, 45.43], zoom: 12 });
     let marker = null;
 
     map.on('click', async (e) => {
-        const lng = e.lngLat.lng;
-        const lat = e.lngLat.lat;
-
+        const { lng, lat } = e.lngLat;
         document.getElementById("latitudine").value = lat;
         document.getElementById("longitudine").value = lng;
-
-        if (marker) {
-            marker.remove();
-        }
-
-        marker = new mapboxgl.Marker({
-            color: "#b8946b"
-        })
-            .setLngLat([lng, lat])
-            .addTo(map);
+        if (marker) marker.remove();
+        marker = new mapboxgl.Marker({ color: "#b8946b" }).setLngLat([lng, lat]).addTo(map);
 
         try {
-            // Am adăugat parametrul 'types' pentru a forța Mapbox să caute și cartiere
-            const response = await fetch(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}&language=ro&types=address,poi,neighborhood,locality,place`
-            );
+            const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}&language=ro`);
             const data = await response.json();
-
-            // Resetăm câmpurile ca să fie curate la fiecare click nou
-            document.getElementById("strada").value = "";
-            document.getElementById("numar").value = "";
-            document.getElementById("zona").value = "";
-
-            if (data.features && data.features.length > 0) {
-
-                // 1. STRADA ȘI NUMĂRUL
-                const adresaExacta = data.features.find(f => f.place_type.includes('address'));
-                if (adresaExacta) {
-                    document.getElementById("strada").value = adresaExacta.text || "";
-                    document.getElementById("numar").value = adresaExacta.address || "";
-                } else {
-                    const stradaSimpla = data.features.find(f => f.place_type.includes('street') || f.place_type.includes('poi'));
-                    if (stradaSimpla) document.getElementById("strada").value = stradaSimpla.text || "";
-                }
-
-                // 2. VÂNĂTOAREA DE CARTIERE (Zona)
-                let gasitCartier = false;
-
-                // Varianta A: Căutăm cartierul ascuns în "contextul" adresei exacte (aici îl ține Mapbox de obicei)
-                if (adresaExacta && adresaExacta.context) {
-                    const contextCartier = adresaExacta.context.find(c => c.id.includes('neighborhood') || c.id.includes('locality'));
-                    if (contextCartier) {
-                        document.getElementById("zona").value = contextCartier.text;
-                        gasitCartier = true;
-                    }
-                }
-
-                // Varianta B: Dacă nu e în context, căutăm în lista principală de rezultate
-                if (!gasitCartier) {
-                    const featureCartier = data.features.find(f => f.place_type.includes('neighborhood') || f.place_type.includes('locality'));
-                    if (featureCartier) {
-                        document.getElementById("zona").value = featureCartier.text;
-                        gasitCartier = true;
-                    }
-                }
-
-                // Varianta C: Doar dacă eșuează tot, punem numele orașului
-                if (!gasitCartier) {
-                    const oras = data.features.find(f => f.place_type.includes('place'));
-                    if (oras) {
-                        document.getElementById("zona").value = oras.text;
-                    }
-                }
+            if (data.features.length > 0) {
+                const feat = data.features[0];
+                document.getElementById("strada").value = feat.text || "";
+                document.getElementById("numar").value = feat.address || "";
+                // LOGICA DE GALAȚI
+                let cartier = feat.context?.find(c => c.id.includes('neighborhood'))?.text;
+                document.getElementById("zona").value = cartier ? cartier : "Galați";
             }
-        } catch (error) {
-            console.error("Eroare la extragerea datelor Mapbox:", error);
-        }
+        } catch (err) { console.error(err); }
     });
 
-    function trimiteSesizare() {
-        const sesizare = {
+    async function trimiteSesizare() {
+        // Luăm ID-ul instituției din dropdown (va trebui să modificăm și HTML-ul puțin)
+        const institutieId = document.getElementById("institutie").value;
+
+        const payload = {
             titlu: document.getElementById("titlu").value,
             descriere: document.getElementById("descriere").value,
             prioritate: document.getElementById("prioritate").value,
-            institutie: document.getElementById("institutie").value,
+            // TRIMITEM OBIECTUL INSTITUTIE CU ID, așa cum vrea Java
+            institutie: {
+                institutie_id: parseInt(institutieId)
+            },
             adresa: {
                 nume: document.getElementById("strada").value,
                 numar: document.getElementById("numar").value,
@@ -261,23 +136,32 @@
             }
         };
 
-        console.log("Sesizare trimisă:", sesizare);
+        // Restul codului de fetch rămâne la fel...
+    }
 
-        const boatContainer = document.getElementById("boatContainer");
-        boatContainer.classList.add("animate-boat");
+        const boat = document.getElementById("boatContainer");
+        boat.classList.add("animate-boat");
 
-        const buton = document.querySelector(".submit-btn");
-        buton.disabled = true;
-        buton.innerText = "Se trimite...";
+        try {
+            const response = await fetch('/api/sesizari/salveaza', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(sesizareData)
+            });
 
-        setTimeout(() => {
-            boatContainer.classList.remove("animate-boat");
-            document.getElementById("sesizareForm").style.display = "none";
-            document.getElementById("successAnim").style.display = "block";
-        }, 2500);
+            if (response.ok) {
+                setTimeout(() => {
+                    boat.classList.remove("animate-boat");
+                    document.getElementById("sesizareForm").style.display = "none";
+                    document.getElementById("successAnim").style.display = "block";
+                }, 2500);
+            } else {
+                alert("Eroare la salvare.");
+                boat.classList.remove("animate-boat");
+            }
+        } catch (err) { alert("Server indisponibil."); boat.classList.remove("animate-boat");
     }
 </script>
-
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </body>
 </html>

@@ -54,29 +54,18 @@ public class SesizariController {
     public String actualizeazaStatus(@RequestParam("idSesizare") Long idSesizare,
                                      @RequestParam("noulStatus") Status noulStatus) {
 
-        // Conversie sigură la Long pentru findById
-        Sesizari sesizare = sesizariRepo.findById(idSesizare)
-                .orElseThrow(() -> new IllegalArgumentException("Sesizarea nu exista ID: " + idSesizare));
-
+        Sesizari sesizare = sesizariRepo.findById(idSesizare).orElseThrow();
         sesizare.setStatus(noulStatus);
 
+        // Dacă statusul ales este REZOLVAT, punem data curentă
         if (noulStatus == Status.REZOLVAT) {
             sesizare.setDataRezolvarii(LocalDate.now());
         }
 
         sesizariRepo.save(sesizare);
 
-        // Trimitem email-ul
-        try {
-            emailService.trimiteNotificareStatus(
-                    sesizare.getUser().getEmail(),
-                    sesizare.getTitlu(),
-                    noulStatus.toString()
-            );
-        } catch (Exception e) {
-            System.out.println("Eroare la trimitere email: " + e.getMessage());
-            // Mergem mai departe chiar daca mail-ul esueaza momentan
-        }
+        // Trimitem email-ul (folosind metoda noua adaugata in EmailService)
+        emailService.trimiteNotificareStatus(sesizare.getUser().getEmail(), sesizare.getTitlu(), noulStatus.toString());
 
         return "redirect:/dashboard-institutie";
     }

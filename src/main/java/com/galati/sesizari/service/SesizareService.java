@@ -10,6 +10,7 @@ public class SesizareService {
     @Autowired
     private SesizariRepo sesizariRepo;
 
+
     public Sesizari salveazaSesizare(Sesizari sesizari) {
         return sesizariRepo.save(sesizari);
     }

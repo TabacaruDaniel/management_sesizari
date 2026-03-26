@@ -17,7 +17,7 @@ public class User {
     private String nume;
     private String prenume;
     private String email;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER) // Adaugă Eager ca să fie sigur că instituția e disponibilă în sesiune
     private Institutie institutie;
     @Enumerated(EnumType.STRING)
     private Rol rol;

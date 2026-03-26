@@ -31,12 +31,17 @@
                         </p>
                     </div>
 
-                    <form th:action="@{/login}" method="post" id="loginForm">
+                    <form th:action="@{/login}" method="post">
+
+                        <div th:if="${error}" class="alert alert-danger text-center"
+                             style="background: rgba(220, 53, 69, 0.2); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; margin-bottom: 20px;">
+                            <span th:text="${error}">Mesaj eroare</span>
+                        </div>
 
                         <div class="mb-4">
-                            <label for="username" class="form-label custom-label">Email sau Utilizator</label>
+                            <label for="username" class="form-label custom-label">Nume utilizator</label>
                             <input type="text" name="username" class="form-control custom-input" id="username"
-                                   placeholder="nume@exemplu.ro" required>
+                                   placeholder="Utilizator123" required>
                         </div>
 
                         <div class="mb-4">
@@ -47,7 +52,7 @@
 
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <input class="form-check-input" type="checkbox" name="rememberMe" id="rememberMe">
                                 <label class="form-check-label text-white-50" for="rememberMe" style="font-size: 0.9rem;">
                                     Ține-mă minte
                                 </label>
@@ -56,14 +61,15 @@
                         </div>
 
                         <div class="text-center pt-2">
-                            <button type="button" onclick="redirectLaSesizari()" class="btn submit-btn w-100 py-2">
+                            <button type="submit" class="btn submit-btn w-100 py-2">
                                 Intră în cont
                             </button>
                         </div>
+                    </form>
 
                     <div class="text-center mt-4">
                         <p class="form-hint">
-                            Nu ai un cont? <a href="/register" class="fw-bold text-white text-decoration-none" style="border-bottom: 1px solid #00d2ff;">Înregistrează-te acum</a>
+                            Nu ai un cont? <a href="/register" class="fw-bold text-black text-decoration-none" style="border-bottom: 1px solid #00d2ff;">Înregistrează-te acum</a>
                         </p>
                     </div>
                 </div>

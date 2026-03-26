@@ -7,99 +7,8 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
-    <!-- Lordicon animated icons -->
-    <script src="https://cdn.lordicon.com/lusqsztk.js"></script>
-
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #6ab7ff, #fbc7d4);
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        .custom-navbar {
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        main.hero-form {
-            display: flex;
-            align-items: center;
-            padding: 50px 0;
-        }
-
-        .form-shell {
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-            position: relative;
-        }
-
-        .form-kicker {
-            font-weight: 500;
-            color: #ff6f61;
-            font-size: 0.9rem;
-        }
-
-        .form-title {
-            font-weight: 700;
-            color: #333;
-            margin-top: 10px;
-        }
-
-        .form-subtitle {
-            color: #555;
-        }
-
-        .custom-label {
-            font-weight: 600;
-            color: #444;
-        }
-
-        .custom-input {
-            border-radius: 12px;
-            padding: 10px;
-        }
-
-        .submit-btn {
-            background: linear-gradient(90deg, #6ab7ff, #fbc7d4);
-            color: white;
-            font-weight: bold;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* Success overlay */
-        #successAnim {
-            display: none;
-            position: fixed;
-            top:0; left:0; width:100%; height:100%;
-            background-color: rgba(0,0,0,0.4);
-            display:flex; justify-content:center; align-items:center;
-            z-index:9999; flex-direction:column;
-        }
-
-        .success-title, .success-text {
-            color: white;
-        }
-
-        /* Lordicon small icons next to labels */
-        .icon-label {
-            width: 24px;
-            height: 24px;
-            vertical-align: middle;
-            margin-right: 6px;
-        }
-
-    </style>
 </head>
-<body>
+<body class="galati-page">
 
 <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
     <div class="container">
@@ -108,7 +17,7 @@
     </div>
 </nav>
 
-<main class="hero-form">
+<main class="hero-form d-flex align-items-center">
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-xl-8 col-lg-9">
@@ -116,16 +25,7 @@
                 <div class="form-shell">
                     <div class="text-center mb-4">
                         <span class="form-kicker">Platformă civică locală</span>
-                        <h1 class="form-title">
-                            Trimite o sesizare
-                            <!-- GIF/animated icon lângă titlu -->
-                            <lord-icon
-                                    src="https://cdn.lordicon.com/wired/flat/699-policeman.json"
-                                    trigger="loop"
-                                    colors="primary:#6ab7ff,secondary:#fbc7d4"
-                                    style="width:50px;height:50px;vertical-align:middle;margin-left:10px">
-                            </lord-icon>
-                        </h1>
+                        <h1 class="form-title">Trimite o sesizare</h1>
                         <p class="form-subtitle">
                             Raportează rapid o problemă din municipiul Galați, iar statusul sesizării va putea fi urmărit ulterior.
                         </p>
@@ -133,50 +33,26 @@
 
                     <form id="sesizareForm">
                         <div class="mb-4">
-                            <label for="titlu" class="form-label custom-label">
-                                <lord-icon src="https://cdn.lordicon.com/wired/nrsyccev.json"
-                                           trigger="hover" colors="primary:#6ab7ff"
-                                           style="width:24px;height:24px;" class="icon-label">
-                                </lord-icon>
-                                Titlu sesizare
-                            </label>
+                            <label for="titlu" class="form-label custom-label">Titlu sesizare</label>
                             <input type="text" class="form-control custom-input" id="titlu"
                                    placeholder="Ex. Groapă pe carosabil în zona Falezei">
                         </div>
 
                         <div class="mb-4">
-                            <label for="descriere" class="form-label custom-label">
-                                <lord-icon src="https://cdn.lordicon.com/wired/pkudxqev.json"
-                                           trigger="hover" colors="primary:#6ab7ff"
-                                           style="width:24px;height:24px;" class="icon-label">
-                                </lord-icon>
-                                Descriere
-                            </label>
+                            <label for="descriere" class="form-label custom-label">Descriere</label>
                             <textarea class="form-control custom-input" id="descriere" rows="5"
                                       placeholder="Descrie problema cât mai clar: locație, impact, detalii utile."></textarea>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-4">
-                                <label for="adresa" class="form-label custom-label">
-                                    <lord-icon src="https://cdn.lordicon.com/wired/tvlzcihp.json"
-                                               trigger="hover" colors="primary:#6ab7ff"
-                                               style="width:24px;height:24px;" class="icon-label">
-                                    </lord-icon>
-                                    Adresă / locație
-                                </label>
+                                <label for="adresa" class="form-label custom-label">Adresă / locație</label>
                                 <input type="text" class="form-control custom-input" id="adresa"
                                        placeholder="Ex. Strada Brăilei nr. 10">
                             </div>
 
                             <div class="col-md-6 mb-4">
-                                <label for="prioritate" class="form-label custom-label">
-                                    <lord-icon src="https://cdn.lordicon.com/wired/lpbhfbxz.json"
-                                               trigger="hover" colors="primary:#6ab7ff"
-                                               style="width:24px;height:24px;" class="icon-label">
-                                    </lord-icon>
-                                    Prioritate
-                                </label>
+                                <label for="prioritate" class="form-label custom-label">Prioritate</label>
                                 <select class="form-select custom-input" id="prioritate">
                                     <option selected disabled>Alege prioritatea</option>
                                     <option>Scăzută</option>
@@ -188,31 +64,23 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="institutie" class="form-label custom-label">
-                                <lord-icon src="https://cdn.lordicon.com/wired/ymgnvqab.json"
-                                           trigger="hover" colors="primary:#6ab7ff"
-                                           style="width:24px;height:24px;" class="icon-label">
-                                </lord-icon>
-                                Instituție responsabilă
-                            </label>
-                            <select class="form-select custom-input" id="institutie">
+                            <label for="institutie" class="form-label custom-label">Instituție responsabilă</label>
+                            <select class="form-select custom-input" id="institutie" name="institutie">
                                 <option selected disabled>Alege instituția</option>
-                                <option>Primăria Galați</option>
-                                <option>Serviciul Drumuri</option>
-                                <option>Serviciul Iluminat Public</option>
-                                <option>Serviciul Salubritate</option>
-                                <option>Poliția Locală</option>
+                                <option value="Primaria">Primăria Galați</option>
+                                <option value="Drumuri">Serviciul Drumuri</option>
+                                <option value="Iluminat">Serviciul Iluminat Public</option>
+                                <option value="Salubritate">Serviciul Salubritate</option>
+                                <option value="Politia">Poliția Locală</option>
                             </select>
+
+                            <div class="form-text mt-2" style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; font-style: italic;">
+                                * Dacă nu sunteți sigur cui i se adresează problema, selectați <strong>Primăria Galați</strong>, iar noi o vom direcționa către serviciul competent.
+                            </div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="poza" class="form-label custom-label">
-                                <lord-icon src="https://cdn.lordicon.com/wired/gsqz2pca.json"
-                                           trigger="hover" colors="primary:#6ab7ff"
-                                           style="width:24px;height:24px;" class="icon-label">
-                                </lord-icon>
-                                Încarcă o fotografie
-                            </label>
+                            <label for="poza" class="form-label custom-label">Încarcă o fotografie</label>
                             <input class="form-control custom-file" type="file" id="poza">
                             <div class="form-hint mt-2">
                                 Poza este opțională, dar poate ajuta la identificarea rapidă a problemei.
@@ -226,8 +94,7 @@
                         </div>
                     </form>
 
-                    <!-- Success animation overlay -->
-                    <div id="successAnim">
+                    <div id="successAnim" class="text-center mt-4" style="display:none;">
                         <lottie-player
                                 src="https://assets2.lottiefiles.com/packages/lf20_jbrw3hcz.json"
                                 background="transparent"
@@ -238,7 +105,6 @@
                         <h4 class="mt-2 success-title">Sesizarea a fost trimisă</h4>
                         <p class="success-text">Mulțumim pentru implicare. Sesizarea a fost înregistrată.</p>
                     </div>
-
                 </div>
 
             </div>
@@ -249,7 +115,7 @@
 <script>
     function showSuccess() {
         document.getElementById("sesizareForm").style.display = "none";
-        document.getElementById("successAnim").style.display = "flex";
+        document.getElementById("successAnim").style.display = "block";
     }
 </script>
 

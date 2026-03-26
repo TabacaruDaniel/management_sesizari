@@ -3,7 +3,7 @@ package com.galati.sesizari.enums;
 public enum Status {
     NOU,
     IN_LUCRU,
-    REESPINS,
+    RESPINS,
     REZOLVAT,
     IN_ANALIZA
 }

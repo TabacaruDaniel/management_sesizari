@@ -16,4 +16,5 @@ public interface SesizariRepo extends JpaRepository<Sesizari,Integer> {
     List<Sesizari> findByPrioritate(Prioritate prioritate);
     List<Sesizari> findByAdresa_Zona(String zona);
 
+
 }

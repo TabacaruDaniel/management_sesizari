@@ -10,10 +10,10 @@
 </head>
 <body class="galati-page">
 
-<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+<nav class="navbar navbar-expand-lg custom-navbar">
     <div class="container">
         <a class="navbar-brand fw-semibold" href="/">Sesizări Galați</a>
-        <a class="btn btn-outline-light btn-back" href="/">Înapoi acasă</a>
+        <a class="btn btn-back" href="/">Înapoi acasă</a>
     </div>
 </nav>
 
@@ -46,33 +46,47 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-4">
-                                <label for="adresa" class="form-label custom-label">Adresă / locație</label>
-                                <input type="text" class="form-control custom-input" id="adresa"
-                                       placeholder="Ex. Strada Brăilei nr. 10">
+                                <label for="strada" class="form-label custom-label">Stradă</label>
+                                <input type="text" class="form-control custom-input" id="strada"
+                                       placeholder="Ex. Strada Brăilei">
                             </div>
 
-                            <div class="col-md-6 mb-4">
-                                <label for="prioritate" class="form-label custom-label">Prioritate</label>
-                                <select class="form-select custom-input" id="prioritate">
-                                    <option selected disabled>Alege prioritatea</option>
-                                    <option>Scăzută</option>
-                                    <option>Medie</option>
-                                    <option>Ridicată</option>
-                                    <option>Urgentă</option>
-                                </select>
+                            <div class="col-md-3 mb-4">
+                                <label for="numar" class="form-label custom-label">Număr</label>
+                                <input type="text" class="form-control custom-input" id="numar"
+                                       placeholder="Ex. 12A">
+                            </div>
+
+                            <div class="col-md-3 mb-4">
+                                <label for="zona" class="form-label custom-label">Zonă</label>
+                                <input type="text" class="form-control custom-input" id="zona"
+                                       placeholder="Ex. Micro 19">
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label for="institutie" class="form-label custom-label">Instituție responsabilă</label>
-                            <select class="form-select custom-input" id="institutie">
-                                <option selected disabled>Alege instituția</option>
-                                <option>Primăria Galați</option>
-                                <option>Serviciul Drumuri</option>
-                                <option>Serviciul Iluminat Public</option>
-                                <option>Serviciul Salubritate</option>
-                                <option>Poliția Locală</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="prioritate" class="form-label custom-label">Prioritate</label>
+                                <select class="form-select custom-input" id="prioritate">
+                                    <option value="" selected disabled>Alege prioritatea</option>
+                                    <option value="SCAZUTA">Scăzută</option>
+                                    <option value="MEDIE">Medie</option>
+                                    <option value="INALTA">Ridicată</option>
+                                    <option value="URGENTA">Urgentă</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="institutie" class="form-label custom-label">Instituție responsabilă</label>
+                                <select class="form-select custom-input" id="institutie">
+                                    <option value="" selected disabled>Alege instituția</option>
+                                    <option value="Primăria Galați">Primăria Galați</option>
+                                    <option value="Serviciul Drumuri">Serviciul Drumuri</option>
+                                    <option value="Serviciul Iluminat Public">Serviciul Iluminat Public</option>
+                                    <option value="Serviciul Salubritate">Serviciul Salubritate</option>
+                                    <option value="Poliția Locală">Poliția Locală</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="mb-4">
@@ -84,7 +98,7 @@
                         </div>
 
                         <div class="text-center pt-2">
-                            <button type="button" onclick="showSuccess()" class="btn submit-btn px-5">
+                            <button type="button" onclick="trimiteSesizare()" class="btn submit-btn px-5">
                                 Trimite sesizarea
                             </button>
                         </div>
@@ -109,7 +123,21 @@
 </main>
 
 <script>
-    function showSuccess() {
+    function trimiteSesizare() {
+        const sesizare = {
+            titlu: document.getElementById("titlu").value,
+            descriere: document.getElementById("descriere").value,
+            prioritate: document.getElementById("prioritate").value,
+            institutie: document.getElementById("institutie").value,
+            adresa: {
+                nume: document.getElementById("strada").value,
+                numar: document.getElementById("numar").value,
+                zona: document.getElementById("zona").value
+            }
+        };
+
+        console.log("Sesizare trimisă:", sesizare);
+
         document.getElementById("sesizareForm").style.display = "none";
         document.getElementById("successAnim").style.display = "block";
     }

@@ -10,5 +10,9 @@ public class PageController {
     public String formSesizare() {
         return "form-sesizare";
     }
+    @GetMapping("/sesizari/harta")
+    public String hartaSesizari() {
+        return "harta-sesizari";
+    }
 
 }

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Harta sesizărilor</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <!-- Mapbox -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
+
+    <style>
+        body {
+            background: #f7f2ea;
+        }
+
+        .map-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background: #fffaf4;
+            border-radius: 24px;
+            border: 1px solid #e7dfd3;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+
+        .map-header {
+            padding: 25px;
+            border-bottom: 1px solid #e7dfd3;
+        }
+
+        .map-title {
+            font-size: 1.8rem;
+            color: #4a4033;
+            margin: 0;
+        }
+
+        .map-subtitle {
+            color: #7a6f60;
+            margin-top: 5px;
+        }
+
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+
+        .back-btn {
+            margin-top: 15px;
+            display: inline-block;
+            text-decoration: none;
+            color: #5a4e3c;
+            border: 1px solid #cfc5b6;
+            padding: 8px 16px;
+            border-radius: 10px;
+        }
+
+        .back-btn:hover {
+            background: #f3ece3;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="map-container">
+
+    <div class="map-header">
+        <h2 class="map-title">Harta sesizărilor</h2>
+        <p class="map-subtitle">Vizualizare în timp real a problemelor din Galați</p>
+
+        <a href="/" class="back-btn">← Înapoi</a>
+    </div>
+
+    <div id="map"></div>
+
+</div>
+
+<script>
+    // 🔥 AICI PUI TOKENUL TĂU
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZ2l1bGlhMTAxMTEiLCJhIjoiY21uNmh0b3F3MDVrdDJycGRtdGJmNmxybCJ9.sl_motBiHwZYyZiOTv5SHQ';
+
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/standard', // stil neutru
+        center: [28.04, 45.43], // Galați
+        zoom: 12
+    });
+
+    map.addControl(new mapboxgl.NavigationControl());
+
+    // 🔥 Date demo (le înlocuim mai târziu cu backend)
+    const sesizari = [
+        { titlu: "Groapă pe stradă", status: "NOU", coords: [28.045, 45.435] },
+        { titlu: "Gunoi neridicat", status: "IN_LUCRU", coords: [28.03, 45.44] },
+        { titlu: "Iluminat defect", status: "REZOLVAT", coords: [28.06, 45.428] }
+    ];
+
+    sesizari.forEach(s => {
+
+        const culoare =
+            s.status === "REZOLVAT" ? "#6f8f76" :
+                s.status === "IN_LUCRU" ? "#8fa38a" :
+                    "#a89072";
+
+        const popup = new mapboxgl.Popup().setHTML(
+            `<strong>${s.titlu}</strong><br>Status: ${s.status}`
+        );
+
+        new mapboxgl.Marker({ color: culoare })
+            .setLngLat(s.coords)
+            .setPopup(popup)
+            .addTo(map);
+    });
+</script>
+
+</body>
+</html>

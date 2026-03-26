@@ -13,6 +13,6 @@ public interface UserRepo extends JpaRepository<User,Integer> {
     User findByUsernameAndPassword(String username, String password);
     boolean existsByUsername(String username);
     boolean existsByPassword(String password);
-
+     public User findByUsername(String username);
     List<User> findByRol(Rol rol);
 }

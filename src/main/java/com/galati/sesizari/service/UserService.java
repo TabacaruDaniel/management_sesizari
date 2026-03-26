@@ -32,4 +32,8 @@ public class UserService {
        }
         else return null;
     }
+    public User gasesteDupaUsername(String username){
+        User userGasit=userRepo.findByUsername(username);
+        return userGasit;
+    }
 }

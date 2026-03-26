@@ -23,6 +23,13 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+    public User(String username,String password,String nume,String prenume,String  email) {
+        this.username = username;
+        this.password = password;
+        this.nume = nume;
+        this.prenume = prenume;
+        this.email = email;
+    }
 
 
 }

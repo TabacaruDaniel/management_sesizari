@@ -12,13 +12,9 @@ public class SesizareService {
     @Autowired
     private SesizariRepo sesizariRepo;
 
-    public List<Sesizari> findAll() {
-        return sesizariRepo.findAll();
-    }
     public Sesizari salveazaSesizare(Sesizari sesizari) {
         return sesizariRepo.save(sesizari);
     }
-
-
-
+    public List<Sesizari> gasesteToate() { return sesizariRepo.findAll();}
+    public List<Sesizari> gasesteDupaInstitutie(Long institutie){return sesizariRepo.findAllByInstitutie(institutie); }
 }

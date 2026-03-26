@@ -1,4 +1,9 @@
 /* ===== GENERAL ===== */
+
+
+body {
+    font-family: 'Inter', sans-serif;
+}
 body.galati-page {
     min-height: 100vh;
     background:
@@ -114,23 +119,35 @@ textarea.custom-input {
 }
 
 
-/* ===== BUTON ===== */
+/* Buton principal */
 .submit-btn {
-    background: #a89072;
+    background: linear-gradient(135deg, #c8a97e, #a68c65);
     color: white;
-    border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 12px 30px;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    text-decoration: none;   /* 🔥 scoate linia */
+    display: inline-block;
+    transition: all 0.3s ease;
 }
 
 .submit-btn:hover {
-    background: #8e775c;
-    color: white;
-    transform: translateY(-1px);
+    text-decoration: none;   /* 🔥 important */
+    background: linear-gradient(135deg, #b8946b, #8f7556);
 }
 
+/* Buton secundar */
+.btn-outline-light {
+    border: 1px solid rgba(255,255,255,0.7);
+    color: #fff;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255,255,255,0.15);
+    border-color: #c8a97e;
+    color: #fff;
+}
 
 /* ===== SUCCESS ===== */
 .success-title {
@@ -141,7 +158,20 @@ textarea.custom-input {
 .success-text {
     color: #7a6f60;
 }
+.hero {
+    position: relative;
+    height: 100vh;
+    background: url('/images/galati.jpg') center/cover no-repeat;
+}
 
+.hero::before {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.hero > * {
+    position: relative;
+    z-index: 2;
+}
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
@@ -152,4 +182,68 @@ textarea.custom-input {
     .form-title {
         font-size: 2rem;
     }
+}
+/* ========================================== */
+/* ANIMAȚIE ZBOR BARCĂ GALAȚI                 */
+/* ========================================== */
+
+.boat-container {
+    position: fixed;
+    bottom: -150px;  /* Ascunsă sub ecran inițial */
+    left: 10%;       /* Pornește din stânga-jos */
+    width: 150px;    /* Dimensiunea bărcii (o poți face mai mică/mare de aici) */
+    height: 150px;
+    opacity: 0;      /* Invizibilă până dai click */
+    z-index: 9999;   /* Să treacă deasupra formularului tău alb */
+    pointer-events: none; /* Să nu blocheze click-urile pe pagină */
+}
+
+/* Clasa adăugată de JavaScript la click */
+.animate-boat {
+    animation: flyBoatGalati 2.5s ease-in-out forwards;
+}
+
+/* Traseul de zbor */
+@keyframes flyBoatGalati {
+    0% {
+        transform: translate(0, 0) rotate(0deg) scale(0.5);
+        opacity: 0;
+    }
+    15% {
+        opacity: 1;
+        transform: translate(15vw, -15vh) rotate(-10deg) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(50vw, -55vh) rotate(-15deg);
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        /* Iese prin colțul din dreapta-sus */
+        transform: translate(100vw, -100vh) rotate(-25deg) scale(0.7);
+        opacity: 0;
+    }
+}
+/* ===== HARTA DIN FORMULAR ===== */
+#map {
+    width: 100%;
+    border: 1px solid #e2d8c9;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+/* Titlu hartă */
+.form-map-title {
+    color: #4a4033;
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* Text mic explicativ */
+.form-hint {
+    font-size: 0.9rem;
+    color: #8b7b65;
 }

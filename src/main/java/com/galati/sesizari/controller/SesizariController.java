@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
-@Controller
+@RestController
 public class SesizariController {
 
     @Autowired
@@ -26,5 +26,6 @@ public class SesizariController {
     public String hartaSesizari(){
         return "harta-sesizari";
     }
+
 }
 

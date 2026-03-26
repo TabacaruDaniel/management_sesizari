@@ -4,104 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Sesizări Galați</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
-        body { margin: 0; padding: 0; }
-
-        /* Navbar transparent care devine vizibil la scroll sau fundal închis */
-        .custom-nav {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-        }
-
         .hero {
             height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)),
-            url('/images/galati.jpg') no-repeat center center/cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('/images/galati.jpg') no-repeat center center/cover;
+            display: flex; align-items: center; justify-content: center; color: white; text-align: center;
         }
-
-        .hero h1 { font-size: 3rem; font-weight: bold; }
-        .hero p { font-size: 1.3rem; margin-top: 15px; }
-        .btn-custom { margin-top: 25px; padding: 12px 25px; font-size: 1.1rem; }
-        .section { padding: 60px 0; }
+        .custom-nav { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
         .card { border: none; border-radius: 15px; transition: 0.3s; }
-        .card:hover { transform: scale(1.03); }
+        .card:hover { transform: translateY(-10px); shadow: 0 10px 20px rgba(0,0,0,0.2); }
     </style>
 </head>
-
 <body>
-
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-nav">
     <div class="container">
         <a class="navbar-brand fw-bold" href="/">📍 Galați Sesizări</a>
-
         <div class="d-flex align-items-center">
-            <a th:if="${session.utilizatorLogat == null}" href="/login" class="btn btn-primary btn-sm">
-                Autentificare
-            </a>
-
-            <div th:if="${session.utilizatorLogat != null}" class="dropdown">
-                <span class="text-white me-3">Salut, <span th:text="${session.utilizatorLogat.prenume}">User</span>!</span>
-                <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+            <a th:if="${session.utilizatorLogat == null}" href="/login" class="btn btn-primary btn-sm rounded-pill px-3">Autentificare</a>
+            <div th:if="${session.utilizatorLogat != null}">
+                <span class="text-white me-3">Salut, <b th:text="${session.utilizatorLogat.prenume}">User</b>!</span>
+                <a href="/logout" class="btn btn-danger btn-sm rounded-pill">Logout</a>
             </div>
         </div>
     </div>
 </nav>
 
 <section class="hero">
-    <div>
-        <h1>Sistem de Sesizări<br>Municipiul Galați</h1>
-        <p>Raportează problemele orașului și urmărește rezolvarea lor în timp real</p>
-
-        <a th:href="${session.utilizatorLogat != null ? '/sesizare/noua' : '/login'}"
-           class="btn btn-primary btn-lg btn-custom">
-            Trimite o sesizare
-        </a>
-
+    <div class="container">
+        <h1 class="display-3 fw-bold">Sistem de Sesizări<br>Galați</h1>
+        <p class="lead">Implică-te în modernizarea orașului tău.</p>
+        <a th:href="${session.utilizatorLogat != null ? '/sesizare/noua' : '/login'}" class="btn btn-primary btn-lg px-5 py-3 mt-3 shadow">Trimite o sesizare</a>
         <br>
-
-        <a href="/harta-sesizarilor" class="btn btn-outline-light btn-lg btn-custom">
-            Vezi sesizările
-        </a>
+        <a href="/harta-sesizarilor" class="btn btn-outline-light btn-lg px-5 py-3 mt-3">Vezi harta</a>
     </div>
 </section>
 
-<section class="section bg-light">
+<section class="py-5 bg-light">
     <div class="container text-center">
         <h2 class="mb-5">Cum funcționează</h2>
         <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card shadow p-4 h-100">
-                    <h5>📍 Trimite sesizare</h5>
-                    <p>Completezi formularul și descrii problema.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow p-4 h-100">
-                    <h5>🔄 Urmărești status</h5>
-                    <p>Vezi dacă este în analiză sau în lucru.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow p-4 h-100">
-                    <h5>✅ Primești rezolvare</h5>
-                    <p>Ești notificat când problema este rezolvată.</p>
-                </div>
-            </div>
+            <div class="col-md-4"><div class="card shadow p-4 h-100"><h3>📍</h3><h5>Raportezi</h5><p>Descrii problema rapid.</p></div></div>
+            <div class="col-md-4"><div class="card shadow p-4 h-100"><h3>🔄</h3><h5>Urmărești</h5><p>Vezi statusul în timp real.</p></div></div>
+            <div class="col-md-4"><div class="card shadow p-4 h-100"><h3>✅</h3><h5>Rezolvăm</h5><p>Primești confirmarea.</p></div></div>
         </div>
     </div>
 </section>
 
-<footer class="bg-dark text-white text-center py-3">
-    <small>© 2026 Sistem Sesizări Galați</small>
+<footer class="bg-dark text-white text-center py-4">
+    <small>© 2026 Primăria Municipiului Galați</small>
 </footer>
-
 </body>
 </html>

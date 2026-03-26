@@ -1,6 +1,8 @@
+
 package com.galati.sesizari.clase;
 
 import com.galati.sesizari.enums.Prioritate;
+import com.galati.sesizari.enums.Status;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -12,6 +14,8 @@ public class Sesizari {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long nrReclamatie; //cheie primara in sql
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
     private String titlu;
     private String descriere; //descrierea evenimentului
     @Embedded
@@ -42,7 +46,7 @@ public class Sesizari {
     @Enumerated(EnumType.STRING)
     private Prioritate prioritate;
 
-    public Sesizari(Long nrReclamatie, String titlu, String descriere, Adresa adresa, User user_id, Institutie institutie_id, List<Atasament> dovezi, LocalDate dataDepunerii, LocalDate dataRezolvarii, Prioritate prioritate) {
+    public Sesizari(Long nrReclamatie, String titlu, String descriere, Adresa adresa, User user_id, Institutie institutie_id, List<Atasament> dovezi, LocalDate dataDepunerii, LocalDate dataRezolvarii, Prioritate prioritate, Status status) {
         this.nrReclamatie = nrReclamatie;
         this.titlu = titlu;
         this.descriere = descriere;
@@ -53,6 +57,7 @@ public class Sesizari {
         this.dataDepunerii = dataDepunerii;
         this.dataRezolvarii = dataRezolvarii;
         this.prioritate = prioritate;
+        this.status=status;
     }
 
     public Sesizari() {
@@ -64,6 +69,14 @@ public class Sesizari {
 
     public void setNrReclamatie(Long nrReclamatie) {
         this.nrReclamatie = nrReclamatie;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public String getTitlu() {
@@ -90,20 +103,20 @@ public class Sesizari {
         this.adresa = adresa;
     }
 
-    public User getUser_id() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser_id(User user_id) {
-        this.user = user_id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Institutie getInstitutie_id() {
+    public Institutie getInstitutie() {
         return institutie;
     }
 
-    public void setInstitutie_id(Institutie institutie_id) {
-        this.institutie = institutie_id;
+    public void setInstitutie(Institutie institutie) {
+        this.institutie = institutie;
     }
 
     public List<Atasament> getDovezi() {
@@ -112,6 +125,14 @@ public class Sesizari {
 
     public void setDovezi(List<Atasament> dovezi) {
         this.dovezi = dovezi;
+    }
+
+    public List<IstoricStatusSez> getIstoricStatus() {
+        return istoricStatus;
+    }
+
+    public void setIstoricStatus(List<IstoricStatusSez> istoricStatus) {
+        this.istoricStatus = istoricStatus;
     }
 
     public LocalDate getDataDepunerii() {

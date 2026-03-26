@@ -1,5 +1,5 @@
 package com.galati.sesizari.repos;
-
+import com.galati.sesizari.clase.Institutie; // <--- Asta îi lipsea!
 import com.galati.sesizari.clase.Sesizari;
 import com.galati.sesizari.enums.Prioritate;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,12 +9,12 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface SesizariRepo extends JpaRepository<Sesizari,Integer> {
+public interface SesizariRepo extends JpaRepository<Sesizari,Long> {
 
     List <Sesizari> findByUser_Username(String username);
     List<Sesizari> findAllByInstitutie(Integer institutie_id); //dupa tipul problemei
     List<Sesizari> findByPrioritate(Prioritate prioritate);
     List<Sesizari> findByAdresa_Zona(String zona);
-
+    List<Sesizari> findByInstitutie(Institutie institutie);
 
 }

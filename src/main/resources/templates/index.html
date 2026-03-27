@@ -28,21 +28,20 @@
                  class="d-inline-block align-top me-3 bg-white p-1 rounded">
             Galați Sesizări
         </a>
-        <div class="ms-auto d-flex align-items-center">
+        <div th:if="${session.utilizatorLogat == null}">
+            <a href="/login" class="btn submit-btn btn-sm rounded-pill px-3">Autentificare</a>
+            <a href="/register" class="btn btn-outline-light btn-sm rounded-pill px-3 ms-2">Cont Nou</a>
+        </div>
 
-            <div th:if="${session.utilizatorLogat == null}">
-                <a href="/login" class="btn submit-btn btn-sm rounded-pill px-3">Autentificare</a>
-                <a href="/register" class="btn btn-outline-light btn-sm rounded-pill px-3 ms-2">Cont Nou</a>
-            </div>
-            <div th:if="${session.utilizatorLogat != null}" class="d-flex align-items-center">
+        <div th:if="${session.utilizatorLogat != null}" class="d-flex align-items-center">
                 <span class="text-white me-3">
                     Salut, <b th:text="${session.utilizatorLogat.prenume}">Utilizator</b>!
                 </span>
 
-                <a href="/logout" class="btn btn-danger btn-sm rounded-pill px-3">Logout</a>
-            </div>
+            <a href="/logout" class="btn btn-danger btn-sm rounded-pill px-3">Logout</a>
+        </div>
 
-            <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center">
         </div>
     </div>
 </nav>

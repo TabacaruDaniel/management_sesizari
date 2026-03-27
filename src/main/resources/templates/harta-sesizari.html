@@ -67,6 +67,41 @@
 
 <body>
 
+<div class="filter-bar p-3 bg-white border-bottom d-flex flex-wrap gap-3 align-items-end">
+    <div class="filter-group">
+        <label class="small fw-bold text-muted">Status</label>
+        <select id="filterStatus" class="form-select shadow-sm">
+            <option value="TOATE">Toate Statusurile</option>
+            <option value="NOU">🆕 Nou</option>
+            <option value="IN_ANALIZA">🔍 În analiză</option>
+            <option value="IN_LUCRU">🛠️ În lucru</option>
+            <option value="REZOLVAT">✅ Rezolvat</option>
+            <option value="RESPINS">❌ Respins</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label class="small fw-bold text-muted">Prioritate</label>
+        <select id="filterPrioritate" class="form-select shadow-sm">
+            <option value="TOATE">Toate Prioritățile</option>
+            <option value="URGENTA">🔴 Urgentă</option>
+            <option value="INALTA">🟠 Înaltă</option>
+            <option value="MEDIE">🟡 Medie</option>
+            <option value="SCAZUTA">🟢 Scăzută</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label class="small fw-bold text-muted">Data postării</label>
+        <input type="date" id="filterData" class="form-control shadow-sm">
+    </div>
+
+    <button onclick="resetFiltre()" class="btn btn-outline-secondary shadow-sm">Resetează</button>
+
+    <div class="ms-auto pb-2 text-muted small">
+        Rezultate: <b id="counter">0</b>
+    </div>
+</div>
 <div class="map-container">
 
     <div class="map-header">
@@ -108,48 +143,53 @@
             console.log("Date primite:", sesizariDB);
 
             sesizariDB.forEach(s => {
-                // Verificăm dacă avem coordonate (fie direct, fie în obiectul adresa)
+                // 1. Extragere coordonate
                 const lat = s.latitudine || (s.adresa ? s.adresa.latitudine : null);
                 const lng = s.longitudine || (s.adresa ? s.adresa.longitudine : null);
-                let culoarePin = "#b8946b"; // Culoare implicită (Bej)
-                NOU,
-                    IN_LUCRU,
-                    RESPINS,
-                    REZOLVAT,
-                    IN_ANALIZA
-                if (s.prioritate === 'URGENTA') {
-                    culoarePin = "#d9534f"; // Roșu intens
-                } else if (s.prioritate === 'INALTA') {
-                    culoarePin = "#f0ad4e"; // Portocaliu
-                } else if (s.prioritate === 'MEDIE') {
-                    culoarePin = "#5bc0de"; // Albastru deschis
-                } else if (s.prioritate === 'SCAZUTA') {
-                    culoarePin = "#5cb85c"; // Verde
-                }
+
                 if (lat && lng) {
-                    // Creăm un conținut HTML mai bogat pentru Popup
+                    // 2. Determinare culoare bazată pe STATUS (cum am vorbit ultima dată)// Gri default
+                    let culoarePin = "#b8946b"; // Culoare implicită (Bej)
+
+                    if (s.prioritate === 'URGENTA') {
+                        culoarePin = "#d9534f"; // Roșu intens
+                    } else if (s.prioritate === 'INALTA') {
+                        culoarePin = "#f0ad4e"; // Portocaliu
+                    } else if (s.prioritate === 'MEDIE') {
+                        culoarePin = "#5bc0de"; // Albastru deschis
+                    } else if (s.prioritate === 'SCAZUTA') {
+                        culoarePin = "#5cb85c"; // Verde
+                    }
+                    // Folosim toUpperCase() ca să nu conteze dacă în DB e "Nou" sau "NOU"
+                    const prioritate = s.prioritate ? s.prioritate.toUpperCase() : "";
+
+
+
+                    // 3. Conținut Popup
                     const popupContent = `
-        <div style="padding: 10px; font-family: sans-serif;">
-            <h3 style="margin: 0 0 5px 0; color: #4a4033; font-size: 16px;">${s.titlu}</h3>
-            <p style="margin: 0 0 10px 0; font-size: 13px; color: #666;">${s.descriere || 'Fără descriere'}</p>
+<div style="padding: 10px; font-family: sans-serif; min-width: 180px; position: relative;">
+    <div style="position: absolute; top: 5px; right: 5px; font-size: 10px; color: #999;">
+        📅 ${s.dataDepunerii || 'Data necunoscută'}
+    </div>
 
-            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-                <span style="background: #e7dfd3; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">
-                    📍 ${s.adresa ? s.adresa.zona : 'Galați'}
-                </span>
-                <span style="background: ${s.prioritate === 'URGENTA' ? '#ffdfdf' : '#f0f0f0'};
-                             color: ${s.prioritate === 'URGENTA' ? '#c00' : '#333'};
-                             padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">
-                    ⚠️ ${s.prioritate || 'Normală'}
-                </span>
-                <span style="background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">
-                    ⚙️ ${s.status || 'Trimisă'}
-                </span>
-            </div>
-        </div>
-    `;
+    <h3 style="margin: 0 0 5px 0; color: #4a4033; font-size: 16px; padding-right: 50px;">${s.titlu}</h3>
+    <p style="margin: 0 0 10px 0; font-size: 13px; color: #666;">${s.descriere || 'Fără descriere'}</p>
 
-                    new mapboxgl.Marker({ color: "#b8946b" })
+    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+        <span style="background: ${culoarePin}; color: white;
+                     padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase;">
+            ⚠️ Prioritate: ${s.prioritate || 'Standard'}
+        </span>
+
+        <span style="font-size: 11px; color: #7a6f60; align-self: center;">
+            | Status: ${s.status || 'Trimisă'}
+        </span>
+    </div>
+</div>
+`;
+
+                    // 4. Creare Marker - AICI ERA PROBLEMA (trebuie să punem variabila culoarePin)
+                    new mapboxgl.Marker({ color: culoarePin }) // <--- Am pus variabila aici!
                         .setLngLat([parseFloat(lng), parseFloat(lat)])
                         .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupContent))
                         .addTo(map);
@@ -162,7 +202,83 @@
     }
 
     incarcaSesizari();
+    let markeriActivi = [];
+    let toateSesizarile = [];
 
+    async function incarcaSesizari() {
+        try {
+            const response = await fetch('/api/sesizari/toate');
+            toateSesizarile = await response.json();
+
+            // Ascultăm schimbările pe toate cele 3 input-uri
+            document.getElementById('filterStatus').addEventListener('change', aplicaFiltre);
+            document.getElementById('filterPrioritate').addEventListener('change', aplicaFiltre);
+            document.getElementById('filterData').addEventListener('change', aplicaFiltre);
+
+            aplicaFiltre(); // Afișăm totul la început
+        } catch (e) { console.error("Eroare:", e); }
+    }
+
+    function aplicaFiltre() {
+        // 1. Luăm valorile selectate
+        const statusFiltru = document.getElementById('filterStatus').value;
+        const prioritateFiltru = document.getElementById('filterPrioritate').value;
+        const dataFiltru = document.getElementById('filterData').value;
+
+        // 2. Curățăm harta
+        markeriActivi.forEach(m => m.remove());
+        markeriActivi = [];
+
+        // 3. Filtrăm lista mare
+        const rezultate = toateSesizarile.filter(s => {
+            const matchStatus = (statusFiltru === 'TOATE' || s.status === statusFiltru);
+            const matchPrioritate = (prioritateFiltru === 'TOATE' || s.prioritate === prioritateFiltru);
+
+            // Verificăm data (tăiem doar partea de an-lună-zi din s.dataDepunerii)
+            let matchData = true;
+            if (dataFiltru) {
+                const dataSesizare = s.dataDepunerii.split('T')[0]; // Presupunem format ISO de la server
+                matchData = (dataSesizare === dataFiltru);
+            }
+
+            return matchStatus && matchPrioritate && matchData;
+        });
+
+        // 4. Actualizăm contorul și punem markerii
+        document.getElementById('counter').innerText = rezultate.length;
+        rezultate.forEach(s => adaugaMarkerPeHarta(s));
+    }
+
+    function adaugaMarkerPeHarta(s) {
+        const lat = s.latitudine || (s.adresa ? s.adresa.latitudine : null);
+        const lng = s.longitudine || (s.adresa ? s.adresa.longitudine : null);
+
+        if (lat && lng) {
+            // Logica ta de culori (bazată pe prioritate sau status)
+            let culoare = (s.prioritate === 'URGENTA') ? "#d9534f" : "#b8946b";
+
+            const m = new mapboxgl.Marker({ color: culoare })
+                .setLngLat([parseFloat(lng), parseFloat(lat)])
+                .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`
+                <div style="padding:5px;">
+                    <b>${s.titlu}</b><br>
+                    <small>📅 ${s.dataDepunerii.split('T')[0]}</small><br>
+                    <span class="badge bg-secondary">${s.status}</span>
+                </div>
+            `))
+                .addTo(map);
+            markeriActivi.push(m);
+        }
+    }
+
+    function resetFiltre() {
+        document.getElementById('filterStatus').value = 'TOATE';
+        document.getElementById('filterPrioritate').value = 'TOATE';
+        document.getElementById('filterData').value = '';
+        aplicaFiltre();
+    }
+
+    incarcaSesizari();
 </script>
 
 </body>

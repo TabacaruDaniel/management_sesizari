@@ -17,4 +17,5 @@ public class SesizareService {
     }
     public List<Sesizari> gasesteToate() { return sesizariRepo.findAll();}
     public List<Sesizari> gasesteDupaInstitutie(Long institutie){return sesizariRepo.findAllByInstitutie(institutie); }
+
 }

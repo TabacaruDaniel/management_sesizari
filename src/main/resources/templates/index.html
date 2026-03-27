@@ -28,20 +28,72 @@
                  class="d-inline-block align-top me-3 bg-white p-1 rounded">
             Galați Sesizări
         </a>
-        <div th:if="${session.utilizatorLogat == null}">
-            <a href="/login" class="btn submit-btn btn-sm rounded-pill px-3">Autentificare</a>
-            <a href="/register" class="btn btn-outline-light btn-sm rounded-pill px-3 ms-2">Cont Nou</a>
-        </div>
 
-        <div th:if="${session.utilizatorLogat != null}" class="d-flex align-items-center">
+        <!-- Clopoțel notificări -->
+        <div style="position: relative; display: inline-block;">
+            <button onclick="toggleNotificari()" style="
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.4);
+        color: white;
+        border-radius: 8px;
+        padding: 6px 14px;
+        cursor: pointer;
+        font-size: 1.1rem;
+    ">
+                🔔 <span id="badgeNotif" style="
+            display: none;
+            background: #d9534f;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            font-weight: bold;
+        ">0</span>
+            </button>
+
+            <div id="dropdownNotif" style="
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 45px;
+        width: 320px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        z-index: 999;
+        overflow: hidden;
+    ">
+                <div style="padding: 14px 16px; border-bottom: 1px solid #eee; font-weight: 600; color: #4a4033;">
+                    🔔 Notificările mele
+                </div>
+                <div id="listaNotif" style="max-height: 300px; overflow-y: auto;">
+                    <div style="padding: 16px; color: #aaa; text-align: center;">Se încarcă...</div>
+                </div>
+                <div style="padding: 10px 16px; border-top: 1px solid #eee; text-align: center;">
+                    <button onclick="citesteToate()" style="
+                background: transparent;
+                border: none;
+                color: #5a4e3c;
+                cursor: pointer;
+                font-size: 0.85rem;
+            ">✓ Marchează toate ca citite</button>
+                </div>
+            </div>
+        </div>
+        <div class="ms-auto d-flex align-items-center">
+
+            <div th:if="${session.utilizatorLogat == null}">
+                <a href="/login" class="btn submit-btn btn-sm rounded-pill px-3">Autentificare</a>
+                <a href="/register" class="btn btn-outline-light btn-sm rounded-pill px-3 ms-2">Cont Nou</a>
+            </div>
+
+            <div th:if="${session.utilizatorLogat != null}" class="d-flex align-items-center">
                 <span class="text-white me-3">
                     Salut, <b th:text="${session.utilizatorLogat.prenume}">Utilizator</b>!
                 </span>
+                <a href="/logout" class="btn btn-danger btn-sm rounded-pill px-3">Logout</a>
+            </div>
 
-            <a href="/logout" class="btn btn-danger btn-sm rounded-pill px-3">Logout</a>
-        </div>
-
-        <div class="d-flex align-items-center">
         </div>
     </div>
 </nav>
@@ -70,5 +122,64 @@
 <footer class="bg-dark text-white text-center py-4">
     <small>© 2026 Primăria Municipiului Galați</small>
 </footer>
+<script>
+    // Verifică notificările la fiecare 30 secunde
+    async function verificaNotificari() {
+        try {
+            const r = await fetch('/api/notificari/numar');
+            if (!r.ok) return;
+            const numar = await r.json();
+            const badge = document.getElementById('badgeNotif');
+            if (numar > 0) {
+                badge.style.display = 'inline';
+                badge.textContent = numar;
+            } else {
+                badge.style.display = 'none';
+            }
+        } catch (e) {}
+    }
+
+    async function toggleNotificari() {
+        const dropdown = document.getElementById('dropdownNotif');
+        const esteAscuns = dropdown.style.display === 'none';
+
+        if (esteAscuns) {
+            dropdown.style.display = 'block';
+            // Incarca notificarile
+            try {
+                const r = await fetch('/api/notificari/toate');
+                const lista = await r.json();
+                const container = document.getElementById('listaNotif');
+
+                if (lista.length === 0) {
+                    container.innerHTML = '<div style="padding:16px; color:#aaa; text-align:center;">Nicio notificare</div>';
+                } else {
+                    container.innerHTML = lista.map(n => `
+                    <div style="
+                        padding: 12px 16px;
+                        border-bottom: 1px solid #f5f5f5;
+                        background: ${n.isRead ? 'white' : '#fff8f0'};
+                    ">
+                        <div style="font-size: 0.88rem; color: #4a4033;">${n.mesaj}</div>
+                        <div style="font-size: 0.75rem; color: #aaa; margin-top: 4px;">📅 ${n.dataNotificarii}</div>
+                    </div>
+                `).join('');
+                }
+            } catch (e) {}
+        } else {
+            dropdown.style.display = 'none';
+        }
+    }
+
+    async function citesteToate() {
+        await fetch('/api/notificari/citesteToate', { method: 'POST' });
+        document.getElementById('badgeNotif').style.display = 'none';
+        document.getElementById('dropdownNotif').style.display = 'none';
+    }
+
+    // Verifică la încărcare și apoi la fiecare 30s
+    verificaNotificari();
+    setInterval(verificaNotificari, 30000);
+</script>
 </body>
 </html>

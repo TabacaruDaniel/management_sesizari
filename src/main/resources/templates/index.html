@@ -20,13 +20,29 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-nav">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="/">Galați Sesizări</a>
-        <div class="d-flex align-items-center">
-            <a th:if="${session.utilizatorLogat == null}" href="/login" class="btn btn-primary btn-sm rounded-pill px-3">Autentificare</a>
-            <div th:if="${session.utilizatorLogat != null}">
-                <span class="text-white me-3">Salut, <b th:text="${session.utilizatorLogat.prenume}">User</b>!</span>
-                <a href="/logout" class="btn btn-danger btn-sm rounded-pill">Logout</a>
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+            <img th:src="@{/images/logo-gl.png}"
+                 alt="Logo"
+                 width="60"
+                 height="40"
+                 class="d-inline-block align-top me-3 bg-white p-1 rounded">
+            Galați Sesizări
+        </a>
+        <div class="ms-auto d-flex align-items-center">
+
+            <div th:if="${session.utilizatorLogat == null}">
+                <a href="/login" class="btn submit-btn btn-sm rounded-pill px-3">Autentificare</a>
+                <a href="/register" class="btn btn-outline-light btn-sm rounded-pill px-3 ms-2">Cont Nou</a>
             </div>
+            <div th:if="${session.utilizatorLogat != null}" class="d-flex align-items-center">
+                <span class="text-white me-3">
+                    Salut, <b th:text="${session.utilizatorLogat.prenume}">Utilizator</b>!
+                </span>
+
+                <a href="/logout" class="btn btn-danger btn-sm rounded-pill px-3">Logout</a>
+            </div>
+
+            <div class="d-flex align-items-center">
         </div>
     </div>
 </nav>
@@ -35,7 +51,7 @@
     <div class="container">
         <h1 class="display-3 fw-bold">Sistem de Sesizări<br>Galați</h1>
         <p class="lead">Implică-te în modernizarea orașului tău.</p>
-        <a th:href="${session.utilizatorLogat != null ? '/sesizare/noua' : '/login'}" class="btn btn-primary btn-lg px-5 py-3 mt-3 shadow">Trimite o sesizare</a>
+        <a th:href="${session.utilizatorLogat != null ? '/sesizare/noua' : '/login'}" class="btn submit-btn btn-lg px-5 py-3 mt-3 shadow">Trimite o sesizare</a>
         <br>
         <a href="/harta-sesizarilor" class="btn btn-outline-light btn-lg px-5 py-3 mt-3">Vezi harta</a>
     </div>

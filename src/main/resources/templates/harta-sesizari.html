@@ -111,11 +111,47 @@
                 // Verificăm dacă avem coordonate (fie direct, fie în obiectul adresa)
                 const lat = s.latitudine || (s.adresa ? s.adresa.latitudine : null);
                 const lng = s.longitudine || (s.adresa ? s.adresa.longitudine : null);
-
+                let culoarePin = "#b8946b"; // Culoare implicită (Bej)
+                NOU,
+                    IN_LUCRU,
+                    RESPINS,
+                    REZOLVAT,
+                    IN_ANALIZA
+                if (s.prioritate === 'URGENTA') {
+                    culoarePin = "#d9534f"; // Roșu intens
+                } else if (s.prioritate === 'INALTA') {
+                    culoarePin = "#f0ad4e"; // Portocaliu
+                } else if (s.prioritate === 'MEDIE') {
+                    culoarePin = "#5bc0de"; // Albastru deschis
+                } else if (s.prioritate === 'SCAZUTA') {
+                    culoarePin = "#5cb85c"; // Verde
+                }
                 if (lat && lng) {
+                    // Creăm un conținut HTML mai bogat pentru Popup
+                    const popupContent = `
+        <div style="padding: 10px; font-family: sans-serif;">
+            <h3 style="margin: 0 0 5px 0; color: #4a4033; font-size: 16px;">${s.titlu}</h3>
+            <p style="margin: 0 0 10px 0; font-size: 13px; color: #666;">${s.descriere || 'Fără descriere'}</p>
+
+            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                <span style="background: #e7dfd3; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">
+                    📍 ${s.adresa ? s.adresa.zona : 'Galați'}
+                </span>
+                <span style="background: ${s.prioritate === 'URGENTA' ? '#ffdfdf' : '#f0f0f0'};
+                             color: ${s.prioritate === 'URGENTA' ? '#c00' : '#333'};
+                             padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">
+                    ⚠️ ${s.prioritate || 'Normală'}
+                </span>
+                <span style="background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">
+                    ⚙️ ${s.status || 'Trimisă'}
+                </span>
+            </div>
+        </div>
+    `;
+
                     new mapboxgl.Marker({ color: "#b8946b" })
                         .setLngLat([parseFloat(lng), parseFloat(lat)])
-                        .setPopup(new mapboxgl.Popup().setHTML(`<b>${s.titlu}</b>`))
+                        .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupContent))
                         .addTo(map);
                 }
             });

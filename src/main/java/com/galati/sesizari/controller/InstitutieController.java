@@ -4,12 +4,15 @@ import com.galati.sesizari.enums.InstitutieTip;
 
 import com.galati.sesizari.clase.Sesizari;
 import com.galati.sesizari.enums.Rol;
+import com.galati.sesizari.enums.Status;
 import com.galati.sesizari.repos.SesizariRepo;
 import com.galati.sesizari.service.SesizareService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +23,24 @@ public class InstitutieController {
     public InstitutieController(SesizareService sesizareService) {
         this.sesizareService = sesizareService;
     }
+    @PostMapping("/sesizari/actualizeaza-status")
+    public String actualizeazaStatus(@RequestParam("idSesizare") Long id,
+                                     @RequestParam("noulStatus") Status noulStatus) {
 
+        // 1. Căutăm sesizarea în bază după ID
+        Sesizari sesizare = sesizareService.gasesteDupaId(id);
+
+        if (sesizare != null) {
+            // 2. Modificăm statusul
+            sesizare.setStatus(noulStatus);
+
+            // 3. Salvăm modificarea
+            sesizareService.salveazaSesizare(sesizare);
+        }
+
+        // 4. Ne întoarcem la dashboard (refresh la pagină)
+        return "redirect:/institutie/dashboard";
+    }
 
     @GetMapping("/institutie/dashboard")
     public String dashboardInstitutie(HttpSession session, Model model) {

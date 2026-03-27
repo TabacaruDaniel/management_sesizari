@@ -16,7 +16,9 @@ public class SesizareService {
     public SesizareService(SesizariRepo sesizariRepo) {
         this.sesizariRepo = sesizariRepo;
     }
-
+    public Sesizari gasesteDupaId(Long id) {
+        return sesizariRepo.findById(id).orElse(null);
+    }
     public Sesizari salveazaSesizare(Sesizari sesizare) {
         return sesizariRepo.save(sesizare);
     }

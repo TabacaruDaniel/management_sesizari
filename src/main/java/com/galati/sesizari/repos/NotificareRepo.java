@@ -10,4 +10,8 @@ public interface NotificareRepo extends JpaRepository<Notificare, Long> {
     List<Notificare> findByUserOrderByDataNotificariiDesc(User user);
     List<Notificare> findByUserAndIsReadFalse(User user);
     int countByUserAndIsReadFalse(User user);
+
+
+
+
 }

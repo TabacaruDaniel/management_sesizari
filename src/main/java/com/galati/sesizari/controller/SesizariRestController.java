@@ -27,6 +27,7 @@ public class SesizariRestController {
     public List<Sesizari> getToateSesizarile() {
         return sesizariService.gasesteToate(); // Sau cum se numește metoda ta de extragere totală
     }
+
     @PostMapping("/salveaza")
     public ResponseEntity<String> salveazaJson(@RequestBody Sesizari sesizare, HttpSession session) {
         User userLogat = (User) session.getAttribute("utilizatorLogat");

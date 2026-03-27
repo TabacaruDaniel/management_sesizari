@@ -3,130 +3,334 @@
 <head>
     <meta charset="UTF-8">
     <title>Harta sesizărilor</title>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CSS -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
-    <!-- Mapbox -->
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
 
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             background: #f7f2ea;
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .map-container {
-            max-width: 1100px;
-            margin: 40px auto;
+        .top-bar {
             background: #fffaf4;
-            border-radius: 24px;
-            border: 1px solid #e7dfd3;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            border-bottom: 1px solid #e7dfd3;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .top-bar h1 { font-size: 1.2rem; color: #4a4033; font-weight: 600; }
+
+        .top-bar a {
+            color: #5a4e3c;
+            text-decoration: none;
+            border: 1px solid #cfc5b6;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .top-bar a:hover { background: #f3ece3; }
+
+        .main-layout {
+            display: flex;
+            flex: 1;
             overflow: hidden;
         }
 
-        .map-header {
-            padding: 25px;
+        .side-panel {
+            width: 280px;
+            min-width: 280px;
+            background: #fffaf4;
+            border-right: 1px solid #e7dfd3;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            padding: 20px;
             border-bottom: 1px solid #e7dfd3;
         }
 
-        .map-title {
-            font-size: 1.8rem;
-            color: #4a4033;
-            margin: 0;
-        }
+        .panel-header h2 { font-size: 1rem; color: #4a4033; margin-bottom: 14px; }
 
-        .map-subtitle {
+        .filter-group { margin-bottom: 12px; }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
             color: #7a6f60;
-            margin-top: 5px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        #map {
+        .filter-group select,
+        .filter-group input[type="date"] {
             width: 100%;
-            height: 500px;
+            padding: 7px 10px;
+            border: 1px solid #ddd5c8;
+            border-radius: 8px;
+            background: #fff;
+            color: #4a4033;
+            font-size: 0.88rem;
+            cursor: pointer;
         }
 
-        .back-btn {
-            margin-top: 15px;
-            display: inline-block;
-            text-decoration: none;
-            color: #5a4e3c;
+        .reset-btn {
+            width: 100%;
+            padding: 8px;
+            background: transparent;
             border: 1px solid #cfc5b6;
-            padding: 8px 16px;
-            border-radius: 10px;
+            border-radius: 8px;
+            color: #5a4e3c;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-top: 4px;
+            margin-bottom: 12px;
+            transition: background 0.2s;
         }
 
-        .back-btn:hover {
-            background: #f3ece3;
+        .reset-btn:hover { background: #f3ece3; }
+
+        .legenda {
+            padding: 16px 20px;
+            border-top: 1px solid #e7dfd3;
         }
+
+        .legenda h3 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #7a6f60;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+        }
+
+        .legenda-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: #4a4033;
+        }
+
+        .legenda-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .counter-box {
+            padding: 14px 20px;
+            font-size: 0.85rem;
+            color: #7a6f60;
+            border-top: 1px solid #e7dfd3;
+        }
+
+        .counter-box b { color: #4a4033; font-size: 1.1rem; }
+
+        #map { flex: 1; height: 100%; }
+
+        .mapboxgl-popup-content {
+            border-radius: 12px !important;
+            padding: 14px !important;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+            min-width: 220px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .popup-titlu { font-size: 15px; font-weight: 600; color: #4a4033; margin-bottom: 6px; }
+        .popup-descriere { font-size: 12px; color: #7a6f60; margin-bottom: 10px; line-height: 1.4; }
+        .popup-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+        .badge { padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .popup-data { font-size: 11px; color: #aaa; margin-top: 4px; }
     </style>
 </head>
 
 <body>
 
-<div class="map-container">
+<div class="top-bar">
+    <h1>Harta sesizărilor</h1>
+    <a href="/">← Înapoi</a>
+</div>
 
-    <div class="map-header">
-        <h2 class="map-title">Harta sesizărilor</h2>
-        <p class="map-subtitle">Vizualizare în timp real a problemelor din Galați</p>
+<div class="main-layout">
 
-        <a href="/" class="back-btn">← Înapoi</a>
+    <!-- PANEL LATERAL -->
+    <div class="side-panel">
+
+        <div class="panel-header">
+            <h2>Filtrează</h2>
+
+            <div class="filter-group">
+                <label>Status</label>
+                <select id="filterStatus" onchange="aplicaFiltre()">
+                    <option value="TOATE">Toate</option>
+                    <option value="NOU">Nou</option>
+                    <option value="IN_ANALIZA">În analiză</option>
+                    <option value="IN_LUCRU">În lucru</option>
+                    <option value="REZOLVAT">Rezolvat</option>
+                    <option value="RESPINS">Respins</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Prioritate</label>
+                <select id="filterPrioritate" onchange="aplicaFiltre()">
+                    <option value="TOATE">Toate</option>
+                    <option value="URGENTA">Urgentă</option>
+                    <option value="INALTA">Înaltă</option>
+                    <option value="MEDIE">Medie</option>
+                    <option value="SCAZUTA">Scăzută</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Data postării</label>
+                <input type="date" id="filterData" onchange="aplicaFiltre()">
+            </div>
+
+            <button class="reset-btn" onclick="resetFiltre()">↺ Resetează filtrele</button>
+        </div>
+        <!-- /panel-header -->
+
+        <div class="legenda">
+            <h3>Legendă prioritate</h3>
+            <div class="legenda-item"><div class="legenda-dot" style="background:#d9534f"></div> Urgentă</div>
+            <div class="legenda-item"><div class="legenda-dot" style="background:#f0ad4e"></div> Înaltă</div>
+            <div class="legenda-item"><div class="legenda-dot" style="background:#5bc0de"></div> Medie</div>
+            <div class="legenda-item"><div class="legenda-dot" style="background:#5cb85c"></div> Scăzută</div>
+            <div class="legenda-item"><div class="legenda-dot" style="background:#b8946b"></div> Nespecificată</div>
+        </div>
+
+        <div class="counter-box">
+            Sesizări afișate: <b id="counter">0</b>
+        </div>
+
     </div>
+    <!-- /side-panel -->
 
+    <!-- HARTA -->
     <div id="map"></div>
 
 </div>
+<!-- /main-layout -->
 
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiZ2l1bGlhMTAxMTEiLCJhIjoiY21uNmh0b3F3MDVrdDJycGRtdGJmNmxybCJ9.sl_motBiHwZYyZiOTv5SHQ';
 
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/standard', // stil neutru
-        center: [28.04, 45.43], // Galați
+        style: 'mapbox://styles/mapbox/standard',
+        center: [28.04, 45.43],
         zoom: 12
     });
 
     map.addControl(new mapboxgl.NavigationControl());
-    // Funcție pentru a încărca sesizările din baza de date
+
+    let toateSesizarile = [];
+    let markereActive = [];
+
+    function culoareDupaPrioritate(prioritate) {
+        switch ((prioritate || '').toUpperCase()) {
+            case 'URGENTA': return '#d9534f';
+            case 'INALTA':  return '#f0ad4e';
+            case 'MEDIE':   return '#5bc0de';
+            case 'SCAZUTA': return '#5cb85c';
+            default:        return '#b8946b';
+        }
+    }
+
+    function stergeMarkere() {
+        markereActive.forEach(m => m.remove());
+        markereActive = [];
+    }
+
+    function afiseazaSesizari(lista) {
+        stergeMarkere();
+        document.getElementById('counter').textContent = lista.length;
+
+        lista.forEach(s => {
+            const lat = s.latitudine || (s.adresa ? s.adresa.latitudine : null);
+            const lng = s.longitudine || (s.adresa ? s.adresa.longitudine : null);
+            if (!lat || !lng) return;
+
+            const culoare = culoareDupaPrioritate(s.prioritate);
+
+            const popupHTML = `
+                <div class="popup-titlu">${s.titlu || 'Fără titlu'}</div>
+                <div class="popup-descriere">${s.descriere || 'Fără descriere'}</div>
+                <div class="popup-badges">
+                    <span class="badge" style="background:${culoare}; color:white;">
+                        ⚠️ ${s.prioritate || 'Standard'}
+                    </span>
+                    <span class="badge" style="background:#f0ece6; color:#4a4033;">
+                        ${s.status || 'Trimisă'}
+                    </span>
+                </div>
+                <div class="popup-data">📅 ${s.dataDepunerii || 'Data necunoscută'}</div>
+            `;
+
+            const marker = new mapboxgl.Marker({ color: culoare })
+                .setLngLat([parseFloat(lng), parseFloat(lat)])
+                .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupHTML))
+                .addTo(map);
+
+            markereActive.push(marker);
+        });
+    }
+
+    function aplicaFiltre() {
+        const status = document.getElementById('filterStatus').value;
+        const prioritate = document.getElementById('filterPrioritate').value;
+        const data = document.getElementById('filterData').value;
+
+        const filtrate = toateSesizarile.filter(s => {
+            const statusOk = status === 'TOATE' || (s.status || '').toUpperCase() === status;
+            const prioritateOk = prioritate === 'TOATE' || (s.prioritate || '').toUpperCase() === prioritate;
+            const dataOk = !data || s.dataDepunerii === data;
+            return statusOk && prioritateOk && dataOk;
+        });
+
+        afiseazaSesizari(filtrate);
+    }
+
+    function resetFiltre() {
+        document.getElementById('filterStatus').value = 'TOATE';
+        document.getElementById('filterPrioritate').value = 'TOATE';
+        document.getElementById('filterData').value = '';
+        afiseazaSesizari(toateSesizarile);
+    }
+
     async function incarcaSesizari() {
         try {
-            // 1. Aici DEFINIM variabila 'response' prin fetch
             const response = await fetch('/api/sesizari/toate');
-
-            // 2. Verificăm dacă serverul a răspuns cu succes
-            if (!response.ok) {
-                console.error("Serverul a dat eroare:", response.status);
-                return;
-            }
-
-            // 3. Acum putem folosi 'response' pentru a lua JSON-ul
-            const sesizariDB = await response.json();
-            console.log("Date primite:", sesizariDB);
-
-            sesizariDB.forEach(s => {
-                // Verificăm dacă avem coordonate (fie direct, fie în obiectul adresa)
-                const lat = s.latitudine || (s.adresa ? s.adresa.latitudine : null);
-                const lng = s.longitudine || (s.adresa ? s.adresa.longitudine : null);
-
-                if (lat && lng) {
-                    new mapboxgl.Marker({ color: "#b8946b" })
-                        .setLngLat([parseFloat(lng), parseFloat(lat)])
-                        .setPopup(new mapboxgl.Popup().setHTML(`<b>${s.titlu}</b>`))
-                        .addTo(map);
-                }
-            });
-
+            if (!response.ok) return;
+            toateSesizarile = await response.json();
+            afiseazaSesizari(toateSesizarile);
         } catch (error) {
             console.error("Eroare la fetch:", error);
         }
     }
 
     incarcaSesizari();
-
 </script>
 
 </body>

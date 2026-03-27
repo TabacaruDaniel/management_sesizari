@@ -1,6 +1,95 @@
 /* ===== GENERAL ===== */
 
+/* ========================================== */
+/* HARTA SESIZĂRI - LAYOUT ADAPTIV (MOBILE)   */
+/* ========================================== */
 
+/* Structura de bază pentru ecrane mari */
+.main-layout {
+    display: flex;
+    height: calc(100vh - 70px); /* Scădem înălțimea navbar-ului */
+    overflow: hidden;
+}
+
+.side-panel {
+    width: 320px;
+    min-width: 320px;
+    background: #fffaf4;
+    border-right: 1px solid #e7dfd3;
+    display: flex;
+    flex-direction: column;
+    z-index: 5;
+    transition: all 0.3s ease;
+}
+
+#map-full {
+    flex: 1;
+    height: 100%;
+}
+
+/* Reguli pentru Mobil și Tabletă */
+@media (max-width: 992px) {
+    .main-layout {
+        flex-direction: column; /* Panoul sus, harta jos */
+        height: auto;
+        overflow: visible;
+    }
+
+    .side-panel {
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 2px solid #e7dfd3;
+        max-height: 50vh; /* Să nu ocupe tot ecranul, să vedem și harta */
+        overflow-y: auto;
+    }
+
+    .panel-header {
+        padding: 15px;
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Filtrele stau două pe rând */
+        gap: 12px;
+    }
+
+    .panel-header h2 {
+        grid-column: span 2; /* Titlul ocupă tot rândul */
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+
+    .filter-group {
+        margin-bottom: 0; /* Spațierea e gestionată de 'gap' din grid */
+    }
+
+    .reset-btn {
+        grid-column: span 2;
+        padding: 10px;
+        margin-top: 5px;
+    }
+
+    /* Pe mobil harta trebuie să aibă o înălțime fixă ca să poată fi folosită */
+    #map-full {
+        height: 60vh;
+        min-height: 400px;
+    }
+
+    /* Ascundem legenda pe mobil pentru a nu aglomera ecranul */
+    .legenda, .counter-box {
+        display: none;
+    }
+}
+
+/* Ajustare pentru telefoane foarte mici */
+@media (max-width: 576px) {
+    .panel-header {
+        grid-template-columns: 1fr; /* Filtrele unul sub altul pe ecrane mici */
+    }
+
+    .panel-header h2, .reset-btn {
+        grid-column: span 1;
+    }
+}
 body {
     font-family: 'Inter', sans-serif;
 }

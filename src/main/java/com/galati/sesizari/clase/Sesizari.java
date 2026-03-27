@@ -2,6 +2,7 @@ package com.galati.sesizari.clase;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.galati.sesizari.enums.Prioritate;
+import com.galati.sesizari.enums.Rol;
 import com.galati.sesizari.enums.Status;
 import jakarta.persistence.*;
 

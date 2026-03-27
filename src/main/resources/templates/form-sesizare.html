@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ro" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -19,7 +20,7 @@
         <a class="btn btn-back" href="/">Înapoi acasă</a>
     </div>
 </nav>
-
+<script th:src="@{/js/accessibility.js}"></script>
 <main class="hero-form py-5">
     <div class="container">
         <div class="row g-4 align-items-stretch">
@@ -319,4 +320,17 @@
 
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </body>
+<script>
+    document.addEventListener('click', (e) => {
+        // Luăm textul din ce am apăsat
+        const text = e.target.innerText || e.target.placeholder;
+
+        if (text && text.trim().length > 1) {
+            window.speechSynthesis.cancel(); // Oprim ce se auzea înainte
+            const vorbire = new SpeechSynthesisUtterance(text.trim());
+            vorbire.lang = 'ro-RO';
+            window.speechSynthesis.speak(vorbire);
+        }
+    });
+</script>
 </html>

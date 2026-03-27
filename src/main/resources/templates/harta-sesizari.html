@@ -165,7 +165,7 @@
 </head>
 
 <body>
-
+<script th:src="@{/js/accessibility.js}"></script>
 <div class="top-bar">
     <h1>Harta sesizărilor</h1>
     <a href="/">← Înapoi</a>
@@ -334,4 +334,17 @@
 </script>
 
 </body>
+<script>
+    document.addEventListener('click', (e) => {
+        // Luăm textul din ce am apăsat
+        const text = e.target.innerText || e.target.placeholder;
+
+        if (text && text.trim().length > 1) {
+            window.speechSynthesis.cancel(); // Oprim ce se auzea înainte
+            const vorbire = new SpeechSynthesisUtterance(text.trim());
+            vorbire.lang = 'ro-RO';
+            window.speechSynthesis.speak(vorbire);
+        }
+    });
+</script>
 </html>

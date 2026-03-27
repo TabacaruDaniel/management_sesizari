@@ -18,6 +18,7 @@
     </style>
 </head>
 <body>
+<script th:src="@{/js/accessibility.js}"></script>
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-nav">
     <div class="container">
         <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
@@ -83,7 +84,7 @@
         <div class="ms-auto d-flex align-items-center">
 
             <div th:if="${session.utilizatorLogat == null}">
-                <a href="/login" class="btn submit-btn btn-sm rounded-pill px-3">Autentificare</a>
+                <a href="/login" class="btn submit-btn btn-sm rounded-pill px-3 ms-2">Autentificare</a>
                 <a href="/register" class="btn btn-outline-light btn-sm rounded-pill px-3 ms-2">Cont Nou</a>
             </div>
 
@@ -181,5 +182,20 @@
     verificaNotificari();
     setInterval(verificaNotificari, 30000);
 </script>
+
+
 </body>
+<script>
+    document.addEventListener('click', (e) => {
+        // Luăm textul din ce am apăsat
+        const text = e.target.innerText || e.target.placeholder;
+
+        if (text && text.trim().length > 1) {
+            window.speechSynthesis.cancel(); // Oprim ce se auzea înainte
+            const vorbire = new SpeechSynthesisUtterance(text.trim());
+            vorbire.lang = 'ro-RO';
+            window.speechSynthesis.speak(vorbire);
+        }
+    });
+</script>
 </html>

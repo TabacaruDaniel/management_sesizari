@@ -44,7 +44,7 @@
         <a class="btn btn-outline-light btn-back" href="/">Înapoi acasă</a>
     </div>
 </nav>
-
+<script th:src="@{/js/accessibility.js}"></script>
 <main class="hero-form py-5">
     <div class="text-center mb-5">
         <h1>Panou de administrare</h1>
@@ -102,4 +102,17 @@
 </script>
 
 </body>
+<script>
+    document.addEventListener('click', (e) => {
+        // Luăm textul din ce am apăsat
+        const text = e.target.innerText || e.target.placeholder;
+
+        if (text && text.trim().length > 1) {
+            window.speechSynthesis.cancel(); // Oprim ce se auzea înainte
+            const vorbire = new SpeechSynthesisUtterance(text.trim());
+            vorbire.lang = 'ro-RO';
+            window.speechSynthesis.speak(vorbire);
+        }
+    });
+</script>
 </html>

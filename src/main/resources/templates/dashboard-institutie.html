@@ -90,12 +90,15 @@
                         <div class="small text-muted text-truncate" style="max-width: 250px;" th:text="${sesizare.descriere}">Descriere scurta...</div>
                     </td>
 
-                    <td>
-                            <span th:classappend="${sesizare.prioritate.name() == 'MARE'} ? 'bg-danger' : (sesizare.prioritate.name() == 'MEDIE' ? 'bg-warning text-dark' : 'bg-success')"
-                                  class="badge status-badge" th:text="${sesizare.prioritate}">
-                                PRIORITATE
-                            </span>
-                    </td>
+<!--                    <td>-->
+<!--    <span th:classappend="${sesizare.prioritate == T(com.galati.sesizari.enums.Prioritate).MARE} ? 'bg-danger' :-->
+<!--                          (sesizare.prioritate == T(com.galati.sesizari.enums.Prioritate).MEDIE ? 'bg-warning text-dark' :-->
+<!--                          (sesizare.prioritate == T(com.galati.sesizari.enums.Prioritate).MIC ? 'bg-success' : ''))"-->
+<!--          class="badge text-white status-badge"-->
+<!--          th:text="${sesizare.prioritate}">-->
+<!--        PRIORITATE-->
+<!--    </span>-->
+<!--                    </td>-->
 
                     <td>
                         <span class="badge bg-info text-dark status-badge" th:text="${sesizare.status}">STATUS</span>

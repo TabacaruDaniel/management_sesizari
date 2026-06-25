@@ -10,17 +10,21 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
-
 @Repository
-public interface SesizariRepo extends JpaRepository<Sesizari,Long> {
+public interface SesizariRepo extends JpaRepository<Sesizari, Long> {
 
-    List <Sesizari> findByUser_Username(String username);
-    List<Sesizari> findAllByInstitutie(Institutie institutie_id); //dupa tipul problemei
+    List<Sesizari> findByUser_Username(String username);
+
+    List<Sesizari> findAllByInstitutie(Institutie institutie);
+
     List<Sesizari> findByPrioritate(Prioritate prioritate);
+
     List<Sesizari> findByAdresa_Zona(String zona);
-     Sesizari findByTitlu(String titlu);
+
+    Sesizari findByTitlu(String titlu);
+
     @Query("SELECT s FROM Sesizari s LEFT JOIN FETCH s.institutie")
     List<Sesizari> findAllWithInstitutie();
-    List<Sesizari> findByUserAndInstitutie(User user, Institutie institutie);
 
+    List<Sesizari> findByUserAndInstitutie(User user, Institutie institutie);
 }

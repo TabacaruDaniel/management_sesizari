@@ -1,5 +1,7 @@
 package com.galati.sesizari.controller;
-
+import com.galati.sesizari.clase.Institutie;
+import com.galati.sesizari.dto.SesizareRequest;
+import com.galati.sesizari.repos.InstitutieRepo;
 import com.galati.sesizari.service.EmailService;
 import com.galati.sesizari.clase.Sesizari;
 import com.galati.sesizari.clase.User;
@@ -22,27 +24,48 @@ public class SesizariRestController {
     private SesizareService sesizariService;
     @Autowired
     private EmailService emailService;
-
+    @Autowired
+    private InstitutieRepo institutieRepo;
     @GetMapping("/toate")
     public List<Sesizari> getToateSesizarile() {
         return sesizariService.gasesteToate(); // Sau cum se numește metoda ta de extragere totală
     }
 
     @PostMapping("/salveaza")
-    public ResponseEntity<String> salveazaJson(@RequestBody Sesizari sesizare, HttpSession session) {
+    public ResponseEntity<String> salveazaJson(@RequestBody SesizareRequest request,
+                                               HttpSession session) {
+
         User userLogat = (User) session.getAttribute("utilizatorLogat");
+
         if (userLogat == null) {
-            return ResponseEntity.status(401).body("Trebuie să fii logat!");
+            return ResponseEntity.status(401).body("Trebuie sa fii logat!");
         }
-        try
-        {
+
+        try {
+            Sesizari sesizare = new Sesizari();
+
+            sesizare.setTitlu(request.getTitlu());
+            sesizare.setDescriere(request.getDescriere());
+            sesizare.setPrioritate(request.getPrioritate());
+            sesizare.setAdresa(request.getAdresa());
+
             sesizare.setNr_aprecieri(0);
             sesizare.setUser(userLogat);
             sesizare.setDataDepunerii(LocalDate.now());
             sesizare.setStatus(Status.NOU);
+            System.out.println("am primit id-ul urmator " +request.getInstitutieId());
+            Institutie institutie = institutieRepo.findById(request.getInstitutieId())
+                    .orElseThrow(() -> new RuntimeException("Institutia nu exista"));
+
+            sesizare.setInstitutie(institutie);
+            System.out.println("am primit institutia urmatoare " +institutie.getNumeInstitutie());
+            System.out.println("institutia pusa pe sesizare = "
+                    + sesizare.getInstitutie().getNumeInstitutie());
             sesizariService.salveazaSesizare(sesizare);
             emailService.trimiteConfirmare(userLogat.getEmail(), sesizare.getTitlu());
-            return ResponseEntity.ok("Sesizare salvată cu succes!");
+
+            return ResponseEntity.ok("Sesizare salvata cu succes!");
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Eroare la baza de date: " + e.getMessage());

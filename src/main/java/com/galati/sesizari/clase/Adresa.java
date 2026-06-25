@@ -1,5 +1,4 @@
 package com.galati.sesizari.clase;
-//test
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 

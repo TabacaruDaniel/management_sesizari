@@ -1,129 +1,583 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panou Admin - Statistici Detaliate</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Panou Admin</title>
+
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #6ab7ff, #fbc7d4);
-            min-height: 100vh;
             margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
         }
 
-        .navbar-custom {
-            background-color: rgba(0,0,0,0.7);
-        }
-
-        .stats-section {
-            padding: 40px 20px;
-        }
-
-        .card-section {
-            border-radius: 15px;
-            background-color: rgba(255,255,255,0.95);
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .card-section:hover {
-            transform: translateY(-3px);
-        }
-
-        .card-header {
-            padding: 20px;
-            font-weight: bold;
+        .navbar {
+            background: #1f2937;
+            color: white;
+            padding: 16px 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.2rem;
         }
 
-        .card-body {
-            padding: 20px;
+        .navbar h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            background: #374151;
+            padding: 8px 14px;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab-button {
+            border: none;
+            background: transparent;
+            padding: 12px 18px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button.active {
+            color: #2563eb;
+            border-bottom: 3px solid #2563eb;
+        }
+
+        .tab-content {
             display: none;
         }
 
-        .card-body ul {
-            list-style-type: disc;
-            padding-left: 20px;
+        .tab-content.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f9fafb;
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: #e5e7eb;
+            font-size: 13px;
+        }
+
+        .empty {
+            padding: 24px;
+            text-align: center;
+            color: #777;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .descriere {
+            max-width: 320px;
+            word-wrap: break-word;
+        }
+        .actiuni-cell {
+            position: relative;
+        }
+
+        .dots-btn {
+            border: none;
+            background: #e5e7eb;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 36px;
+            background: white;
+            min-width: 190px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            z-index: 20;
+            overflow: hidden;
+        }
+
+        .dropdown-menu button {
+            display: block;
+            width: 100%;
+            padding: 10px 12px;
+            border: none;
+            background: white;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .dropdown-menu button:hover {
+            background: #f3f4f6;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            background: white;
+            width: 420px;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+        }
+
+        .modal h3 {
+            margin-top: 0;
+        }
+
+        .modal select,
+        .modal textarea {
+            width: 100%;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cancel {
+            background: #e5e7eb;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-confirm {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
         }
     </style>
 </head>
+
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-    <div class="container">
-        <a class="navbar-brand fw-semibold" href="/">Panou Admin</a>
-        <a class="btn btn-outline-light" href="/">Înapoi acasă</a>
+<div class="navbar">
+    <h1>Panou Admin</h1>
+    <a href="/">Inapoi acasa</a>
+</div>
+
+<div class="container">
+
+    <div class="tabs">
+        <button class="tab-button active" onclick="openTab('tab-sesizari', this)">
+            Sesizari
+            <span th:text="'(' + ${#lists.size(sesizari)} + ')'">(0)</span>
+        </button>
+
+        <button class="tab-button" onclick="openTab('tab-rapoarte', this)">
+            Rapoarte
+            <span th:text="'(' + ${#lists.size(rapoarte)} + ')'">(0)</span>
+        </button>
+
+        <button class="tab-button" onclick="openTab('tab-feedbackuri', this)">
+            Feedback-uri
+            <span th:text="'(' + ${#lists.size(feedbacks)} + ')'">(0)</span>
+        </button>
+        <button class="tab-button" onclick="openTab('tab-utilizatori', this)">
+            Utilizatori
+            <span th:text="'(' + ${#lists.size(users)} + ')'">(0)</span>
+        </button>
     </div>
-</nav>
+    <!-- TAB 1: TOATE SESIZARILE -->
+    <div id="tab-sesizari" class="tab-content active">
+        <h2>Toate sesizarile</h2>
 
-<div class="container stats-section">
+        <table th:if="${!#lists.isEmpty(sesizari)}">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titlu</th>
+                <th>Descriere</th>
+                <th>Institutie</th>
+                <th>User</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Prioritate</th>
+                <th>Actiuni</th>
+            </tr>
+            </thead>
 
-    <!-- Utilizatori -->
-    <div class="card-section" onclick="toggleSection('usersList')">
-        <div class="card-header">
-            <span>👥 Utilizatori (125)</span>
-            <span>▼</span>
-        </div>
-        <div class="card-body" id="usersList">
-            <ul>
-                <li>Ion Popescu - ion@example.com</li>
-                <li>Maria Ionescu - maria@example.com</li>
-                <li>Andrei Georgescu - andrei@example.com</li>
-                <li>...</li>
-            </ul>
-        </div>
+            <tbody>
+            <tr th:each="s : ${sesizari}">
+                <td th:text="${s.nrReclamatie}">1</td>
+                <td th:text="${s.titlu}">Titlu</td>
+                <td th:text="${s.descriere}">Descriere</td>
+                <td th:text="${s.institutie != null ? s.institutie.numeInstitutie : 'Nerepartizata'}">Institutie</td>
+                <td th:text="${s.user != null ? s.user.username : '-'}">User</td>
+                <td th:text="${s.user != null ? s.user.email : '-'}">Email</td>
+                <td th:text="${s.status}">Status</td>
+                <td th:text="${s.prioritate}">Prioritate</td>
+                <td class="actiuni-cell">
+                    <button type="button" class="dots-btn" onclick="toggleMenu(this)">...</button>
+
+                    <div class="dropdown-menu">
+                        <button type="button"
+                                th:onclick="'openRepartizareModal(' + ${s.nrReclamatie} + ')'">
+                            Repartizeaza
+                        </button>
+
+                        <button type="button"
+                                th:onclick="'openStergereModal(' + ${s.nrReclamatie} + ')'">
+                            Sterge
+                        </button>
+
+                        <button type="button"
+                                th:onclick="'openRezolvareModal(' + ${s.nrReclamatie} + ')'">
+                            Marcheaza ca rezolvat
+                        </button>
+                    </div>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+
+        <p th:if="${#lists.isEmpty(sesizari)}">Nu exista sesizari.</p>
     </div>
 
-    <!-- Sesizări -->
-    <div class="card-section" onclick="toggleSection('sesizariList')">
-        <div class="card-header">
-            <span>📄 Sesizări (342)</span>
-            <span>▼</span>
-        </div>
-        <div class="card-body" id="sesizariList">
-            <ul>
-                <li>Groapă pe Str. Brăilei - trimisă de Ion Popescu</li>
-                <li>Gunoi pe trotuar - trimisă de Maria Ionescu</li>
-                <li>Iluminat defectuos - trimisă de Andrei Georgescu</li>
-                <li>...</li>
-            </ul>
-        </div>
+    <!-- TAB 2: RAPOARTE -->
+    <div id="tab-rapoarte" class="tab-content">
+        <h2>Rapoarte sesizari nepotrivite</h2>
+
+        <table th:if="${!#lists.isEmpty(rapoarte)}">
+            <thead>
+            <tr>
+                <th>ID raport</th>
+                <th>ID sesizare</th>
+                <th>Email raportat</th>
+                <th>Mesaj raport</th>
+                <th>Actiune</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="r : ${rapoarte}">
+                <td th:text="${r.id}">1</td>
+
+                <td th:text="${r.sesizare != null ? r.sesizare.nrReclamatie : '-'}">
+                    10
+                </td>
+
+                <td th:text="${r.sesizare != null && r.sesizare.user != null ? r.sesizare.user.email : '-'}">
+                    email@test.com
+                </td>
+
+                <td th:text="${r.mesaj}">
+                    Continut nepotrivit
+                </td>
+
+                <td>
+                    <form th:action="@{/admin/blocheaza}" method="post">
+                        <input type="hidden"
+                               name="email"
+                               th:value="${r.sesizare != null && r.sesizare.user != null ? r.sesizare.user.email : ''}">
+                        <button type="submit">Blocheaza conturi</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p th:if="${#lists.isEmpty(rapoarte)}">Nu exista rapoarte.</p>
     </div>
 
-    <!-- Feedback -->
-    <div class="card-section" onclick="toggleSection('feedbackList')">
-        <div class="card-header">
-            <span>✉️ Feedback (87)</span>
-            <span>▼</span>
+
+    <!-- TAB 3: Feedbackuri -->
+    <div id="tab-feedbackuri" class="tab-content">
+        <h2>Feedback-uri</h2>
+
+        <table th:if="${!#lists.isEmpty(feedbacks)}">
+            <thead>
+            <tr>
+                <th>ID feedback</th>
+                <th>ID sesizare</th>
+                <th>Rating</th>
+                <th>Comentariu</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="f : ${feedbacks}">
+                <td th:text="${f.feedback_id}">1</td>
+
+                <td th:text="${f.sesizare != null ? f.sesizare.nrReclamatie : '-'}">
+                    12
+                </td>
+
+                <td th:text="${f.rating}">
+                    5
+                </td>
+
+                <td th:text="${f.comentariu}">
+                    Comentariu feedback
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p th:if="${#lists.isEmpty(feedbacks)}">Nu exista feedback-uri.</p>
+    </div>
+    <div id="tab-utilizatori" class="tab-content">
+        <h2>Utilizatori</h2>
+
+        <div th:if="${eroareUser}" style="background:#fee2e2; color:#991b1b; padding:12px; border-radius:8px; margin-bottom:16px;">
+            <span th:text="${eroareUser}"></span>
         </div>
-        <div class="card-body" id="feedbackList">
-            <ul>
-                <li>Ion: Platforma este foarte utilă</li>
-                <li>Maria: Ar fi bine să existe notificări</li>
-                <li>Andrei: Mulțumesc pentru rapiditate</li>
-                <li>...</li>
-            </ul>
+
+        <div th:if="${succesUser}" style="background:#dcfce7; color:#166534; padding:12px; border-radius:8px; margin-bottom:16px;">
+            <span th:text="${succesUser}"></span>
         </div>
+
+        <h3>Adauga user nou</h3>
+
+        <form th:action="@{/admin/adauga-user}" method="post" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; margin-bottom:28px;">
+
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Parola" required>
+
+            <input type="text" name="nume" placeholder="Nume" required>
+            <input type="text" name="prenume" placeholder="Prenume" required>
+
+            <input type="email" name="email" placeholder="Email" required>
+
+            <select name="rol" required>
+                <option value="">Alege rol</option>
+                <option th:each="r : ${roluri}"
+                        th:value="${r}"
+                        th:text="${r}">
+                    USER
+                </option>
+            </select>
+
+            <select name="institutieId">
+                <option value="">Fara institutie</option>
+                <option th:each="i : ${institutii}"
+                        th:value="${i.institutie_id}"
+                        th:text="${i.numeInstitutie}">
+                    Institutie
+                </option>
+            </select>
+
+            <button type="submit" style="grid-column: span 2; padding:10px; cursor:pointer;">
+                Adauga user
+            </button>
+        </form>
+
+        <h3>Toti userii</h3>
+
+        <table th:if="${!#lists.isEmpty(users)}">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Nume</th>
+                <th>Prenume</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Institutie</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="u : ${users}">
+                <td th:text="${u.id}">1</td>
+                <td th:text="${u.username}">username</td>
+                <td th:text="${u.nume}">Nume</td>
+                <td th:text="${u.prenume}">Prenume</td>
+                <td th:text="${u.email}">email@test.com</td>
+                <td th:text="${u.rol}">USER</td>
+                <td th:text="${u.institutie != null ? u.institutie.numeInstitutie : '-'}">-</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p th:if="${#lists.isEmpty(users)}">Nu exista utilizatori.</p>
     </div>
 
 </div>
+<!-- MODAL REPARTIZARE -->
+<div id="modalRepartizare" class="modal-overlay">
+    <div class="modal">
+        <h3>Repartizeaza sesizarea</h3>
 
+        <form th:action="@{/admin/sesizari/repartizeaza}" method="post">
+            <input type="hidden" id="repartizareSesizareId" name="idSesizare">
+
+            <label>Alege institutia:</label>
+            <select name="institutieId" required>
+                <option value="">Selecteaza institutia</option>
+                <option th:each="i : ${institutii}"
+                        th:value="${i.institutie_id}"
+                        th:text="${i.numeInstitutie}">
+                    Institutie
+                </option>
+            </select>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModals()">Anuleaza</button>
+                <button type="submit" class="btn-confirm">Repartizeaza</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL STERGERE -->
+<div id="modalStergere" class="modal-overlay">
+    <div class="modal">
+        <h3>Sterge sesizarea</h3>
+
+        <form th:action="@{/admin/sesizari/sterge}" method="post">
+            <input type="hidden" id="stergereSesizareId" name="idSesizare">
+
+            <label>Motivul stergerii:</label>
+            <textarea name="motiv" rows="5" required
+                      placeholder="Ex: Sesizarea contine limbaj nepotrivit / informatii false / continut irelevant."></textarea>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModals()">Anuleaza</button>
+                <button type="submit" class="btn-confirm btn-danger">Sterge</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL REZOLVARE -->
+<div id="modalRezolvare" class="modal-overlay">
+    <div class="modal">
+        <h3>Marcheaza ca rezolvat</h3>
+
+        <form th:action="@{/admin/sesizari/rezolva}" method="post">
+            <input type="hidden" id="rezolvareSesizareId" name="idSesizare">
+
+            <label>Mesaj pentru utilizator:</label>
+            <textarea name="mesaj" rows="5" required
+                      placeholder="Ex: Problema semnalata a fost verificata si solutionata."></textarea>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModals()">Anuleaza</button>
+                <button type="submit" class="btn-confirm">Trimite si sterge</button>
+            </div>
+        </form>
+    </div>
+</div>
 <script>
-    function toggleSection(id) {
-        const section = document.getElementById(id);
-        if(section.style.display === "block"){
-            section.style.display = "none";
-        } else {
-            section.style.display = "block";
-        }
+    function openTab(tabId, button) {
+        const contents = document.querySelectorAll(".tab-content");
+        const buttons = document.querySelectorAll(".tab-button");
+
+        contents.forEach(content => content.classList.remove("active"));
+        buttons.forEach(btn => btn.classList.remove("active"));
+
+        document.getElementById(tabId).classList.add("active");
+        button.classList.add("active");
     }
+
+    function toggleMenu(button) {
+        const allMenus = document.querySelectorAll(".dropdown-menu");
+        const menu = button.nextElementSibling;
+
+        allMenus.forEach(m => {
+            if (m !== menu) {
+                m.style.display = "none";
+            }
+        });
+
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    function openRepartizareModal(idSesizare) {
+        document.getElementById("repartizareSesizareId").value = idSesizare;
+        document.getElementById("modalRepartizare").style.display = "flex";
+    }
+
+    function openStergereModal(idSesizare) {
+        document.getElementById("stergereSesizareId").value = idSesizare;
+        document.getElementById("modalStergere").style.display = "flex";
+    }
+
+    function openRezolvareModal(idSesizare) {
+        document.getElementById("rezolvareSesizareId").value = idSesizare;
+        document.getElementById("modalRezolvare").style.display = "flex";
+    }
+
+    function closeModals() {
+        document.getElementById("modalRepartizare").style.display = "none";
+        document.getElementById("modalStergere").style.display = "none";
+        document.getElementById("modalRezolvare").style.display = "none";
+    }
+
+    document.addEventListener("click", function(event) {
+        if (!event.target.classList.contains("dots-btn")) {
+            document.querySelectorAll(".dropdown-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+        }
+    });
 </script>
 
 </body>

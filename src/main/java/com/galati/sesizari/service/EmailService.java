@@ -39,4 +39,14 @@ public class EmailService {
 
         System.out.println("LOG: Mailul de confirmare a fost trimis către " + catre);
     }
+    public void trimiteNotificareAdmin(String catre, String subiect, String continut) {
+        SimpleMailMessage mesaj = new SimpleMailMessage();
+        mesaj.setTo(catre);
+        mesaj.setSubject(subiect);
+        mesaj.setText(continut);
+
+        mailSender.send(mesaj);
+
+        System.out.println("LOG: Mail administrativ trimis catre " + catre);
+    }
 }

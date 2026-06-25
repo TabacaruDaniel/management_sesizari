@@ -11,6 +11,7 @@ import com.galati.sesizari.repos.SesizariRepo;
 import com.galati.sesizari.repos.UserRepo;
 import com.galati.sesizari.service.EmailService;
 import com.galati.sesizari.service.RaportSesizareService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -64,12 +65,12 @@ public class AdminController {
 
         if (userRepo.existsByUsername(username)) {
             redirectAttributes.addFlashAttribute("eroareUser", "Username-ul exista deja.");
-            return "redirect:/admin/statistici";
+            return "redirect:/admin/statistici?tab=utilizatori";
         }
 
         if (userRepo.existsByEmail(email)) {
             redirectAttributes.addFlashAttribute("eroareUser", "Email-ul exista deja.");
-            return "redirect:/admin/statistici";
+            return "redirect:/admin/statistici?tab=utilizatori";
         }
 
         User user = new User();
@@ -91,7 +92,7 @@ public class AdminController {
         userRepo.save(user);
 
         redirectAttributes.addFlashAttribute("succesUser", "User adaugat cu succes.");
-        return "redirect:/admin/statistici";
+        return "redirect:/admin/statistici?tab=utilizatori";
     }
     @PostMapping("/sesizari/repartizeaza")
     public String repartizeazaSesizare(@RequestParam Long idSesizare,
@@ -114,13 +115,13 @@ public class AdminController {
                     "Sesizarea a fost repartizata",
                     "Buna ziua,\n\nSesizarea dumneavoastra cu titlul \""
                             + sesizare.getTitlu()
-                            + "\" a fost repartizata catre institutia: "
+                            + "\" a fost repartizata catre institutia de: "
                             + institutie.getNumeInstitutie()
                             + ".\n\nO zi buna!"
             );
         }
 
-        return "redirect:/admin/statistici";
+        return "redirect:/admin/statistici?tab=sesizari";
     }
     @PostMapping("/sesizari/sterge")
     public String stergeSesizare(@RequestParam Long idSesizare,
@@ -151,7 +152,7 @@ public class AdminController {
 
         sesizareRepo.delete(sesizare);
 
-        return "redirect:/admin/statistici";
+        return "redirect:/admin/statistici?tab=sesizari";
     }
     @PostMapping("/sesizari/rezolva")
     public String rezolvaSesizare(@RequestParam Long idSesizare,
@@ -187,5 +188,30 @@ public class AdminController {
         sesizareRepo.delete(sesizare);
 
         return "redirect:/admin/statistici";
+    }
+    @PostMapping("/sterge-user")
+    public String stergeUser(@RequestParam Long idUser,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+
+        User userLogat = (User) session.getAttribute("utilizatorLogat");
+
+        if (userLogat != null && userLogat.getId().equals(idUser)) {
+            redirectAttributes.addFlashAttribute("eroareUser", "Nu iti poti sterge propriul cont.");
+            return "redirect:/admin/statistici?tab=utilizatori";
+        }
+
+        User user = userRepo.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Userul nu exista"));
+
+        if (user.getRol() != Rol.INSTITUTIE) {
+            redirectAttributes.addFlashAttribute("eroareUser", "Poti sterge doar conturi de institutie.");
+            return "redirect:/admin/statistici?tab=utilizatori";
+        }
+
+        userRepo.delete(user);
+
+        redirectAttributes.addFlashAttribute("succesUser", "Contul institutiei a fost sters cu succes.");
+        return "redirect:/admin/statistici?tab=utilizatori";
     }
 }

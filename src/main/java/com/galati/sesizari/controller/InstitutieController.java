@@ -1,4 +1,5 @@
 package com.galati.sesizari.controller;
+import com.galati.sesizari.clase.Institutie;
 import com.galati.sesizari.clase.User;
 import com.galati.sesizari.enums.InstitutieTip;
 import com.galati.sesizari.service.EmailService;
@@ -22,7 +23,23 @@ public class InstitutieController {
     private final SesizareService sesizareService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private SesizariRepo sesizariRepo;
 
+    private int prioritateRank(com.galati.sesizari.enums.Prioritate prioritate) {
+        if (prioritate == null) {
+            return 5;
+        }
+
+        return switch (prioritate.name()) {
+            case "URGENTA" -> 1;
+            case "INALTA" -> 2;
+            case "MEDIE" -> 3;
+            case "SCAZUTA" -> 4;
+            case "NESPECIFICATA" -> 5;
+            default -> 5;
+        };
+    }
     public InstitutieController(SesizareService sesizareService) {
         this.sesizareService = sesizareService;
     }
@@ -48,25 +65,34 @@ public class InstitutieController {
 
     @GetMapping("/institutie/dashboard")
     public String dashboardInstitutie(HttpSession session, Model model) {
-        // poți verifica dacă utilizatorul este logat și are rolul corect
-        User user = (User) session.getAttribute("utilizatorLogat");
-        if (user == null || user.getRol() != Rol.INSTITUTIE) {
-            return "redirect:/login"; // dacă nu e logat sau nu e instituție
+
+        User userLogat = (User) session.getAttribute("utilizatorLogat");
+
+        if (userLogat == null) {
+            return "redirect:/login";
+        }
+
+        if (userLogat.getRol() != Rol.INSTITUTIE) {
+            return "redirect:/";
+        }
+
+        Institutie institutie = userLogat.getInstitutie();
+
+        if (institutie == null) {
+            model.addAttribute("eroare", "Acest cont nu are nicio institutie asociata.");
+            return "dashboard-institutie";
         }
 
 
-        // Numele instituției pentru afișare în navbar
-        model.addAttribute("numeInstitutie", user.getUsername());
+        List<Sesizari> sesizari = sesizariRepo.findAllByInstitutie(institutie);
 
-        // Preluăm sesizările pentru această instituție
-        List<Sesizari> listaSesizari = sesizareService.gasesteDupaInstitutie(user.getInstitutie());
+        sesizari.sort((s1, s2) -> Integer.compare(
+                prioritateRank(s1.getPrioritate()),
+                prioritateRank(s2.getPrioritate())
+        ));
 
-        // Dacă lista e goală, poate fi construită aici sau se afișează mesajul empty-state
-        if (listaSesizari == null) {
-            listaSesizari = new ArrayList<>();
-        }
-
-        model.addAttribute("sesizari", listaSesizari);
-        return "dashboard-institutie"; // va căuta templates/institutie/dashboard.html
+        model.addAttribute("institutie", institutie);
+        model.addAttribute("sesizari", sesizari);
+        return "dashboard-institutie";
     }
 }

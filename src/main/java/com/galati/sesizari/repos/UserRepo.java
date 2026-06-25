@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  import org.springframework.stereotype.Repository;
  import java.util.List;
  @Repository
-public interface UserRepo extends JpaRepository<User,Integer> {
+public interface UserRepo extends JpaRepository<User,Long> {
 
     boolean existsByEmail(String email);
 
@@ -15,4 +15,4 @@ public interface UserRepo extends JpaRepository<User,Integer> {
     boolean existsByPassword(String password);
      public User findByUsername(String username);
     List<User> findByRol(Rol rol);
-}
+ }

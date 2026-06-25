@@ -49,7 +49,7 @@
             Galați <span class="fw-light">Sesizări</span>
         </a>
         <div class="ms-auto d-flex align-items-center">
-            <span class="me-3 text-white-50">Logat ca: <strong class="text-white" th:text="${numeInstitutie}">Instituție</strong></span>
+            <span class="me-3 text-white-50">Logat ca: <strong class="text-white" th:text="${institutie.numeInstitutie}">Instituție</strong></span>
             <a href="/logout" class="btn btn-outline-light btn-sm">Deconectare</a>
         </div>
     </div>
@@ -62,7 +62,7 @@
         <div th:if="${#lists.isEmpty(sesizari)}" class="empty-state">
             <div class="alert alert-info py-5 shadow-sm">
                 <h3 class="display-6 text-info">☕ Totul este la zi!</h3>
-                <p class="lead">Momentan nu există sesizări noi repartizate către <strong><span th:text="${numeInstitutie}"></span></strong>.</p>
+                <p class="lead">Momentan nu există sesizări noi repartizate către <strong><span th:text="${institutie.numeInstitutie}"></span></strong>.</p>
                 <p class="text-muted">Când un cetățean va depune o plângere pe acest domeniu, aceasta va apărea automat aici.</p>
             </div>
         </div>
@@ -90,12 +90,16 @@
                         <div class="small text-muted text-truncate" style="max-width: 250px;" th:text="${sesizare.descriere}">Descriere scurta...</div>
                     </td>
 
-<!--                    <td>-->
-<!--                            <span th:classappend="${sesizare.prioritate.name() == 'MARE'} ? 'bg-danger' : (sesizare.prioritate.name() == 'MEDIE' ? 'bg-warning text-dark' : 'bg-success')"-->
-<!--                                  class="badge status-badge" th:text="${sesizare.prioritate}">-->
-<!--                                PRIORITATE-->
-<!--                            </span>-->
-<!--                    </td>-->
+                    <td>
+    <span class="badge status-badge"
+          th:classappend="${sesizare.prioritate != null && sesizare.prioritate.name() == 'URGENTA'} ? ' bg-danger' :
+                          (${sesizare.prioritate != null && sesizare.prioritate.name() == 'INALTA'} ? ' bg-warning text-dark' :
+                          (${sesizare.prioritate != null && sesizare.prioritate.name() == 'MEDIE'} ? ' bg-info text-dark' :
+                          (${sesizare.prioritate != null && sesizare.prioritate.name() == 'SCAZUTA'} ? ' bg-success' : ' bg-secondary')))"
+          th:text="${sesizare.prioritate != null ? sesizare.prioritate : 'NESPECIFICATA'}">
+        PRIORITATE
+    </span>
+                    </td>
 
                     <td>
                         <span class="badge bg-info text-dark status-badge" th:text="${sesizare.status}">STATUS</span>

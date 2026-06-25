@@ -4,5 +4,6 @@ public enum Prioritate {
     SCAZUTA,
     MEDIE,
     INALTA,
-    URGENTA
+    URGENTA,
+    NESPECIFICATA
 }

@@ -440,6 +440,7 @@
                 <th>Email</th>
                 <th>Rol</th>
                 <th>Institutie</th>
+                <th>Actiune</th>
             </tr>
             </thead>
 
@@ -452,6 +453,21 @@
                 <td th:text="${u.email}">email@test.com</td>
                 <td th:text="${u.rol}">USER</td>
                 <td th:text="${u.institutie != null ? u.institutie.numeInstitutie : '-'}">-</td>
+                <td>
+                    <form th:if="${u.rol.name() == 'INSTITUTIE'}"
+                          th:action="@{/admin/sterge-user}"
+                          method="post"
+                          onsubmit="return confirm('Sigur vrei sa stergi acest cont de institutie?');">
+
+                        <input type="hidden" name="idUser" th:value="${u.id}">
+
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            Sterge
+                        </button>
+                    </form>
+
+                    <span th:if="${u.rol.name() != 'INSTITUTIE'}">-</span>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -486,7 +502,7 @@
     </div>
 </div>
 
-<!-- MODAL STERGERE -->
+<!-- MODAL STERGERE SESIZARE -->
 <div id="modalStergere" class="modal-overlay">
     <div class="modal">
         <h3>Sterge sesizarea</h3>
@@ -499,8 +515,13 @@
                       placeholder="Ex: Sesizarea contine limbaj nepotrivit / informatii false / continut irelevant."></textarea>
 
             <div class="modal-actions">
-                <button type="button" class="btn-cancel" onclick="closeModals()">Anuleaza</button>
-                <button type="submit" class="btn-confirm btn-danger">Sterge</button>
+                <button type="button" class="btn-cancel" onclick="closeModals()">
+                    Anuleaza
+                </button>
+
+                <button type="submit" class="btn-confirm btn-danger">
+                    Sterge
+                </button>
             </div>
         </form>
     </div>
@@ -526,6 +547,7 @@
     </div>
 </div>
 <script>
+
     function openTab(tabId, button) {
         const contents = document.querySelectorAll(".tab-content");
         const buttons = document.querySelectorAll(".tab-button");
@@ -536,6 +558,38 @@
         document.getElementById(tabId).classList.add("active");
         button.classList.add("active");
     }
+    document.addEventListener("DOMContentLoaded", function () {
+        const params = new URLSearchParams(window.location.search);
+        const tab = params.get("tab");
+
+        if (tab === "utilizatori") {
+            const button = document.querySelector("button[onclick*='tab-utilizatori']");
+            if (button) {
+                openTab("tab-utilizatori", button);
+            }
+        }
+
+        if (tab === "sesizari") {
+            const button = document.querySelector("button[onclick*='tab-sesizari']");
+            if (button) {
+                openTab("tab-sesizari", button);
+            }
+        }
+
+        if (tab === "rapoarte") {
+            const button = document.querySelector("button[onclick*='tab-rapoarte']");
+            if (button) {
+                openTab("tab-rapoarte", button);
+            }
+        }
+
+        if (tab === "feedbackuri") {
+            const button = document.querySelector("button[onclick*='tab-feedbackuri']");
+            if (button) {
+                openTab("tab-feedbackuri", button);
+            }
+        }
+    });
 
     function toggleMenu(button) {
         const allMenus = document.querySelectorAll(".dropdown-menu");

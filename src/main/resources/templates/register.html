@@ -6,6 +6,7 @@
     <title>Înregistrare - Galați</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/accesibility.css}">
 </head>
 <body class="galati-page">
 
@@ -16,6 +17,7 @@
     </div>
 </nav>
 <script th:src="@{/js/accessibility.js}"></script>
+<div th:replace="~{accesibilitate :: buton-accesibilitate}"></div>
 <main class="hero-form d-flex align-items-center">
     <div class="container py-5">
         <div class="row justify-content-center">
@@ -69,17 +71,4 @@
 </body>
 </html>
 </div>
-<script>
-    document.addEventListener('click', (e) => {
-        // Luăm textul din ce am apăsat
-        const text = e.target.innerText || e.target.placeholder;
-
-        if (text && text.trim().length > 1) {
-            window.speechSynthesis.cancel(); // Oprim ce se auzea înainte
-            const vorbire = new SpeechSynthesisUtterance(text.trim());
-            vorbire.lang = 'ro-RO';
-            window.speechSynthesis.speak(vorbire);
-        }
-    });
-</script>
 </html>

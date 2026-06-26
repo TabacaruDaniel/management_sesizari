@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="buton-accesibilitate">
+
+    <button id="floatingAccBtn" class="acc-floating-btn"
+            aria-label="Deschide meniul de accesibilitate"
+            title="Accesibilitate">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
+             fill="currentColor" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="18" r="12"/>
+            <line x1="50" y1="30" x2="50" y2="62" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
+            <line x1="50" y1="38" x2="22" y2="52" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+            <line x1="50" y1="38" x2="78" y2="52" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+            <line x1="50" y1="62" x2="34" y2="88" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
+            <line x1="50" y1="62" x2="66" y2="88" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
+        </svg>
+    </button>
+
+    <div id="accOverlay" class="acc-overlay" style="display:none;">
+        <div class="acc-header">
+            <h4 class="mb-0 fs-5 fw-bold">Setări Accesibilitate</h4>
+            <button id="closeAccBtn" class="btn-close" aria-label="Închide"></button>
+        </div>
+        <div class="acc-body">
+            <div class="acc-section">
+                <span class="acc-label">Dimensiune Text</span>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary flex-grow-1" onclick="changeFontSize(1)">A+ Mărește</button>
+                    <button class="btn btn-outline-primary flex-grow-1" onclick="changeFontSize(-1)">A− Micșorează</button>
+                </div>
+            </div>
+            <div class="acc-section">
+                <span class="acc-label">Contrast</span>
+                <button class="btn btn-outline-dark w-100 mb-2" onclick="toggleAccClass('high-contrast')">Contrast Ridicat</button>
+                <button class="btn btn-outline-dark w-100" onclick="toggleAccClass('grayscale-mode')">Alb-Negru</button>
+            </div>
+            <button class="btn btn-danger w-100 mt-4" onclick="resetAccessibility()">Resetează toate setările</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('floatingAccBtn').addEventListener('click', function () {
+            const overlay = document.getElementById('accOverlay');
+            overlay.style.display = overlay.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.getElementById('closeAccBtn').addEventListener('click', function () {
+            document.getElementById('accOverlay').style.display = 'none';
+        });
+
+        // Adăugăm variabila care ține evidența treptelor (0 este valoarea default)
+        let currentFontStep = 0;
+
+        function changeFontSize(step) {
+            currentFontStep += step;
+
+            // Limităm la maxim 2 trepte în sus (+2) și 2 în jos (-2)
+            if (currentFontStep > 2) currentFontStep = 2;
+            if (currentFontStep < -2) currentFontStep = -2;
+
+            // Calculăm noua dimensiune în procente (ex: 80%, 90%, 100%, 110%, 120%)
+            const newSize = 100 + (currentFontStep * 10);
+            document.documentElement.style.fontSize = newSize + '%';
+        }
+
+        function toggleAccClass(cls) {
+            document.body.classList.toggle(cls);
+        }
+
+        function resetAccessibility() {
+            // Resetăm și contorul de trepte odată cu dimensiunea
+            currentFontStep = 0;
+            document.documentElement.style.fontSize = '';
+            document.body.classList.remove('high-contrast', 'grayscale-mode');
+        }
+    </script>
+
+</div>
+
+</body>
+</html>

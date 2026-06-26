@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/accesibility.css}">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
 
     <style>
@@ -166,11 +167,12 @@
 
 <body>
 <script th:src="@{/js/accessibility.js}"></script>
+<div th:replace="~{accesibilitate :: buton-accesibilitate}"></div>
 <div class="top-bar">
     <h1>Harta sesizărilor</h1>
     <a href="/">← Înapoi</a>
 </div>
-
+<div th:replace="~{accesibilitate :: buton-accesibilitate}"></div>
 <div class="main-layout">
 
     <!-- PANEL LATERAL -->
@@ -203,8 +205,13 @@
             </div>
 
             <div class="filter-group">
-                <label>Data postării</label>
-                <input type="date" id="filterData" onchange="aplicaFiltre()">
+                <label>Data început</label>
+                <input type="date" id="filterDataStart" onchange="aplicaFiltre()">
+            </div>
+
+            <div class="filter-group">
+                <label>Data sfârșit</label>
+                <input type="date" id="filterDataEnd" onchange="aplicaFiltre()">
             </div>
 
             <button class="reset-btn" onclick="resetFiltre()">↺ Resetează filtrele</button>
@@ -300,14 +307,32 @@
     function aplicaFiltre() {
         const status = document.getElementById('filterStatus').value;
         const prioritate = document.getElementById('filterPrioritate').value;
-        const data = document.getElementById('filterData').value;
+        const dataStart = document.getElementById('filterDataStart').value;
+        const dataEnd = document.getElementById('filterDataEnd').value;
 
         const filtrate = toateSesizarile.filter(s => {
             const statusOk = status === 'TOATE' || (s.status || '').toUpperCase() === status;
             const prioritateOk = prioritate === 'TOATE' || (s.prioritate || '').toUpperCase() === prioritate;
-            const dataOk = !data || s.dataDepunerii === data;
+
+            // Verificare interval date
+            let dataOk = true;
+            if (s.dataDepunerii) {
+                const dataSesizarii = new Date(s.dataDepunerii);
+                if (dataStart) {
+                    const start = new Date(dataStart);
+                    if (dataSesizarii < start) dataOk = false;
+                }
+                if (dataEnd) {
+                    const end = new Date(dataEnd);
+                    if (dataSesizarii > end) dataOk = false;
+                }
+            }
+
             return statusOk && prioritateOk && dataOk;
         });
+
+        afiseazaSesizari(filtrate);
+    }
 
         afiseazaSesizari(filtrate);
     }
@@ -315,7 +340,8 @@
     function resetFiltre() {
         document.getElementById('filterStatus').value = 'TOATE';
         document.getElementById('filterPrioritate').value = 'TOATE';
-        document.getElementById('filterData').value = '';
+        document.getElementById('filterDataStart').value = '';
+        document.getElementById('filterDataEnd').value = '';
         afiseazaSesizari(toateSesizarile);
     }
 

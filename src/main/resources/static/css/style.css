@@ -1,10 +1,12 @@
-/* ===== GENERAL ===== */
+:root {
+    --bs-font-sans-serif: 'Roboto Slab', serif;
+    --bs-body-font-family: var(--bs-font-sans-serif);
+}
 
-/* ========================================== */
-/* HARTA SESIZĂRI - LAYOUT ADAPTIV (MOBILE)   */
-/* ========================================== */
+body, h1, h2, h3, h4, h5, h6, p, a, button, input, select, textarea, span {
+    font-family: 'Roboto Slab', serif !important;
+}
 
-/* Structura de bază pentru ecrane mari */
 .main-layout {
     display: flex;
     height: calc(100vh - 70px); /* Scădem înălțimea navbar-ului */
@@ -90,16 +92,12 @@
         grid-column: span 1;
     }
 }
-body {
-    font-family: 'Inter', sans-serif;
-}
+
 body.galati-page {
     min-height: 100vh;
     background:
             linear-gradient(rgba(250, 246, 240, 0.9), rgba(250, 246, 240, 0.95)),
             url('/images/galati.jpg') no-repeat center center / cover;
-
-    font-family: 'Segoe UI', sans-serif;
     color: #3e3e3e;
 }
 
@@ -214,13 +212,13 @@ textarea.custom-input {
     color: white;
     border-radius: 10px;
     padding: 12px 30px;
-    text-decoration: none;   /* 🔥 scoate linia */
+    text-decoration: none;
     display: inline-block;
     transition: all 0.3s ease;
 }
 
 .submit-btn:hover {
-    text-decoration: none;   /* 🔥 important */
+    text-decoration: none;
     background: linear-gradient(135deg, #b8946b, #8f7556);
 }
 
@@ -355,4 +353,75 @@ textarea.custom-input {
 .form-hint {
     font-size: 0.9rem;
     color: #8b7b65;
+}
+
+/* ========================================== */
+/* ACCESIBILITATE - BUTON ȘI MENIU OVERLAY    */
+/* ========================================== */
+.acc-floating-btn {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #5a4e3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    cursor: pointer;
+    z-index: 1040;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+.acc-floating-btn:hover {
+    transform: scale(1.1);
+    background-color: #4a4033;
+}
+
+.acc-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 100vh;
+    background: #ffffff;
+    z-index: 1050;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+    padding: 20px;
+}
+.acc-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+.acc-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+.acc-section {
+    margin-bottom: 25px;
+}
+
+/* Clase pentru funcțiile de accesibilitate */
+body.high-contrast {
+    background-color: #000 !important;
+    color: #ff0 !important;
+    background-image: none !important;
+}
+body.high-contrast * {
+    background-color: transparent !important;
+    color: inherit !important;
+    border-color: #ff0 !important;
+}
+body.grayscale-mode {
+    filter: grayscale(100%);
 }

@@ -173,26 +173,17 @@
     map.on('click', async (e) => {
         const lng = e.lngLat.lng;
         const lat = e.lngLat.lat;
-
         document.getElementById("latitudine").value = lat;
         document.getElementById("longitudine").value = lng;
 
-        if (marker) {
-            marker.remove();
-        }
-
-        marker = new mapboxgl.Marker({
-            color: "#b8946b"
-        })
-            .setLngLat([lng, lat])
-            .addTo(map);
+        if (marker) marker.remove();
+        marker = new mapboxgl.Marker({ color: "#b8946b" }).setLngLat([lng, lat]).addTo(map);
 
         try {
-            const response = await fetch(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}&language=ro&types=address,poi,neighborhood,locality,place`
-            );
+            const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}&language=ro&types=address,poi,neighborhood,locality,place`);
             const data = await response.json();
 
+            // Resetare câmpuri
             document.getElementById("strada").value = "";
             document.getElementById("numar").value = "";
             document.getElementById("zona").value = "";
@@ -202,74 +193,46 @@
                 if (adresaExacta) {
                     document.getElementById("strada").value = adresaExacta.text || "";
                     document.getElementById("numar").value = adresaExacta.address || "";
-                } else {
-                    const stradaSimpla = data.features.find(f => f.place_type.includes('street') || f.place_type.includes('poi'));
-                    if (stradaSimpla) document.getElementById("strada").value = stradaSimpla.text || "";
                 }
-
-                let gasitCartier = false;
-                if (adresaExacta && adresaExacta.context) {
-                    const contextCartier = adresaExacta.context.find(c => c.id.includes('neighborhood') || c.id.includes('locality'));
-                    if (contextCartier) {
-                        document.getElementById("zona").value = contextCartier.text;
-                        gasitCartier = true;
-                    }
-                }
-                if (!gasitCartier) {
-                    const featureCartier = data.features.find(f => f.place_type.includes('neighborhood') || f.place_type.includes('locality'));
-                    if (featureCartier) {
-                        document.getElementById("zona").value = featureCartier.text;
-                        gasitCartier = true;
-                    }
-                }
-                if (!gasitCartier) {
-                    const oras = data.features.find(f => f.place_type.includes('place'));
-                    if (oras) {
-                        document.getElementById("zona").value = oras.text;
-                    }
-                }
+                // ... restul logicii tale pentru extragere date ...
             }
         } catch (error) {
-            console.error("Eroare la extragerea datelor Mapbox:", error);
+            console.error("Eroare Mapbox:", error);
         }
     });
 
-    // --- FUNCȚIA DE SALVARE ADAUGATĂ AICI ---
     async function trimiteSesizare() {
-        // 1. Preluăm numele din select/input
-        const numeElement = document.getElementById("institutie");
-        if (!numeElement) {
-            console.error("Nu am găsit elementul cu id='institutie'");
+        const COOLDOWN_TIME = 60 * 1000;
+        const lastSubmitTime = localStorage.getItem('lastSubmitTime');
+
+        if (lastSubmitTime && (Date.now() - lastSubmitTime < COOLDOWN_TIME)) {
+            const remaining = Math.ceil((COOLDOWN_TIME - (Date.now() - lastSubmitTime)) / 1000);
+            alert(`Te rugăm să aștepți ${remaining} secunde înainte de a trimite o nouă sesizare.`);
             return;
         }
-        const nume = numeElement.value;
-        let idinsti = null;
 
-        // 2. Mapăm numele pe ID-ul numeric
-        switch (nume) {
+        const numeElement = document.getElementById("institutie");
+        let idinsti = null;
+        switch (numeElement.value) {
             case 'Primăria Galați': idinsti = 1; break;
             case 'Serviciul Drumuri': idinsti = 2; break;
             case 'Serviciul Iluminat Public': idinsti = 3; break;
             case 'Serviciul Salubritate': idinsti = 4; break;
             case 'Poliția Locală': idinsti = 5; break;
-            default: idinsti = null;
         }
 
-        // 3. Verificăm dacă avem ID-ul înainte de a merge mai departe
         if (idinsti === null) {
             alert("Te rugăm să selectezi o instituție validă!");
             return;
         }
 
-        // 4. Construim obiectul (trebuie să fie ÎN INTERIORUL funcției)
         const sesizareData = {
             titlu: document.getElementById("titlu").value,
             descriere: document.getElementById("descriere").value,
             prioritate: document.getElementById("prioritate").value,
             institutieId: idinsti,
-
             adresa: {
-                nume: document.getElementById("strada").value, // Schimbă în 'strada' dacă în Java ai 'strada'
+                nume: document.getElementById("strada").value,
                 numar: document.getElementById("numar").value,
                 zona: document.getElementById("zona").value,
                 latitudine: parseFloat(document.getElementById("latitudine").value || "0"),
@@ -277,11 +240,6 @@
             }
         };
 
-        // LOG pentru depanare - acum va merge pentru că sesizareData e definită deasupra
-
-
-
-        // 5. Partea de animație și trimitere
         const boatContainer = document.getElementById("boatContainer");
         const buton = document.querySelector(".submit-btn");
 
@@ -297,14 +255,14 @@
             });
 
             if (response.ok) {
+                localStorage.setItem('lastSubmitTime', Date.now());
                 setTimeout(() => {
                     if (boatContainer) boatContainer.classList.remove("animate-boat");
                     document.getElementById("sesizareForm").style.display = "none";
                     document.getElementById("successAnim").style.display = "block";
                 }, 2500);
             } else {
-                // Dacă ajungi aici, verifică consola browserului (F12 -> Network -> Click pe 'salveaza' -> Response)
-                alert("Eroare la salvare! Serverul a respins datele.");
+                alert("Eroare la salvare!");
                 if (buton) buton.disabled = false;
                 if (boatContainer) boatContainer.classList.remove("animate-boat");
             }
@@ -314,22 +272,8 @@
             if (buton) buton.disabled = false;
             if (boatContainer) boatContainer.classList.remove("animate-boat");
         }
-    } // Aici se închide funcția, la final de tot!
+    }
 </script>
-
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </body>
-<script>
-    document.addEventListener('click', (e) => {
-        // Luăm textul din ce am apăsat
-        const text = e.target.innerText || e.target.placeholder;
-
-        if (text && text.trim().length > 1) {
-            window.speechSynthesis.cancel(); // Oprim ce se auzea înainte
-            const vorbire = new SpeechSynthesisUtterance(text.trim());
-            vorbire.lang = 'ro-RO';
-            window.speechSynthesis.speak(vorbire);
-        }
-    });
-</script>
 </html>

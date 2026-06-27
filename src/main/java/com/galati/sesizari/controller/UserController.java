@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.galati.sesizari.dto.UserDataTransfer;
 
 @Controller
 public class UserController {
@@ -85,10 +86,16 @@ public class UserController {
     public String register() { return "register"; }
 
     @PostMapping("/register")
-    public String proceseazaRegister(@ModelAttribute User user) {
-        user.setRol(Rol.USER);
-        userService.registerUser(user);
-        return "redirect:/login";
+    public String proceseazaRegister(@ModelAttribute UserDataTransfer userDto, Model model) {
+        try {
+            // Trimitem DTO-ul către service
+            userService.registerUser(userDto);
+            return "redirect:/login";
+        } catch (Exception e) {
+            // Dacă apare eroarea de email duplicat, o afișăm în pagină
+            model.addAttribute("error", e.getMessage());
+            return "register";
+        }
     }
     @GetMapping("/logout")
     public String logout(HttpSession session, HttpServletResponse response) {

@@ -22,6 +22,7 @@
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-xl-6 col-lg-8">
+
                 <div class="form-shell">
                     <div class="text-center mb-4">
                         <span class="form-kicker">Alătură-te comunității</span>
@@ -64,6 +65,12 @@
                         <p class="form-hint">Ai deja cont? <a href="/login" class="text-black fw-bold">Autentifică-te</a></p>
                     </div>
                 </div>
+
+                <div th:if="${error}" class="mt-4 p-3 bg-white border border-danger rounded text-center shadow-sm">
+                    <p class="text-danger mb-2 fw-bold" th:text="${error}"></p>
+                    <a href="/login" class="btn btn-outline-danger btn-sm">Mergi la Autentificare</a>
+                </div>
+
             </div>
         </div>
     </div>

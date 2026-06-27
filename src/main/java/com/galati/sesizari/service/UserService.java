@@ -1,6 +1,7 @@
 package com.galati.sesizari.service;
 
 import com.galati.sesizari.clase.User;
+import com.galati.sesizari.dto.UserDataTransfer;
 import com.galati.sesizari.enums.Rol;
 import com.galati.sesizari.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,19 @@ public class UserService {
     }
 
 
-    public void registerUser(User user) {
-        userRepo.save(user);
+    public void registerUser(UserDataTransfer userDto) throws Exception {
+
+
+        if(userRepo.existsByEmail(userDto.getEmail())) {
+            throw new Exception("Exista deja un cont asociat acestui email!");
+        }
+        User userEntity = new User();
+        userEntity.setUsername(userDto.getUsername());
+        userEntity.setEmail(userDto.getEmail());
+        userEntity.setPassword(userDto.getParola());
+        userEntity.setPrenume(userDto.getPrenume());
+
+        userRepo.save(userEntity);
     }
     public User loginUser(User user){
         User userGasit=userRepo.findByUsernameAndPassword(user.getUsername(), user.getPassword());

@@ -106,16 +106,32 @@
                     </td>
 
                     <td>
-                        <form th:action="@{/sesizari/actualizeaza-status}" method="post" class="d-flex gap-2 justify-content-center">
+                        <!-- Actualizare status -->
+                        <form th:action="@{/sesizari/actualizeaza-status}" method="post" class="d-flex gap-2 mb-1">
                             <input type="hidden" name="idSesizare" th:value="${sesizare.nrReclamatie}" />
                             <select name="noulStatus" class="form-select form-select-sm" style="width: 140px;">
                                 <option th:each="st : ${T(com.galati.sesizari.enums.Status).values()}"
+                                        th:if="${st.name() != 'NOU'}"
                                         th:value="${st}"
                                         th:text="${st}"
                                         th:selected="${st == sesizare.status}">
                                 </option>
                             </select>
                             <button type="submit" class="btn btn-sm btn-success">Salvează</button>
+                        </form>
+
+                        <!-- Redirecționare instituție -->
+                        <form th:action="@{/sesizari/actualizeaza-status}" method="post" class="d-flex gap-2">
+                            <input type="hidden" name="idSesizare" th:value="${sesizare.nrReclamatie}" />
+                            <input type="hidden" name="actiune" value="redirectioneaza" />
+                            <select name="nouaInstitutieId" class="form-select form-select-sm" style="width: 140px;">
+                                <option value="">— Redirecționează —</option>
+                                <option th:each="inst : ${institutii}"
+                                        th:value="${inst.institutie_id}"
+                                        th:text="${inst.numeInstitutie}">
+                                </option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-warning">Trimite</button>
                         </form>
                     </td>
                 </tr>
@@ -131,17 +147,4 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<script>
-    document.addEventListener('click', (e) => {
-        // Luăm textul din ce am apăsat
-        const text = e.target.innerText || e.target.placeholder;
-
-        if (text && text.trim().length > 1) {
-            window.speechSynthesis.cancel(); // Oprim ce se auzea înainte
-            const vorbire = new SpeechSynthesisUtterance(text.trim());
-            vorbire.lang = 'ro-RO';
-            window.speechSynthesis.speak(vorbire);
-        }
-    });
-</script>
 </html>

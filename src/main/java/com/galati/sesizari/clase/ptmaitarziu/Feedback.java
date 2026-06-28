@@ -11,7 +11,7 @@ public class Feedback {
 
     private int rating; //1-5
     private String comentariu;
-
+//ok
     public Feedback() {}
     public Feedback(Long id, int rating, String comentariu) {
         this.feedback_id = id;

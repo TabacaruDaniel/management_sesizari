@@ -1,6 +1,7 @@
 package com.galati.sesizari.clase;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "raport_sesizare")
@@ -10,21 +11,18 @@ public class RaportSesizare {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // FK catre tabela sesizari
     @ManyToOne
     @JoinColumn(name = "id_sesizare")
     private Sesizari sesizare;
 
-    @Column(nullable = false, length = 1000)
-    private String mesaj;
+    @ManyToOne
+    @JoinColumn(name = "id_user_raportat")
+    private User userRaportat;
 
-    public RaportSesizare() {
-    }
+    @Column(length = 1000, nullable = false)
+    private String context;
 
-    public RaportSesizare(Sesizari sesizare, String mesaj) {
-        this.sesizare = sesizare;
-        this.mesaj = mesaj;
-    }
+    private LocalDateTime dataRaportare = LocalDateTime.now();
 
     public Long getId() {
         return id;
@@ -38,11 +36,27 @@ public class RaportSesizare {
         this.sesizare = sesizare;
     }
 
-    public String getMesaj() {
-        return mesaj;
+    public User getUserRaportat() {
+        return userRaportat;
     }
 
-    public void setMesaj(String mesaj) {
-        this.mesaj = mesaj;
+    public void setUserRaportat(User userRaportat) {
+        this.userRaportat = userRaportat;
+    }
+
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    public LocalDateTime getDataRaportare() {
+        return dataRaportare;
+    }
+
+    public void setDataRaportare(LocalDateTime dataRaportare) {
+        this.dataRaportare = dataRaportare;
     }
 }

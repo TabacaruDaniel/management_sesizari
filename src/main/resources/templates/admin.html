@@ -310,7 +310,7 @@
                 <th>ID raport</th>
                 <th>ID sesizare</th>
                 <th>Email raportat</th>
-                <th>Mesaj raport</th>
+                <th>Context raport</th>
                 <th>Actiune</th>
             </tr>
             </thead>
@@ -323,21 +323,36 @@
                     10
                 </td>
 
-                <td th:text="${r.sesizare != null && r.sesizare.user != null ? r.sesizare.user.email : '-'}">
+                <td th:text="${r.userRaportat != null ? r.userRaportat.email : '-'}">
                     email@test.com
                 </td>
 
-                <td th:text="${r.mesaj}">
-                    Continut nepotrivit
+                <td th:text="${r.context}">
+                    Context raport
                 </td>
 
                 <td>
-                    <form th:action="@{/admin/blocheaza}" method="post">
+                    <form th:if="${r.userRaportat != null and !r.userRaportat.banat}"
+                          th:action="@{/admin/baneaza-user}"
+                          method="post"
+                          onsubmit="return confirm('Sigur vrei sa banezi acest cont?');">
+
                         <input type="hidden"
-                               name="email"
-                               th:value="${r.sesizare != null && r.sesizare.user != null ? r.sesizare.user.email : ''}">
-                        <button type="submit">Blocheaza conturi</button>
+                               name="idUser"
+                               th:value="${r.userRaportat.id}">
+
+                        <button type="submit" class="btn-danger">
+                            Baneaza cont
+                        </button>
                     </form>
+
+                    <span th:if="${r.userRaportat != null and r.userRaportat.banat}">
+            Cont deja banat
+        </span>
+
+                    <span th:if="${r.userRaportat == null}">
+            Guest / fara cont
+        </span>
                 </td>
             </tr>
             </tbody>
@@ -452,9 +467,9 @@
                 <td th:text="${u.prenume}">Prenume</td>
                 <td th:text="${u.email}">email@test.com</td>
                 <td th:text="${u.rol}">USER</td>
-                <td th:text="${u.institutie != null ? u.institutie.numeInstitutie : '-'}">-</td>
+                <td th:text="${u.institutie != null ? u.institutie.numeInstitutie : '-'}"></td>
                 <td>
-                    <form th:if="${u.rol.name() == 'INSTITUTIE'}"
+                    <form th:if="${u.rol == T(com.galati.sesizari.enums.Rol).INSTITUTIE}"
                           th:action="@{/admin/sterge-user}"
                           method="post"
                           onsubmit="return confirm('Sigur vrei sa stergi acest cont de institutie?');">
@@ -466,7 +481,7 @@
                         </button>
                     </form>
 
-                    <span th:if="${u.rol.name() != 'INSTITUTIE'}">-</span>
+                    <span th:if="${u.rol == T(com.galati.sesizari.enums.Rol).INSTITUTIE}"></span>
                 </td>
             </tr>
             </tbody>

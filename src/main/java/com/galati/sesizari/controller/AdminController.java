@@ -189,6 +189,19 @@ public class AdminController {
 
         return "redirect:/admin/statistici";
     }
+    @PostMapping("/baneaza-user")
+    public String baneazaUser(@RequestParam Long idUser,
+                              RedirectAttributes redirectAttributes) {
+
+        User user = userRepo.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Userul nu exista"));
+
+        user.setBanat(true);
+        userRepo.save(user);
+
+        redirectAttributes.addFlashAttribute("succesUser", "Contul a fost banat cu succes.");
+        return "redirect:/admin/statistici?tab=rapoarte";
+    }
     @PostMapping("/sterge-user")
     public String stergeUser(@RequestParam Long idUser,
                              HttpSession session,

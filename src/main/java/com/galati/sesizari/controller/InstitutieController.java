@@ -8,6 +8,7 @@ import com.galati.sesizari.enums.Rol;
 import com.galati.sesizari.enums.Status;
 import com.galati.sesizari.repos.SesizariRepo;
 import com.galati.sesizari.repos.InstitutieRepo;
+import com.galati.sesizari.service.RaportSesizareService;
 import com.galati.sesizari.service.SesizareService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class InstitutieController {
 
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private RaportSesizareService raportSesizareService;
 
     @Autowired
     private SesizariRepo sesizariRepo;
@@ -48,29 +51,72 @@ public class InstitutieController {
         };
     }
 
+    @PostMapping("/institutie/raporteaza")
+    public String raporteazaSesizare(@RequestParam Long idSesizare,
+                                     @RequestParam Long idUser,
+                                     @RequestParam String context) {
+
+        raportSesizareService.salveazaRaport(idSesizare, idUser, context);
+
+        return "redirect:/institutie/dashboard";
+    }
     @PostMapping("/sesizari/actualizeaza-status")
-    public String actualizeazaStatus(
-            @RequestParam("idSesizare") Long id,
-            @RequestParam(value = "noulStatus", required = false) Status noulStatus,
-            @RequestParam(value = "nouaInstitutieId", required = false) Long nouaInstitutieId,
-            @RequestParam(value = "actiune", required = false) String actiune) {
+    public String actualizeazaStatus(@RequestParam("idSesizare") Long id,
+                                     @RequestParam(required = false) Status noulStatus,
+                                     @RequestParam(required = false) String actiune,
+                                     @RequestParam(required = false) Long nouaInstitutieId) {
 
         Sesizari sesizare = sesizareService.gasesteDupaId(id);
 
-        if (sesizare != null) {
-            if ("redirectioneaza".equals(actiune) && nouaInstitutieId != null) {
-                institutieRepo.findById(nouaInstitutieId)
-                        .ifPresent(sesizare::setInstitutie);
-                sesizare.setStatus(Status.NOU);
-            } else if (noulStatus != null) {
-                sesizare.setStatus(noulStatus);
+        if (sesizare == null) {
+            return "redirect:/institutie/dashboard";
+        }
+
+        if ("redirectioneaza".equals(actiune)) {
+
+            if (nouaInstitutieId == null) {
+                return "redirect:/institutie/dashboard";
+            }
+
+            Institutie institutiaVeche = sesizare.getInstitutie();
+
+            Institutie nouaInstitutie = institutieRepo.findById(nouaInstitutieId)
+                    .orElseThrow(() -> new RuntimeException("Institutia nu exista"));
+
+            sesizare.setInstitutie(nouaInstitutie);
+            sesizare.setStatus(Status.IN_ANALIZA);
+
+            sesizareService.salveazaSesizare(sesizare);
+
+            if (sesizare.getUser() != null && sesizare.getUser().getEmail() != null) {
+                emailService.trimiteNotificareAdmin(
+                        sesizare.getUser().getEmail(),
+                        "Sesizarea a fost transferata",
+                        "Buna ziua,\n\nSesizarea dumneavoastra cu titlul \""
+                                + sesizare.getTitlu()
+                                + "\" a fost transferata"
+                                + (institutiaVeche != null ? " de la institutia " + institutiaVeche.getNumeInstitutie() : "")
+                                + " catre institutia: "
+                                + nouaInstitutie.getNumeInstitutie()
+                                + ".\n\nO zi buna!"
+                );
+            }
+
+            return "redirect:/institutie/dashboard";
+        }
+
+        if (noulStatus != null) {
+            sesizare.setStatus(noulStatus);
+
+            sesizareService.salveazaSesizare(sesizare);
+
+            if (sesizare.getUser() != null && sesizare.getUser().getEmail() != null) {
                 emailService.trimiteRaspuns(
                         sesizare.getUser().getEmail(),
                         sesizare.getTitlu(),
                         sesizare.getStatus()
                 );
             }
-            sesizareService.salveazaSesizare(sesizare);
         }
 
         return "redirect:/institutie/dashboard";
@@ -81,8 +127,13 @@ public class InstitutieController {
 
         User userLogat = (User) session.getAttribute("utilizatorLogat");
 
-        if (userLogat == null) return "redirect:/login";
-        if (userLogat.getRol() != Rol.INSTITUTIE) return "redirect:/";
+        if (userLogat == null) {
+            System.out.println(session.getAttribute("utilizatorLogat"));
+            return "redirect:/login"; }
+        if (userLogat.getRol() != Rol.INSTITUTIE) {
+            System.out.println(session.getAttribute("utilizatorLogat"));
+            return "redirect:/";
+        }
 
         Institutie institutie = userLogat.getInstitutie();
 

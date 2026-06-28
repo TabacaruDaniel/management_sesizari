@@ -2,6 +2,7 @@ package com.galati.sesizari.controller;
 
 import com.galati.sesizari.clase.User;
 import com.galati.sesizari.enums.Rol;
+import com.galati.sesizari.repos.UserRepo;
 import com.galati.sesizari.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,26 +22,41 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepo userRepo;
     @GetMapping("/")
     public String home() { return "index"; }
 
     @GetMapping("/login")
-    public String login(HttpServletRequest request, HttpSession session) {
-        // 1. Verificăm dacă userul are deja un bilet de acces (Cookie)
-        jakarta.servlet.http.Cookie[] cookies = request.getCookies();
+    public String loginPage(HttpServletRequest request,
+                            HttpSession session,
+                            Model model) {
+
+        Cookie[] cookies = request.getCookies();
+
         if (cookies != null) {
             for (jakarta.servlet.http.Cookie c : cookies) {
                 if (c.getName().equals("rememberedUser")) {
-                    // 2. Dacă găsim cookie-ul, căutăm userul în DB
-                    User userFound = userService.gasesteDupaUsername(c.getValue());
-                    if (userFound != null) {
-                        // 3. Îl logăm automat în sesiune
-                        session.setAttribute("utilizatorLogat", userFound);
-                        return "redirect:/sesizare/noua";
+
+                    String usernameDinCookie = c.getValue();
+
+                    User user = userRepo.findByUsername(usernameDinCookie);
+
+                    if (user == null) {
+                        return "login";
                     }
+
+                    if (user.isBanat()) {
+                        model.addAttribute("eroare", "Contul dumneavoastra a fost blocat.");
+                        return "login";
+                    }
+
+                    session.setAttribute("utilizatorLogat", user);
+                    return "redirect:/";
                 }
             }
         }
+
         return "login";
     }
     @PostMapping("/login")

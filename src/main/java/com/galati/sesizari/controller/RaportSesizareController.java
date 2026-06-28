@@ -14,10 +14,11 @@ public class RaportSesizareController {
 
     @PostMapping("/adauga")
     public String adaugaRaport(@RequestParam Long idSesizare,
-                               @RequestParam String mesaj) {
+                               @RequestParam Long idUser,
+                               @RequestParam String context) {
 
-        raportSesizareService.salveazaRaport(idSesizare, mesaj);
+        raportSesizareService.salveazaRaport(idSesizare, idUser, context);
 
-        return "redirect:/";
+        return "redirect:/institutie/dashboard";
     }
 }

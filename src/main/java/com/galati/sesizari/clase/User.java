@@ -21,7 +21,15 @@ public class User {
     private Institutie institutie;
     @Enumerated(EnumType.STRING)
     private Rol rol;
+    private boolean banat = false;
 
+    public boolean isBanat() {
+        return banat;
+    }
+
+    public void setBanat(boolean banat) {
+        this.banat = banat;
+    }
     public User() {
     }
 

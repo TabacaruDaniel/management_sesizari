@@ -32,7 +32,7 @@
                  class="d-inline-block align-top me-3 bg-white p-1 rounded">
             Vocea Galați
         </a>
-        <a class="btn btn-outline-light btn-back" href="/">Înapoi</a>
+        <a class="btn btn-outline-light btn-back" href="/">← Înapoi</a>
     </div>
 </nav>
 <script th:src="@{/js/accessibility.js}"></script>
@@ -84,9 +84,11 @@
                     </div>
                 </div>
 
-                <div th:if="${error}" class="mt-4 p-3 bg-white border border-danger rounded text-center shadow-sm">
-                    <p class="text-danger mb-2 fw-bold" th:text="${error}"></p>
-                    <a href="/login" class="btn btn-outline-danger btn-sm">Mergi la Autentificare</a>
+                <div th:if="${error}" class="position-fixed top-0 start-50 translate-middle-x mt-3 shadow-lg" style="z-index: 1060; width: 90%; max-width: 400px;">
+                    <div class="p-3 bg-white border border-danger rounded text-center">
+                        <p class="text-danger mb-2 fw-bold" th:text="${error}"></p>
+                        <a href="/login" class="btn btn-outline-danger btn-sm">Autentifică-te</a>
+                    </div>
                 </div>
 
             </div>

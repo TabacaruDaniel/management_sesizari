@@ -2,7 +2,7 @@
 <html lang="ro" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Panou Admin</title>
+    <title>Vocea Galați - Admin </title>
 
     <style>
         body {
@@ -217,7 +217,7 @@
 <body>
 
 <div class="navbar">
-    <h1>Panou Admin</h1>
+    <h1>Vocea Galați - Admin </h1>
     <a href="/">Inapoi acasa</a>
 </div>
 
@@ -225,15 +225,13 @@
 
     <div class="tabs">
         <button class="tab-button active" onclick="openTab('tab-sesizari', this)">
-            Sesizari
+            Sesizări
             <span th:text="'(' + ${#lists.size(sesizari)} + ')'">(0)</span>
         </button>
-
         <button class="tab-button" onclick="openTab('tab-rapoarte', this)">
             Rapoarte
             <span th:text="'(' + ${#lists.size(rapoarte)} + ')'">(0)</span>
         </button>
-
         <button class="tab-button" onclick="openTab('tab-feedbackuri', this)">
             Feedback-uri
             <span th:text="'(' + ${#lists.size(feedbacks)} + ')'">(0)</span>
@@ -243,130 +241,130 @@
             <span th:text="'(' + ${#lists.size(users)} + ')'">(0)</span>
         </button>
     </div>
-    <!-- TAB 1: TOATE SESIZARILE -->
-    <div id="tab-sesizari" class="tab-content active">
-        <h2>Toate sesizarile</h2>
 
-        <table th:if="${!#lists.isEmpty(sesizari)}">
+    <!-- TAB 1: SESIZĂRI -->
+    <div id="tab-sesizari" class="tab-content active">
+        <h2 style="font-size:18px; color:#111827; margin-bottom:16px;">Toate sesizările</h2>
+
+        <div th:if="${#lists.isEmpty(sesizari)}"
+             style="text-align:center; padding:40px; color:#9ca3af; background:#f9fafb; border-radius:12px; border:1px solid #e5e7eb;">
+            Nu există sesizări.
+        </div>
+
+        <table th:if="${!#lists.isEmpty(sesizari)}" style="font-size:14px;">
             <thead>
             <tr>
                 <th>ID</th>
                 <th>Titlu</th>
                 <th>Descriere</th>
-                <th>Institutie</th>
+                <th>Instituție</th>
                 <th>User</th>
                 <th>Email</th>
                 <th>Status</th>
                 <th>Prioritate</th>
-                <th>Actiuni</th>
+                <th>Acțiuni</th>
             </tr>
             </thead>
-
             <tbody>
             <tr th:each="s : ${sesizari}">
-                <td th:text="${s.nrReclamatie}">1</td>
-                <td th:text="${s.titlu}">Titlu</td>
-                <td th:text="${s.descriere}">Descriere</td>
-                <td th:text="${s.institutie != null ? s.institutie.numeInstitutie : 'Nerepartizata'}">Institutie</td>
-                <td th:text="${s.user != null ? s.user.username : '-'}">User</td>
-                <td th:text="${s.user != null ? s.user.email : '-'}">Email</td>
-                <td th:text="${s.status}">Status</td>
-                <td th:text="${s.prioritate}">Prioritate</td>
+                <td style="color:#9ca3af; font-size:13px;" th:text="${s.nrReclamatie}">1</td>
+                <td style="font-weight:600; color:#111827;" th:text="${s.titlu}">Titlu</td>
+                <td style="color:#6b7280; max-width:260px; word-wrap:break-word;" th:text="${s.descriere}">Descriere</td>
+                <td th:text="${s.institutie != null ? s.institutie.numeInstitutie : '—'}">Instituție</td>
+                <td th:text="${s.user != null ? s.user.username : '—'}">User</td>
+                <td style="color:#6b7280;" th:text="${s.user != null ? s.user.email : '—'}">Email</td>
+                <td>
+                    <span th:text="${s.status}"
+                          style="display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600; background:#e0f2fe; color:#0369a1;">
+                        Status
+                    </span>
+                </td>
+                <td>
+                    <span th:text="${s.prioritate}"
+                          th:style="${s.prioritate != null && s.prioritate.name() == 'URGENTA'} ? 'display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:#fee2e2;color:#dc2626;' :
+                                    (${s.prioritate != null && s.prioritate.name() == 'INALTA'} ? 'display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:#fef3c7;color:#d97706;' :
+                                    (${s.prioritate != null && s.prioritate.name() == 'MEDIE'} ? 'display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:#e0f2fe;color:#0369a1;' :
+                                    'display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:#f3f4f6;color:#6b7280;'))">
+                        Prioritate
+                    </span>
+                </td>
                 <td class="actiuni-cell">
-                    <button type="button" class="dots-btn" onclick="toggleMenu(this)">...</button>
-
+                    <button type="button" class="dots-btn" onclick="toggleMenu(this)">···</button>
                     <div class="dropdown-menu">
-                        <button type="button"
-                                th:onclick="'openRepartizareModal(' + ${s.nrReclamatie} + ')'">
-                            Repartizeaza
+                        <button type="button" th:onclick="'openRepartizareModal(' + ${s.nrReclamatie} + ')'">
+                            📋 Repartizează
                         </button>
-
-                        <button type="button"
-                                th:onclick="'openStergereModal(' + ${s.nrReclamatie} + ')'">
-                            Sterge
+                        <button type="button" th:onclick="'openRezolvareModal(' + ${s.nrReclamatie} + ')'">
+                            ✅ Marchează rezolvat
                         </button>
-
                         <button type="button"
-                                th:onclick="'openRezolvareModal(' + ${s.nrReclamatie} + ')'">
-                            Marcheaza ca rezolvat
+                                th:onclick="'openStergereModal(' + ${s.nrReclamatie} + ')'"
+                                style="color:#dc2626;">
+                            🗑 Șterge
                         </button>
                     </div>
                 </td>
-
             </tr>
             </tbody>
         </table>
-
-        <p th:if="${#lists.isEmpty(sesizari)}">Nu exista sesizari.</p>
     </div>
 
     <!-- TAB 2: RAPOARTE -->
     <div id="tab-rapoarte" class="tab-content">
-        <h2>Rapoarte sesizari nepotrivite</h2>
+        <h2 style="font-size:18px; color:#111827; margin-bottom:16px;">Rapoarte sesizări nepotrivite</h2>
 
-        <table th:if="${!#lists.isEmpty(rapoarte)}">
+        <div th:if="${#lists.isEmpty(rapoarte)}"
+             style="text-align:center; padding:40px; color:#9ca3af; background:#f9fafb; border-radius:12px; border:1px solid #e5e7eb;">
+            Nu există rapoarte.
+        </div>
+
+        <table th:if="${!#lists.isEmpty(rapoarte)}" style="font-size:14px;">
             <thead>
             <tr>
                 <th>ID raport</th>
                 <th>ID sesizare</th>
                 <th>Email raportat</th>
                 <th>Context raport</th>
-                <th>Actiune</th>
+                <th>Acțiune</th>
             </tr>
             </thead>
-
             <tbody>
             <tr th:each="r : ${rapoarte}">
-                <td th:text="${r.id}">1</td>
-
-                <td th:text="${r.sesizare != null ? r.sesizare.nrReclamatie : '-'}">
-                    10
-                </td>
-
-                <td th:text="${r.userRaportat != null ? r.userRaportat.email : '-'}">
-                    email@test.com
-                </td>
-
-                <td th:text="${r.context}">
-                    Context raport
-                </td>
-
+                <td style="color:#9ca3af; font-size:13px;" th:text="${r.id}">1</td>
+                <td style="font-weight:600;" th:text="${r.sesizare != null ? r.sesizare.nrReclamatie : '—'}">10</td>
+                <td style="color:#6b7280;" th:text="${r.userRaportat != null ? r.userRaportat.email : '—'}">email</td>
+                <td style="color:#6b7280; max-width:280px; word-wrap:break-word;" th:text="${r.context}">Context</td>
                 <td>
                     <form th:if="${r.userRaportat != null and !r.userRaportat.banat}"
-                          th:action="@{/admin/baneaza-user}"
-                          method="post"
-                          onsubmit="return confirm('Sigur vrei sa banezi acest cont?');">
-
-                        <input type="hidden"
-                               name="idUser"
-                               th:value="${r.userRaportat.id}">
-
-                        <button type="submit" class="btn-danger">
-                            Baneaza cont
+                          th:action="@{/admin/baneaza-user}" method="post"
+                          onsubmit="return confirm('Sigur vrei să banezi acest cont?');">
+                        <input type="hidden" name="idUser" th:value="${r.userRaportat.id}">
+                        <button type="submit"
+                                style="padding:6px 12px; background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer;">
+                            🚫 Banează cont
                         </button>
                     </form>
-
-                    <span th:if="${r.userRaportat != null and r.userRaportat.banat}">
-            Cont deja banat
-        </span>
-
-                    <span th:if="${r.userRaportat == null}">
-            Guest / fara cont
-        </span>
+                    <span th:if="${r.userRaportat != null and r.userRaportat.banat}"
+                          style="display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600; background:#f3f4f6; color:#9ca3af;">
+                        Cont banat
+                    </span>
+                    <span th:if="${r.userRaportat == null}" style="color:#d1d5db;">—</span>
                 </td>
             </tr>
             </tbody>
         </table>
-
-        <p th:if="${#lists.isEmpty(rapoarte)}">Nu exista rapoarte.</p>
     </div>
 
-
-    <!-- TAB 3: Feedbackuri -->
+    <!-- TAB 3: FEEDBACK-URI -->
     <div id="tab-feedbackuri" class="tab-content">
-        <h2>Feedback-uri</h2>
+        <h2 style="font-size:18px; color:#111827; margin-bottom:16px;">Feedback-uri</h2>
 
-        <table th:if="${!#lists.isEmpty(feedbacks)}">
+        <div th:if="${#lists.isEmpty(feedbacks)}"
+             style="text-align:center; padding:40px; color:#9ca3af; background:#f9fafb; border-radius:12px; border:1px solid #e5e7eb;">
+            Nu există feedback-uri.
+        </div>
+
+        <table th:if="${!#lists.isEmpty(feedbacks)}" style="font-size:14px;">
             <thead>
             <tr>
                 <th>ID feedback</th>
@@ -375,77 +373,107 @@
                 <th>Comentariu</th>
             </tr>
             </thead>
-
             <tbody>
             <tr th:each="f : ${feedbacks}">
-                <td th:text="${f.feedback_id}">1</td>
-
-                <td th:text="${f.sesizare != null ? f.sesizare.nrReclamatie : '-'}">
-                    12
+                <td style="color:#9ca3af; font-size:13px;" th:text="${f.feedback_id}">1</td>
+                <td style="font-weight:600;" th:text="${f.sesizare != null ? f.sesizare.nrReclamatie : '—'}">12</td>
+                <td>
+                    <span th:text="${f.rating}"
+                          th:style="${f.rating != null && f.rating >= 4} ? 'display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:#dcfce7;color:#16a34a;' :
+                                    (${f.rating != null && f.rating == 3} ? 'display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:#fef3c7;color:#d97706;' :
+                                    'display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:#fee2e2;color:#dc2626;')">
+                        5
+                    </span>
                 </td>
-
-                <td th:text="${f.rating}">
-                    5
-                </td>
-
-                <td th:text="${f.comentariu}">
-                    Comentariu feedback
-                </td>
+                <td style="color:#6b7280; max-width:360px; word-wrap:break-word;" th:text="${f.comentariu}">Comentariu</td>
             </tr>
             </tbody>
         </table>
-
-        <p th:if="${#lists.isEmpty(feedbacks)}">Nu exista feedback-uri.</p>
     </div>
-    <div id="tab-utilizatori" class="tab-content">
-        <h2>Utilizatori</h2>
 
-        <div th:if="${eroareUser}" style="background:#fee2e2; color:#991b1b; padding:12px; border-radius:8px; margin-bottom:16px;">
+    <!-- TAB 4: UTILIZATORI -->
+    <div id="tab-utilizatori" class="tab-content">
+        <h2 style="font-size:18px; color:#111827; margin-bottom:16px;">Utilizatori</h2>
+
+        <div th:if="${eroareUser}" style="background:#fee2e2; color:#991b1b; padding:12px 16px; border-radius:8px; margin-bottom:16px; border-left:4px solid #dc2626;">
             <span th:text="${eroareUser}"></span>
         </div>
-
-        <div th:if="${succesUser}" style="background:#dcfce7; color:#166534; padding:12px; border-radius:8px; margin-bottom:16px;">
+        <div th:if="${succesUser}" style="background:#dcfce7; color:#166534; padding:12px 16px; border-radius:8px; margin-bottom:16px; border-left:4px solid #16a34a;">
             <span th:text="${succesUser}"></span>
         </div>
 
-        <h3>Adauga user nou</h3>
+        <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:24px; margin-bottom:32px;">
+            <h3 style="margin:0 0 20px; font-size:16px; color:#111827;">Adaugă utilizator nou</h3>
+            <form th:action="@{/admin/adauga-user}" method="post">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
 
-        <form th:action="@{/admin/adauga-user}" method="post" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; margin-bottom:28px;">
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size:12px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em;">Username</label>
+                        <input type="text" name="username" placeholder="ex: ion.popescu" required
+                               style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; outline:none;">
+                    </div>
 
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Parola" required>
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size:12px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em;">Parolă</label>
+                        <input type="password" name="password" placeholder="••••••••" required
+                               style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; outline:none;">
+                    </div>
 
-            <input type="text" name="nume" placeholder="Nume" required>
-            <input type="text" name="prenume" placeholder="Prenume" required>
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size:12px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em;">Nume</label>
+                        <input type="text" name="nume" placeholder="ex: Popescu" required
+                               style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; outline:none;">
+                    </div>
 
-            <input type="email" name="email" placeholder="Email" required>
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size:12px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em;">Prenume</label>
+                        <input type="text" name="prenume" placeholder="ex: Ion" required
+                               style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; outline:none;">
+                    </div>
 
-            <select name="rol" required>
-                <option value="">Alege rol</option>
-                <option th:each="r : ${roluri}"
-                        th:value="${r}"
-                        th:text="${r}">
-                    USER
-                </option>
-            </select>
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size:12px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em;">Email</label>
+                        <input type="email" name="email" placeholder="ex: ion@primarie.ro" required
+                               style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; outline:none;">
+                    </div>
 
-            <select name="institutieId">
-                <option value="">Fara institutie</option>
-                <option th:each="i : ${institutii}"
-                        th:value="${i.institutie_id}"
-                        th:text="${i.numeInstitutie}">
-                    Institutie
-                </option>
-            </select>
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size:12px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em;">Rol</label>
+                        <select name="rol" required
+                                style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; background:white; outline:none; cursor:pointer;">
+                            <option value="">Alege rol</option>
+                            <option th:each="r : ${roluri}" th:value="${r}" th:text="${r}">USER</option>
+                        </select>
+                    </div>
 
-            <button type="submit" style="grid-column: span 2; padding:10px; cursor:pointer;">
-                Adauga user
-            </button>
-        </form>
+                    <div style="display:flex; flex-direction:column; gap:4px; grid-column:span 2;">
+                        <label style="font-size:12px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em;">Instituție (opțional)</label>
+                        <select name="institutieId"
+                                style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; background:white; outline:none; cursor:pointer;">
+                            <option value="">Fără instituție</option>
+                            <option th:each="i : ${institutii}" th:value="${i.institutie_id}" th:text="${i.numeInstitutie}">Instituție</option>
+                        </select>
+                    </div>
 
-        <h3>Toti userii</h3>
+                    <div style="grid-column:span 2; margin-top:4px;">
+                        <button type="submit"
+                                style="padding:11px 24px; background:#2563eb; color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;"
+                                onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">
+                            + Adaugă utilizator
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
 
-        <table th:if="${!#lists.isEmpty(users)}">
+        <h3 style="font-size:16px; color:#111827; margin-bottom:12px;">Toți utilizatorii</h3>
+
+        <div th:if="${#lists.isEmpty(users)}"
+             style="text-align:center; padding:40px; color:#9ca3af; background:#f9fafb; border-radius:12px; border:1px solid #e5e7eb;">
+            Nu există utilizatori.
+        </div>
+
+        <table th:if="${!#lists.isEmpty(users)}" style="font-size:14px;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -454,112 +482,41 @@
                 <th>Prenume</th>
                 <th>Email</th>
                 <th>Rol</th>
-                <th>Institutie</th>
-                <th>Actiune</th>
+                <th>Instituție</th>
+                <th>Acțiune</th>
             </tr>
             </thead>
-
             <tbody>
             <tr th:each="u : ${users}">
-                <td th:text="${u.id}">1</td>
-                <td th:text="${u.username}">username</td>
+                <td style="color:#9ca3af; font-size:13px;" th:text="${u.id}">1</td>
+                <td style="font-weight:600;" th:text="${u.username}">username</td>
                 <td th:text="${u.nume}">Nume</td>
                 <td th:text="${u.prenume}">Prenume</td>
-                <td th:text="${u.email}">email@test.com</td>
-                <td th:text="${u.rol}">USER</td>
-                <td th:text="${u.institutie != null ? u.institutie.numeInstitutie : '-'}"></td>
+                <td style="color:#6b7280;" th:text="${u.email}">email</td>
+                <td>
+                    <span th:text="${u.rol}"
+                          style="display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600; background:#e0e7ff; color:#3730a3;">
+                        USER
+                    </span>
+                </td>
+                <td style="color:#6b7280;" th:text="${u.institutie != null ? u.institutie.numeInstitutie : '—'}"></td>
                 <td>
                     <form th:if="${u.rol == T(com.galati.sesizari.enums.Rol).INSTITUTIE}"
-                          th:action="@{/admin/sterge-user}"
-                          method="post"
-                          onsubmit="return confirm('Sigur vrei sa stergi acest cont de institutie?');">
-
+                          th:action="@{/admin/sterge-user}" method="post"
+                          onsubmit="return confirm('Sigur vrei să ștergi acest cont?');">
                         <input type="hidden" name="idUser" th:value="${u.id}">
-
-                        <button type="submit" class="btn btn-sm btn-danger">
-                            Sterge
+                        <button type="submit"
+                                style="padding:6px 12px; background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer;">
+                            Șterge
                         </button>
                     </form>
-
-                    <span th:if="${u.rol == T(com.galati.sesizari.enums.Rol).INSTITUTIE}"></span>
+                    <span th:if="${u.rol != T(com.galati.sesizari.enums.Rol).INSTITUTIE}" style="color:#d1d5db;">—</span>
                 </td>
             </tr>
             </tbody>
         </table>
-
-        <p th:if="${#lists.isEmpty(users)}">Nu exista utilizatori.</p>
     </div>
 
-</div>
-<!-- MODAL REPARTIZARE -->
-<div id="modalRepartizare" class="modal-overlay">
-    <div class="modal">
-        <h3>Repartizeaza sesizarea</h3>
-
-        <form th:action="@{/admin/sesizari/repartizeaza}" method="post">
-            <input type="hidden" id="repartizareSesizareId" name="idSesizare">
-
-            <label>Alege institutia:</label>
-            <select name="institutieId" required>
-                <option value="">Selecteaza institutia</option>
-                <option th:each="i : ${institutii}"
-                        th:value="${i.institutie_id}"
-                        th:text="${i.numeInstitutie}">
-                    Institutie
-                </option>
-            </select>
-
-            <div class="modal-actions">
-                <button type="button" class="btn-cancel" onclick="closeModals()">Anuleaza</button>
-                <button type="submit" class="btn-confirm">Repartizeaza</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- MODAL STERGERE SESIZARE -->
-<div id="modalStergere" class="modal-overlay">
-    <div class="modal">
-        <h3>Sterge sesizarea</h3>
-
-        <form th:action="@{/admin/sesizari/sterge}" method="post">
-            <input type="hidden" id="stergereSesizareId" name="idSesizare">
-
-            <label>Motivul stergerii:</label>
-            <textarea name="motiv" rows="5" required
-                      placeholder="Ex: Sesizarea contine limbaj nepotrivit / informatii false / continut irelevant."></textarea>
-
-            <div class="modal-actions">
-                <button type="button" class="btn-cancel" onclick="closeModals()">
-                    Anuleaza
-                </button>
-
-                <button type="submit" class="btn-confirm btn-danger">
-                    Sterge
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- MODAL REZOLVARE -->
-<div id="modalRezolvare" class="modal-overlay">
-    <div class="modal">
-        <h3>Marcheaza ca rezolvat</h3>
-
-        <form th:action="@{/admin/sesizari/rezolva}" method="post">
-            <input type="hidden" id="rezolvareSesizareId" name="idSesizare">
-
-            <label>Mesaj pentru utilizator:</label>
-            <textarea name="mesaj" rows="5" required
-                      placeholder="Ex: Problema semnalata a fost verificata si solutionata."></textarea>
-
-            <div class="modal-actions">
-                <button type="button" class="btn-cancel" onclick="closeModals()">Anuleaza</button>
-                <button type="submit" class="btn-confirm">Trimite si sterge</button>
-            </div>
-        </form>
-    </div>
 </div>
 <script>
 

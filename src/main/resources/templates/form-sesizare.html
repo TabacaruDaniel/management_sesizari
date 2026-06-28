@@ -11,12 +11,31 @@
 
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
+    <style>
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('/images/galati.jpg') no-repeat center center/cover;
+            display: flex; align-items: center; justify-content: center; color: white; text-align: center;
+        }
+        .custom-nav { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
+        .card { border: none; border-radius: 15px; transition: 0.3s; }
+
+        /* 2. CORECTAT 'shadow' în 'box-shadow' */
+        .card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+    </style>
 </head>
 <body class="galati-page">
 
 <nav class="navbar navbar-expand-lg custom-navbar">
     <div class="container">
-        <a class="navbar-brand fw-semibold" href="/">Sesizări Galați</a>
+        <a class="navbar-brand fw-bold d-flex align-items-center brand-container" href="/">
+            <img th:src="@{/images/logo-gl.png}"
+                 alt="Logo"
+                 width="60"
+                 height="40"
+                 class="d-inline-block align-top me-3 bg-white p-1 rounded">
+            Vocea Galați
+        </a>
         <a class="btn btn-back" href="/">Înapoi acasă</a>
     </div>
 </nav>
@@ -29,11 +48,8 @@
             <div class="col-lg-7">
                 <div class="form-shell h-100">
                     <div class="text-center mb-4">
-                        <span class="form-kicker">Platformă civică locală</span>
                         <h1 class="form-title">Trimite o sesizare</h1>
-                        <p class="form-subtitle">
-                            Selectează locația direct pe hartă sau completează manual câmpurile.
-                        </p>
+
                     </div>
 
                     <form id="sesizareForm">
@@ -48,7 +64,9 @@
                             <textarea class="form-control custom-input" id="descriere" rows="5"
                                       placeholder="Descrie problema cât mai clar: locație, impact, detalii utile."></textarea>
                         </div>
-
+                        <p class="form-subtitle">
+                            Selectează locația direct pe hartă sau completează manual câmpurile.
+                        </p>
                         <div class="row">
                             <div class="col-md-6 mb-4">
                                 <label for="strada" class="form-label custom-label">Stradă</label>
@@ -96,14 +114,6 @@
 
                         <input type="hidden" id="latitudine" nume="latitdine">
                         <input type="hidden" id="longitudine" nume="longitudine">
-
-                        <div class="mb-4">
-                            <label for="poza" class="form-label custom-label">Încarcă o fotografie</label>
-                            <input class="form-control custom-file" type="file" id="poza">
-                            <div class="form-hint mt-2">
-                                Poza este opțională, dar poate ajuta la identificarea rapidă a problemei.
-                            </div>
-                        </div>
 
                         <div class="text-center pt-2">
                             <button type="button" onclick="trimiteSesizare()" class="submit-btn px-5">

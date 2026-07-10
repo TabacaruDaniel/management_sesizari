@@ -245,7 +245,47 @@
     <!-- TAB 1: SESIZĂRI -->
     <div id="tab-sesizari" class="tab-content active">
         <h2 style="font-size:18px; color:#111827; margin-bottom:16px;">Toate sesizările</h2>
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin-bottom:20px;">
 
+            <div>
+                <label>Status</label>
+                <select id="filterStatusAdmin" onchange="filtreazaSesizariAdmin()">
+                    <option value="TOATE">Toate</option>
+                    <option value="NOU">Nou</option>
+                    <option value="IN_ANALIZA">In analiza</option>
+                    <option value="IN_LUCRU">In lucru</option>
+                    <option value="REZOLVAT">Rezolvat</option>
+                    <option value="RESPINS">Respins</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Prioritate</label>
+                <select id="filterPrioritateAdmin" onchange="filtreazaSesizariAdmin()">
+                    <option value="TOATE">Toate</option>
+                    <option value="URGENTA">Urgenta</option>
+                    <option value="INALTA">Inalta</option>
+                    <option value="MEDIE">Medie</option>
+                    <option value="SCAZUTA">Scazuta</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Institutie</label>
+                <input type="text"
+                       id="filterInstitutieAdmin"
+                       placeholder="Ex: Drumuri"
+                       oninput="filtreazaSesizariAdmin()">
+            </div>
+
+            <div>
+                <label>Cauta</label>
+                <input type="text"
+                       id="filterTextAdmin"
+                       placeholder="Titlu, descriere, user, email..."
+                       oninput="filtreazaSesizariAdmin()">
+            </div>
+        </div>
         <div th:if="${#lists.isEmpty(sesizari)}"
              style="text-align:center; padding:40px; color:#9ca3af; background:#f9fafb; border-radius:12px; border:1px solid #e5e7eb;">
             Nu există sesizări.
@@ -266,7 +306,17 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="s : ${sesizari}">
+            <tr th:each="s : ${sesizari}"
+                class="rand-sesizare-admin"
+                th:attr="
+        data-status=${s.status},
+        data-prioritate=${s.prioritate},
+        data-institutie=${s.institutie != null ? s.institutie.numeInstitutie : 'Nerepartizata'},
+        data-user=${s.user != null ? s.user.username : ''},
+        data-email=${s.user != null ? s.user.email : ''},
+        data-titlu=${s.titlu},
+        data-descriere=${s.descriere}
+    ">
                 <td style="color:#9ca3af; font-size:13px;" th:text="${s.nrReclamatie}">1</td>
                 <td style="font-weight:600; color:#111827;" th:text="${s.titlu}">Titlu</td>
                 <td style="color:#6b7280; max-width:260px; word-wrap:break-word;" th:text="${s.descriere}">Descriere</td>
@@ -520,7 +570,40 @@
 
 </div>
 <script>
+    function filtreazaSesizariAdmin() {
+        const statusSelectat = document.getElementById("filterStatusAdmin").value;
+        const prioritateSelectata = document.getElementById("filterPrioritateAdmin").value;
+        const institutieCautata = document.getElementById("filterInstitutieAdmin").value.toLowerCase();
+        const textCautat = document.getElementById("filterTextAdmin").value.toLowerCase();
 
+        const randuri = document.querySelectorAll(".rand-sesizare-admin");
+
+        randuri.forEach(rand => {
+            const status = (rand.getAttribute("data-status") || "").toUpperCase();
+            const prioritate = (rand.getAttribute("data-prioritate") || "").toUpperCase();
+            const institutie = (rand.getAttribute("data-institutie") || "").toLowerCase();
+            const user = (rand.getAttribute("data-user") || "").toLowerCase();
+            const email = (rand.getAttribute("data-email") || "").toLowerCase();
+            const titlu = (rand.getAttribute("data-titlu") || "").toLowerCase();
+            const descriere = (rand.getAttribute("data-descriere") || "").toLowerCase();
+
+            const statusOk = statusSelectat === "TOATE" || status === statusSelectat;
+            const prioritateOk = prioritateSelectata === "TOATE" || prioritate === prioritateSelectata;
+            const institutieOk = institutie.includes(institutieCautata);
+
+            const textOk =
+                titlu.includes(textCautat) ||
+                descriere.includes(textCautat) ||
+                user.includes(textCautat) ||
+                email.includes(textCautat);
+
+            if (statusOk && prioritateOk && institutieOk && textOk) {
+                rand.style.display = "";
+            } else {
+                rand.style.display = "none";
+            }
+        });
+    }
     function openTab(tabId, button) {
         const contents = document.querySelectorAll(".tab-content");
         const buttons = document.querySelectorAll(".tab-button");

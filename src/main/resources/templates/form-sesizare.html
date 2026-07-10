@@ -58,7 +58,20 @@
                             <input type="text" class="form-control custom-input" id="titlu"
                                    placeholder="Ex. Groapă pe carosabil în zona Falezei">
                         </div>
+                        <div class="mb-4">
+                            <label for="poza" class="form-label custom-label">Poză sesizare</label>
 
+                            <input type="file"
+                                   class="form-control custom-input"
+                                   id="poza"
+                                   name="poza"
+                                   accept="image/*"
+                                   required>
+
+                            <small class="text-muted">
+                                Încarcă o poză pentru ca sesizarea să poată fi trimisă.
+                            </small>
+                        </div>
                         <div class="mb-4">
                             <label for="descriere" class="form-label custom-label">Descriere</label>
                             <textarea class="form-control custom-input" id="descriere" rows="5"
@@ -112,8 +125,8 @@
                             </div>
                         </div>
 
-                        <input type="hidden" id="latitudine" nume="latitdine">
-                        <input type="hidden" id="longitudine" nume="longitudine">
+                        <input type="hidden" id="latitudine" name="latitudine">
+                        <input type="hidden" id="longitudine" name="longitudine">
 
                         <div class="text-center pt-2">
                             <button type="button" onclick="trimiteSesizare()" class="submit-btn px-5">
@@ -166,7 +179,9 @@
         </g>
     </svg>
 </div>
-
+<script th:inline="javascript">
+    const userCooldownId = /*[[${session.utilizatorLogat != null ? session.utilizatorLogat.id : 'guest'}]]*/ 'guest';
+</script>
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuaWVsMDIwMjIwMDUiLCJhIjoiY21xdHYwOGtoMGMweDJxcXdnbmIweGpuMSJ9.NPJrCWm60ci8BfcfiZbjVg';
 
@@ -213,8 +228,9 @@
     });
 
     async function trimiteSesizare() {
-        const COOLDOWN_TIME = 60 * 1000;
-        const lastSubmitTime = localStorage.getItem('lastSubmitTime');
+        const COOLDOWN_TIME =  60 * 1000;
+        const cooldownKey = "lastSubmitTime_" + userCooldownId;
+        const lastSubmitTime = localStorage.getItem(cooldownKey);
 
         if (lastSubmitTime && (Date.now() - lastSubmitTime < COOLDOWN_TIME)) {
             const remaining = Math.ceil((COOLDOWN_TIME - (Date.now() - lastSubmitTime)) / 1000);
@@ -224,6 +240,7 @@
 
         const numeElement = document.getElementById("institutie");
         let idinsti = null;
+
         switch (numeElement.value) {
             case 'Primăria Galați': idinsti = 1; break;
             case 'Serviciul Drumuri': idinsti = 2; break;
@@ -237,19 +254,52 @@
             return;
         }
 
-        const sesizareData = {
-            titlu: document.getElementById("titlu").value,
-            descriere: document.getElementById("descriere").value,
-            prioritate: document.getElementById("prioritate").value,
-            institutieId: idinsti,
-            adresa: {
-                nume: document.getElementById("strada").value,
-                numar: document.getElementById("numar").value,
-                zona: document.getElementById("zona").value,
-                latitudine: parseFloat(document.getElementById("latitudine").value || "0"),
-                longitudine: parseFloat(document.getElementById("longitudine").value || "0")
-            }
-        };
+        const titlu = document.getElementById("titlu").value;
+        const descriere = document.getElementById("descriere").value;
+        const prioritate = document.getElementById("prioritate").value;
+
+        const strada = document.getElementById("strada").value;
+        const numar = document.getElementById("numar").value;
+        const zona = document.getElementById("zona").value;
+        const latitudine = document.getElementById("latitudine").value || "0";
+        const longitudine = document.getElementById("longitudine").value || "0";
+
+        const poza = document.getElementById("poza").files[0];
+
+        if (!titlu.trim()) {
+            alert("Te rugăm să completezi titlul sesizării.");
+            return;
+        }
+
+        if (!descriere.trim()) {
+            alert("Te rugăm să completezi descrierea sesizării.");
+            return;
+        }
+
+        if (!prioritate) {
+            alert("Te rugăm să alegi prioritatea.");
+            return;
+        }
+
+        if (!poza) {
+            alert("Trebuie să încarci o poză pentru sesizare.");
+            return;
+        }
+
+        const formData = new FormData();
+
+        formData.append("titlu", titlu);
+        formData.append("descriere", descriere);
+        formData.append("prioritate", prioritate);
+        formData.append("institutieId", idinsti);
+
+        formData.append("nume", strada);
+        formData.append("numar", numar);
+        formData.append("zona", zona);
+        formData.append("latitudine", latitudine);
+        formData.append("longitudine", longitudine);
+
+        formData.append("poza", poza);
 
         const boatContainer = document.getElementById("boatContainer");
         const buton = document.querySelector(".submit-btn");
@@ -258,28 +308,31 @@
         if (buton) buton.disabled = true;
 
         try {
-            const response = await fetch('/api/sesizari/salveaza', {
+            const response = await fetch('/api/sesizari/salveaza-cu-poze', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify(sesizareData)
+                body: formData
             });
 
             if (response.ok) {
-                localStorage.setItem('lastSubmitTime', Date.now());
+                localStorage.setItem(cooldownKey, Date.now());
+
                 setTimeout(() => {
                     if (boatContainer) boatContainer.classList.remove("animate-boat");
                     document.getElementById("sesizareForm").style.display = "none";
                     document.getElementById("successAnim").style.display = "block";
                 }, 2500);
             } else {
-                alert("Eroare la salvare!");
+                const mesaj = await response.text();
+                alert("Eroare la salvare: " + mesaj);
+
                 if (buton) buton.disabled = false;
                 if (boatContainer) boatContainer.classList.remove("animate-boat");
             }
         } catch (error) {
             console.error("Eroare rețea:", error);
             alert("Serverul nu răspunde.");
+
             if (buton) buton.disabled = false;
             if (boatContainer) boatContainer.classList.remove("animate-boat");
         }

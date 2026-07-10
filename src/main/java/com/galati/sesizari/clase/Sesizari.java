@@ -7,6 +7,7 @@ import com.galati.sesizari.enums.Status;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,7 +15,9 @@ public class Sesizari {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long nrReclamatie; //cheie primara in sql
-
+    @JsonIgnore
+    @OneToOne(mappedBy = "sesizare", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private PozaSesizare poza;
     @Enumerated(EnumType.STRING)
     private Status status;
     @Column(nullable = false)
@@ -160,5 +163,12 @@ public class Sesizari {
 
     public void setPrioritate(Prioritate prioritate) {
         this.prioritate = prioritate;
+    }
+    public PozaSesizare getPoza() {
+        return poza;
+    }
+
+    public void setPoza(PozaSesizare poza) {
+        this.poza = poza;
     }
 }

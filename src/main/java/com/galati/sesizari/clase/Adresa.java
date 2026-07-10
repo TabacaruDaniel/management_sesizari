@@ -57,4 +57,8 @@ public class Adresa {
     public void getLongitudine(Double longitudine) {
         this.longitudine = longitudine;
     }
+
+    public void setLongitudine(Double longitudine) {
+        this.longitudine = longitudine;
+    }
 }

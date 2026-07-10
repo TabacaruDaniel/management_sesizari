@@ -182,6 +182,15 @@
         .popup-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
         .badge { padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
         .popup-data { font-size: 11px; color: #aaa; margin-top: 4px; }
+        .popup-poza {
+            width: 100%;
+            max-width: 260px;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: block;
+        }
     </style>
 </head>
 
@@ -299,20 +308,31 @@
             if (!lat || !lng) return;
 
             const culoare = culoareDupaPrioritate(s.prioritate);
+            console.log("SESIZARE PE HARTA:", s);
+            console.log("ID SESIZARE:", s.nrReclamatie);
+            const idSesizare = s.nrReclamatie;
 
             const popupHTML = `
-                <div class="popup-titlu">${s.titlu || 'Fără titlu'}</div>
-                <div class="popup-descriere">${s.descriere || 'Fără descriere'}</div>
-                <div class="popup-badges">
-                    <span class="badge" style="background:${culoare}; color:white;">
-                        ⚠️ ${s.prioritate || 'Standard'}
-                    </span>
-                    <span class="badge" style="background:#f0ece6; color:#4a4033;">
-                        ${s.status || 'Trimisă'}
-                    </span>
-                </div>
-                <div class="popup-data">📅 ${s.dataDepunerii || 'Data necunoscută'}</div>
-            `;
+    <div class="popup-titlu">${s.titlu || 'Fără titlu'}</div>
+
+    <div class="popup-descriere">${s.descriere || 'Fără descriere'}</div>
+
+    <img src="/api/sesizari/${idSesizare}/poza"
+         class="popup-poza"
+         alt="Poza sesizare"
+         onerror="this.style.display='none'; console.log('Poza nu s-a incarcat:', this.src);">
+
+    <div class="popup-badges">
+        <span class="badge" style="background:${culoare}; color:white;">
+            ⚠️ ${s.prioritate || 'Standard'}
+        </span>
+        <span class="badge" style="background:#f0ece6; color:#4a4033;">
+            ${s.status || 'Trimisă'}
+        </span>
+    </div>
+
+    <div class="popup-data">📅 ${s.dataDepunerii || 'Data necunoscută'}</div>
+`;
 
             const marker = new mapboxgl.Marker({ color: culoare })
                 .setLngLat([parseFloat(lng), parseFloat(lat)])

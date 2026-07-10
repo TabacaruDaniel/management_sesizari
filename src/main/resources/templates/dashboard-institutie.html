@@ -61,6 +61,32 @@
         }
     </style>
 </head>
+<script>
+    function filtreazaSesizariInstitutie() {
+        const statusSelectat = document.getElementById("filterStatusInstitutie").value;
+        const prioritateSelectata = document.getElementById("filterPrioritateInstitutie").value;
+        const textCautat = document.getElementById("filterTextInstitutie").value.toLowerCase();
+
+        const randuri = document.querySelectorAll(".rand-sesizare-institutie");
+
+        randuri.forEach(rand => {
+            const status = (rand.getAttribute("data-status") || "").toUpperCase();
+            const prioritate = (rand.getAttribute("data-prioritate") || "").toUpperCase();
+            const titlu = (rand.getAttribute("data-titlu") || "").toLowerCase();
+            const descriere = (rand.getAttribute("data-descriere") || "").toLowerCase();
+
+            const statusOk = statusSelectat === "TOATE" || status === statusSelectat;
+            const prioritateOk = prioritateSelectata === "TOATE" || prioritate === prioritateSelectata;
+            const textOk = titlu.includes(textCautat) || descriere.includes(textCautat);
+
+            if (statusOk && prioritateOk && textOk) {
+                rand.style.display = "";
+            } else {
+                rand.style.display = "none";
+            }
+        });
+    }
+</script>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-custom mb-4">
@@ -88,6 +114,39 @@
         </div>
 
         <div th:if="${not #lists.isEmpty(sesizari)}" class="table-responsive">
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <label class="form-label custom-label">Filtreaza dupa status</label>
+                    <select id="filterStatusInstitutie" class="form-select" onchange="filtreazaSesizariInstitutie()">
+                        <option value="TOATE">Toate</option>
+                        <option value="NOU">Nou</option>
+                        <option value="IN_ANALIZA">In analiza</option>
+                        <option value="IN_LUCRU">In lucru</option>
+                        <option value="REZOLVAT">Rezolvat</option>
+                        <option value="RESPINS">Respins</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label custom-label">Filtreaza dupa prioritate</label>
+                    <select id="filterPrioritateInstitutie" class="form-select" onchange="filtreazaSesizariInstitutie()">
+                        <option value="TOATE">Toate</option>
+                        <option value="URGENTA">Urgenta</option>
+                        <option value="INALTA">Inalta</option>
+                        <option value="MEDIE">Medie</option>
+                        <option value="SCAZUTA">Scazuta</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label custom-label">Cauta dupa titlu/descriere</label>
+                    <input type="text"
+                           id="filterTextInstitutie"
+                           class="form-control"
+                           placeholder="Cauta..."
+                           oninput="filtreazaSesizariInstitutie()">
+                </div>
+            </div>
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                 <tr>
@@ -100,7 +159,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="sesizare : ${sesizari}">
+                <tr th:each="sesizare : ${sesizari}"
+                    class="rand-sesizare-institutie"
+                    th:attr="
+        data-status=${sesizare.status},
+        data-prioritate=${sesizare.prioritate},
+        data-titlu=${sesizare.titlu},
+        data-descriere=${sesizare.descriere}
+    ">
                     <td><span class="badge bg-secondary">#[[${sesizare.nrReclamatie}]]</span></td>
 
                     <td th:text="${sesizare.dataDepunerii}">01-01-2024</td>

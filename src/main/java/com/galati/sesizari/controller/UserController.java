@@ -85,6 +85,8 @@ public class UserController {
                 return "redirect:/institutie/dashboard";
             } else if (userLogat.getRol() == Rol.ADMIN) {
                 return "redirect:/admin/statistici";
+            } else if (userLogat.getRol() == Rol.MANAGER) {
+                return "redirect:/manager/dashboard";
             } else {
                 model.addAttribute("error", "Acces interzis!");
                 return "login";

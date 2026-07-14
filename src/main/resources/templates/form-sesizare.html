@@ -238,16 +238,7 @@
             return;
         }
 
-        const numeElement = document.getElementById("institutie");
-        let idinsti = null;
 
-        switch (numeElement.value) {
-            case 'Primăria Galați': idinsti = 1; break;
-            case 'Serviciul Drumuri': idinsti = 2; break;
-            case 'Serviciul Iluminat Public': idinsti = 3; break;
-            case 'Serviciul Salubritate': idinsti = 4; break;
-            case 'Poliția Locală': idinsti = 5; break;
-        }
 
         if (idinsti === null) {
             alert("Te rugăm să selectezi o instituție validă!");
@@ -256,7 +247,7 @@
 
         const titlu = document.getElementById("titlu").value;
         const descriere = document.getElementById("descriere").value;
-        const prioritate = document.getElementById("prioritate").value;
+
 
         const strada = document.getElementById("strada").value;
         const numar = document.getElementById("numar").value;
@@ -276,10 +267,7 @@
             return;
         }
 
-        if (!prioritate) {
-            alert("Te rugăm să alegi prioritatea.");
-            return;
-        }
+
 
         if (!poza) {
             alert("Trebuie să încarci o poză pentru sesizare.");
@@ -290,8 +278,7 @@
 
         formData.append("titlu", titlu);
         formData.append("descriere", descriere);
-        formData.append("prioritate", prioritate);
-        formData.append("institutieId", idinsti);
+
 
         formData.append("nume", strada);
         formData.append("numar", numar);

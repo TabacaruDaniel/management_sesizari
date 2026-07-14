@@ -129,8 +129,8 @@ public class SesizariController {
     @PostMapping("/api/sesizari/salveaza-cu-poze")
     public ResponseEntity<?> salveazaSesizareCuPoza(@RequestParam String titlu,
                                                     @RequestParam String descriere,
-                                                    @RequestParam Prioritate prioritate,
-                                                    @RequestParam Long institutieId,
+                                                    @RequestParam(required = false) Prioritate prioritate,
+                                                    @RequestParam(required = false) Long institutieId,
                                                     @RequestParam String nume,
                                                     @RequestParam String numar,
                                                     @RequestParam String zona,
@@ -150,10 +150,10 @@ public class SesizariController {
 
             sesizare.setTitlu(titlu);
             sesizare.setDescriere(descriere);
-            sesizare.setPrioritate(prioritate);
+
             sesizare.setStatus(Status.NOU);
 
-            sesizare.setInstitutie(institutie);
+
 
             // ASTEA SUNT IMPORTANTE PENTRU HARTA
             Adresa adresa = new Adresa();

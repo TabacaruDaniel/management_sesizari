@@ -7,47 +7,64 @@
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            color: #222;
-        }
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #1f2937;
 
+            background:
+                    linear-gradient(rgba(15, 23, 42, 0.60), rgba(15, 23, 42, 0.60)),
+                    url('/../images/galati.jpg');
+
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
         .navbar {
-            background: #1f2937;
+            background: rgba(30, 58, 138, 0.88);
+            backdrop-filter: blur(8px);
             color: white;
-            padding: 16px 32px;
+            padding: 18px 36px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.22);
         }
 
         .navbar h1 {
             margin: 0;
-            font-size: 22px;
+            font-size: 24px;
+            letter-spacing: 0.3px;
         }
 
         .navbar a {
             color: white;
             text-decoration: none;
-            background: #374151;
-            padding: 8px 14px;
-            border-radius: 6px;
+            background: rgba(255,255,255,0.16);
+            padding: 9px 16px;
+            border-radius: 999px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.25);
         }
 
+        .navbar a:hover {
+            background: rgba(255,255,255,0.26);
+        }
         .container {
             max-width: 1200px;
-            margin: 30px auto;
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            margin: 34px auto;
+            background: rgba(255, 255, 255, 0.94);
+            padding: 28px;
+            border-radius: 22px;
+            box-shadow: 0 16px 44px rgba(0, 0, 0, 0.22);
+            backdrop-filter: blur(10px);
         }
-
         .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 24px;
-            border-bottom: 1px solid #ddd;
+            gap: 12px;
+            margin-bottom: 26px;
+            padding: 8px;
+            border-bottom: none;
+            background: #eff6ff;
+            border-radius: 18px;
         }
 
         .tab-button {
@@ -55,17 +72,23 @@
             background: transparent;
             padding: 12px 18px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            color: #555;
-            border-bottom: 3px solid transparent;
+            font-size: 15px;
+            font-weight: 800;
+            color: #1d4ed8;
+            border-radius: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button:hover {
+            background: #dbeafe;
+            transform: translateY(-1px);
         }
 
         .tab-button.active {
-            color: #2563eb;
-            border-bottom: 3px solid #2563eb;
+            color: white;
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.28);
         }
-
         .tab-content {
             display: none;
         }
@@ -73,25 +96,38 @@
         .tab-content.active {
             display: block;
         }
+        th {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        thead tr th:first-child {
+            border-top-left-radius: 12px;
+        }
+
+        thead tr th:last-child {
+            border-top-right-radius: 12px;
+        }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-top: 16px;
+            overflow: hidden;
         }
 
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
-            text-align: left;
-            vertical-align: top;
+        tbody tr {
+            background: white;
         }
 
-        th {
-            background: #f9fafb;
-            font-weight: bold;
+        tbody tr:hover {
+            background: #f8fafc;
         }
-
         .badge {
             display: inline-block;
             padding: 5px 9px;
@@ -118,11 +154,18 @@
 
         .dots-btn {
             border: none;
-            background: #e5e7eb;
-            padding: 6px 10px;
-            border-radius: 6px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 999px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
+            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.22);
+        }
+
+        .dots-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.32);
         }
 
         .dropdown-menu {
@@ -165,10 +208,29 @@
 
         .modal {
             background: white;
-            width: 420px;
+            width: 520px;
+            max-width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
             padding: 24px;
             border-radius: 12px;
             box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            border: none;
+            background: transparent;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .modal-close:hover {
+            color: #dc2626;
         }
 
         .modal h3 {
@@ -211,6 +273,63 @@
             background: #dc2626;
             color: white;
         }
+        .modal-poza {
+            width: 100%;
+            height: 220px;
+            object-fit: contain;
+            object-position: center;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            background: #f3f4f6;
+            display: block;
+        }
+        .filter-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+            padding: 18px;
+            background: linear-gradient(135deg, #eff6ff, #ffffff);
+            border: 1px solid #dbeafe;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.08);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 800;
+            color: #1d4ed8;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 11px 13px;
+            border: 1px solid #bfdbfe;
+            border-radius: 14px;
+            background: white;
+            color: #1f2937;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14);
+        }
+
+        .filter-group input::placeholder {
+            color: #9ca3af;
+        }
     </style>
 </head>
 
@@ -245,9 +364,9 @@
     <!-- TAB 1: SESIZĂRI -->
     <div id="tab-sesizari" class="tab-content active">
         <h2 style="font-size:18px; color:#111827; margin-bottom:16px;">Toate sesizările</h2>
-        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin-bottom:20px;">
+        <div class="filter-panel">
 
-            <div>
+            <div class="filter-group">
                 <label>Status</label>
                 <select id="filterStatusAdmin" onchange="filtreazaSesizariAdmin()">
                     <option value="TOATE">Toate</option>
@@ -259,7 +378,7 @@
                 </select>
             </div>
 
-            <div>
+            <div class="filter-group">
                 <label>Prioritate</label>
                 <select id="filterPrioritateAdmin" onchange="filtreazaSesizariAdmin()">
                     <option value="TOATE">Toate</option>
@@ -270,22 +389,31 @@
                 </select>
             </div>
 
-            <div>
+            <div class="filter-group">
                 <label>Institutie</label>
-                <input type="text"
-                       id="filterInstitutieAdmin"
-                       placeholder="Ex: Drumuri"
-                       oninput="filtreazaSesizariAdmin()">
+                <select id="filterInstitutieAdmin" onchange="filtreazaSesizariAdmin()">
+                    <option value="TOATE">Toate</option>
+                    <option value="Nerepartizata">Nerepartizata</option>
+
+                    <option th:each="inst : ${institutii}"
+                            th:value="${inst.numeInstitutie}"
+                            th:text="${inst.numeInstitutie}">
+                        Institutie
+                    </option>
+                </select>
             </div>
 
-            <div>
+            <div class="filter-group">
                 <label>Cauta</label>
                 <input type="text"
                        id="filterTextAdmin"
                        placeholder="Titlu, descriere, user, email..."
                        oninput="filtreazaSesizariAdmin()">
             </div>
+
         </div>
+
+
         <div th:if="${#lists.isEmpty(sesizari)}"
              style="text-align:center; padding:40px; color:#9ca3af; background:#f9fafb; border-radius:12px; border:1px solid #e5e7eb;">
             Nu există sesizări.
@@ -338,21 +466,22 @@
                         Prioritate
                     </span>
                 </td>
-                <td class="actiuni-cell">
-                    <button type="button" class="dots-btn" onclick="toggleMenu(this)">···</button>
-                    <div class="dropdown-menu">
-                        <button type="button" th:onclick="'openRepartizareModal(' + ${s.nrReclamatie} + ')'">
-                            📋 Repartizează
-                        </button>
-                        <button type="button" th:onclick="'openRezolvareModal(' + ${s.nrReclamatie} + ')'">
-                            ✅ Marchează rezolvat
-                        </button>
-                        <button type="button"
-                                th:onclick="'openStergereModal(' + ${s.nrReclamatie} + ')'"
-                                style="color:#dc2626;">
-                            🗑 Șterge
-                        </button>
-                    </div>
+                <td>
+                    <button type="button"
+                            class="dots-btn"
+                            th:attr="
+                data-id=${s.nrReclamatie},
+                data-titlu=${s.titlu},
+                data-descriere=${s.descriere},
+                data-institutie=${s.institutie != null ? s.institutie.numeInstitutie : 'Nerepartizata'},
+                data-user=${s.user != null ? s.user.username : '-'},
+                data-email=${s.user != null ? s.user.email : '-'},
+                data-status=${s.status},
+                data-prioritate=${s.prioritate}
+            "
+                            onclick="openAdminSesizareModal(this)">
+                        Vizualizeaza
+                    </button>
                 </td>
             </tr>
             </tbody>
@@ -569,11 +698,87 @@
     </div>
 
 </div>
+<div id="modalAdminVizualizare" class="modal-overlay">
+    <div class="modal">
+        <h3>Detalii sesizare</h3>
+
+        <p><strong>ID:</strong> <span id="adminModalId"></span></p>
+        <p><strong>Titlu:</strong> <span id="adminModalTitlu"></span></p>
+        <p><strong>Descriere:</strong> <span id="adminModalDescriere"></span></p>
+        <p><strong>Institutie:</strong> <span id="adminModalInstitutie"></span></p>
+        <p><strong>User:</strong> <span id="adminModalUser"></span></p>
+        <p><strong>Email:</strong> <span id="adminModalEmail"></span></p>
+        <p><strong>Status:</strong> <span id="adminModalStatus"></span></p>
+        <p><strong>Prioritate:</strong> <span id="adminModalPrioritate"></span></p>
+
+        <p><strong>Poza:</strong></p>
+        <img id="adminModalPoza"
+             src=""
+             alt="Poza sesizare"
+             class="modal-poza"
+             onerror="this.style.display='none';">
+
+        <hr>
+
+        <h4>Actiuni admin</h4>
+
+        <!-- REPARTIZARE -->
+        <form th:action="@{/admin/sesizari/repartizeaza}" method="post" style="margin-bottom:12px;">
+            <input type="hidden" id="adminRepartizareId" name="idSesizare">
+
+            <label>Alege institutia:</label>
+            <select name="institutieId" required>
+                <option value="">Selecteaza institutia</option>
+                <option th:each="i : ${institutii}"
+                        th:value="${i.institutie_id}"
+                        th:text="${i.numeInstitutie}">
+                    Institutie
+                </option>
+            </select>
+
+            <button type="submit" class="btn-confirm">
+                Repartizeaza
+            </button>
+        </form>
+
+        <!-- STERGERE -->
+        <form th:action="@{/admin/sesizari/sterge}" method="post" style="margin-bottom:12px;">
+            <input type="hidden" id="adminStergereId" name="idSesizare">
+
+            <label>Motiv stergere:</label>
+            <textarea name="motiv" rows="3" required
+                      placeholder="Ex: Sesizare nepotrivita / falsa / irelevanta."></textarea>
+
+            <button type="submit" class="btn-confirm btn-danger">
+                Sterge sesizarea
+            </button>
+        </form>
+
+        <!-- REZOLVARE -->
+        <form th:action="@{/admin/sesizari/rezolva}" method="post" style="margin-bottom:12px;">
+            <input type="hidden" id="adminRezolvareId" name="idSesizare">
+
+            <label>Mesaj pentru utilizator:</label>
+            <textarea name="mesaj" rows="3" required
+                      placeholder="Ex: Problema a fost verificata si solutionata."></textarea>
+
+            <button type="submit" class="btn-confirm">
+                Marcheaza ca rezolvat
+            </button>
+        </form>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="closeAdminModal()">
+                Inchide
+            </button>
+        </div>
+    </div>
+</div>
 <script>
     function filtreazaSesizariAdmin() {
         const statusSelectat = document.getElementById("filterStatusAdmin").value;
         const prioritateSelectata = document.getElementById("filterPrioritateAdmin").value;
-        const institutieCautata = document.getElementById("filterInstitutieAdmin").value.toLowerCase();
+        const institutieSelectata = document.getElementById("filterInstitutieAdmin").value;
         const textCautat = document.getElementById("filterTextAdmin").value.toLowerCase();
 
         const randuri = document.querySelectorAll(".rand-sesizare-admin");
@@ -589,7 +794,9 @@
 
             const statusOk = statusSelectat === "TOATE" || status === statusSelectat;
             const prioritateOk = prioritateSelectata === "TOATE" || prioritate === prioritateSelectata;
-            const institutieOk = institutie.includes(institutieCautata);
+            const institutieOk =
+                institutieSelectata === "TOATE" ||
+                institutie === institutieSelectata.toLowerCase();
 
             const textOk =
                 titlu.includes(textCautat) ||
@@ -688,6 +895,32 @@
             });
         }
     });
+    function openAdminSesizareModal(button) {
+        const id = button.getAttribute("data-id");
+
+        document.getElementById("adminModalId").innerText = id;
+        document.getElementById("adminModalTitlu").innerText = button.getAttribute("data-titlu");
+        document.getElementById("adminModalDescriere").innerText = button.getAttribute("data-descriere");
+        document.getElementById("adminModalInstitutie").innerText = button.getAttribute("data-institutie");
+        document.getElementById("adminModalUser").innerText = button.getAttribute("data-user");
+        document.getElementById("adminModalEmail").innerText = button.getAttribute("data-email");
+        document.getElementById("adminModalStatus").innerText = button.getAttribute("data-status");
+        document.getElementById("adminModalPrioritate").innerText = button.getAttribute("data-prioritate");
+
+        document.getElementById("adminRepartizareId").value = id;
+        document.getElementById("adminStergereId").value = id;
+        document.getElementById("adminRezolvareId").value = id;
+
+        const poza = document.getElementById("adminModalPoza");
+        poza.style.display = "block";
+        poza.src = "/api/sesizari/" + id + "/poza";
+
+        document.getElementById("modalAdminVizualizare").style.display = "flex";
+    }
+
+    function closeAdminModal() {
+        document.getElementById("modalAdminVizualizare").style.display = "none";
+    }
 </script>
 
 </body>

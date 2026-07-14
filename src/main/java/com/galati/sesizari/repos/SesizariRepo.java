@@ -25,6 +25,6 @@ public interface SesizariRepo extends JpaRepository<Sesizari, Long> {
 
     @Query("SELECT s FROM Sesizari s LEFT JOIN FETCH s.institutie")
     List<Sesizari> findAllWithInstitutie();
-
+    List<Sesizari> findByInstitutieIsNull();
     List<Sesizari> findByUserAndInstitutie(User user, Institutie institutie);
 }

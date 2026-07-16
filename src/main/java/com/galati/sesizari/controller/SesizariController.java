@@ -143,8 +143,6 @@ public class SesizariController {
                 return ResponseEntity.badRequest().body("Poza este obligatorie.");
             }
 
-            Institutie institutie = institutieRepo.findById(institutieId)
-                    .orElseThrow(() -> new RuntimeException("Institutia nu exista"));
 
             Sesizari sesizare = new Sesizari();
 
@@ -174,19 +172,23 @@ public class SesizariController {
 
             Sesizari sesizareSalvata = sesizariRepo.save(sesizare);
 
-
-            if (userLogat != null && userLogat.getEmail() != null) {
-                emailService.trimiteNotificareAdmin(
-                        userLogat.getEmail(),
-                        "Sesizarea a fost inregistrata",
-                        "Buna ziua,\n\n" +
-                                "Sesizarea dumneavoastra cu titlul \"" + sesizareSalvata.getTitlu() + "\" a fost inregistrata cu succes.\n\n" +
-                                "Numar reclamatie: " + sesizareSalvata.getNrReclamatie() + "\n" +
-                                "Status: " + sesizareSalvata.getStatus() + "\n\n" +
-                                "Veti fi notificat/a cand statusul sesizarii se modifica.\n\n" +
-                                "O zi buna!"
-                );
-            }
+try {
+    if (userLogat != null && userLogat.getEmail() != null) {
+        emailService.trimiteNotificareAdmin(
+                userLogat.getEmail(),
+                "Sesizarea a fost inregistrata",
+                "Buna ziua,\n\n" +
+                        "Sesizarea dumneavoastra cu titlul \"" + sesizareSalvata.getTitlu() + "\" a fost inregistrata cu succes.\n\n" +
+                        "Numar reclamatie: " + sesizareSalvata.getNrReclamatie() + "\n" +
+                        "Status: " + sesizareSalvata.getStatus() + "\n\n" +
+                        "Veti fi notificat/a cand statusul sesizarii se modifica.\n\n" +
+                        "O zi buna!"
+        );
+    }
+}catch(Exception emailError) {
+    System.out.println("Emailul nu a putut fi trimis, dar sesizarea a fost salvata.");
+    emailError.printStackTrace();
+}
             PozaSesizare pozaSesizare = new PozaSesizare();
             byte[] pozaJpeg;
             try {

@@ -100,30 +100,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label for="prioritate" class="form-label custom-label">Prioritate</label>
-                                <select class="form-select custom-input" id="prioritate">
-                                    <option value="" selected disabled>Alege prioritatea</option>
-                                    <option value="SCAZUTA">Scăzută</option>
-                                    <option value="MEDIE">Medie</option>
-                                    <option value="INALTA">Ridicată</option>
-                                    <option value="URGENTA">Urgentă</option>
-                                </select>
-                            </div>
 
-                            <div class="col-md-6 mb-4">
-                                <label for="institutie" class="form-label custom-label">Instituție responsabilă</label>
-                                <select class="form-select custom-input" id="institutie">
-                                    <option value="" selected disabled>Alege instituția</option>
-                                    <option value="Primăria Galați">Primăria Galați</option>
-                                    <option value="Serviciul Drumuri">Serviciul Drumuri</option>
-                                    <option value="Serviciul Iluminat Public">Serviciul Iluminat Public</option>
-                                    <option value="Serviciul Salubritate">Serviciul Salubritate</option>
-                                    <option value="Poliția Locală">Poliția Locală</option>
-                                </select>
-                            </div>
-                        </div>
 
                         <input type="hidden" id="latitudine" name="latitudine">
                         <input type="hidden" id="longitudine" name="longitudine">
@@ -240,10 +217,6 @@
 
 
 
-        if (idinsti === null) {
-            alert("Te rugăm să selectezi o instituție validă!");
-            return;
-        }
 
         const titlu = document.getElementById("titlu").value;
         const descriere = document.getElementById("descriere").value;
